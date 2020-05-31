@@ -76,4 +76,25 @@ public static class IntersectionMaths
 
         return new Vector2(x, y);
     }
+    
+    public static Vector2? FindIntersection(Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4)
+    {
+        var dxSegOne = p2.x - p1.x;
+        var dySegOne = p2.y - p1.y;
+        var dxSegTwo = p4.x - p3.x;
+        var dySegTwo = p4.y - p3.y;
+
+        var denominator = dySegOne * dxSegTwo - dxSegOne * dySegTwo;
+        
+        var t1 = ((p1.x - p3.x) * dySegTwo + (p3.y - p1.y) * dxSegTwo) / denominator;
+
+        if (float.IsInfinity(t1))
+        {
+            return null;
+        }
+        
+        var intersection = new Vector2(p1.x + dxSegOne * t1, p1.y + dySegOne * t1);
+
+        return intersection;
+    }
 }

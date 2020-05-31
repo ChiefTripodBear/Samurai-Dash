@@ -2,7 +2,7 @@
 using System.Linq;
 using UnityEngine;
 
-public class ChainFinder : MonoBehaviour
+public class AutomaticChainFinder : MonoBehaviour
 {
     [SerializeField] private float _minCheckRange = 5f;
     private List<Enemy> _enemies = new List<Enemy>();

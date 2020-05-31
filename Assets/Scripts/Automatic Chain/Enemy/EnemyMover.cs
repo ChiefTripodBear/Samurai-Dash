@@ -14,15 +14,21 @@ public class EnemyMover : MonoBehaviour
     private Vector3? _target;
     public bool CanMove { get; set; } = true;
 
+    private Transform _playerTransform;
+
     private void Awake()
     {
         _player = FindObjectOfType<Player>();
+        _playerTransform = _player == null ? FindObjectOfType<RedirectPlayer>().transform : _player.transform;
         _currentMoveSpeed = Random.Range(_minSpeed, _maxSpeed);
     }
 
     private void Start()
     {
-        _player.PlayerMover.MoveThroughChainStatusChanged += SetTargetToSpecificLocation;
+        if (_player != null)
+        {
+            _player.PlayerMover.MoveThroughChainStatusChanged += SetTargetToSpecificLocation;
+        }
     }
 
     private void SetTargetToSpecificLocation(bool targetIsSpecificLocation)
@@ -50,9 +56,9 @@ public class EnemyMover : MonoBehaviour
 
     private void Update()
     {
-        if (_player != null && CanMove)
+        if (_playerTransform != null && CanMove)
         {
-            transform.position = Vector2.MoveTowards(transform.position, _target ?? _player.transform.position,
+            transform.position = Vector2.MoveTowards(transform.position, _target ?? _playerTransform.position,
                 _currentMoveSpeed * Time.deltaTime);
         }
     }

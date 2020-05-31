@@ -25,7 +25,7 @@ public class PlayerMover : MonoBehaviour
     private bool _isMoving;
 
     private PlayerEnemyFinder _playerEnemyFinder;
-    private ChainFinder _chainFinder;
+    private AutomaticChainFinder _automaticChainFinder;
 
     private Enemy _currentChainTarget;
     private Coroutine _moveRoutine;
@@ -36,7 +36,7 @@ public class PlayerMover : MonoBehaviour
         _enemyLayer = LayerMask.GetMask("Enemy");
         _trailRenderer.enabled = false;
         _playerEnemyFinder = GetComponent<PlayerEnemyFinder>();
-        _chainFinder = FindObjectOfType<ChainFinder>();
+        _automaticChainFinder = FindObjectOfType<AutomaticChainFinder>();
     }
 
     private void Update()
@@ -72,7 +72,7 @@ public class PlayerMover : MonoBehaviour
             var distanceFromOptimalLocation = GetOptimalDistanceFromEnemyAfterKill(enemyInMoveRange, _targetLocation.Value);
             _targetLocation += _moveDirection * distanceFromOptimalLocation;
             
-            var chain = _chainFinder.BuildChain(enemyInMoveRange);
+            var chain = _automaticChainFinder.BuildChain(enemyInMoveRange);
             
             StartCoroutine(chain != null  ? MoveThroughChain(chain) : NormalMovement(_targetLocation.Value, enemyInMoveRange));
         }
@@ -242,7 +242,6 @@ public class PlayerMover : MonoBehaviour
         
         while (true)
         {
-            Debug.Log(_currentChainTarget);
             var newTarget = ValidTargetWhileMoving(_currentChainTarget);
             _moveDirection = (targetLocation - (Vector2) transform.position).normalized;
 

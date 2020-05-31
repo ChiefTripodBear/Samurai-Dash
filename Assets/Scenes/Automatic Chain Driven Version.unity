@@ -242,7 +242,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _setAngle: 0
   _angle: 137
-  _projectionDistance: 15
+  _projectionDistance: 8
 --- !u!114 &147453653
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -498,7 +498,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _setAngle: 1
   _angle: 55.8
-  _projectionDistance: 15
+  _projectionDistance: 8
 --- !u!114 &196171584
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -754,7 +754,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _setAngle: 1
   _angle: 55.8
-  _projectionDistance: 15
+  _projectionDistance: 8
 --- !u!114 &219221283
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1010,7 +1010,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _setAngle: 1
   _angle: 55.8
-  _projectionDistance: 15
+  _projectionDistance: 8
 --- !u!114 &441350692
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1349,7 +1349,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _setAngle: 0
   _angle: 43
-  _projectionDistance: 15
+  _projectionDistance: 8
 --- !u!114 &552338465
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1605,7 +1605,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _setAngle: 0
   _angle: 249
-  _projectionDistance: 15
+  _projectionDistance: 8
 --- !u!114 &1129389891
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1861,7 +1861,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _setAngle: 1
   _angle: 55.8
-  _projectionDistance: 15
+  _projectionDistance: 8
 --- !u!114 &1177923672
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2117,7 +2117,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _setAngle: 1
   _angle: 90
-  _projectionDistance: 15
+  _projectionDistance: 8
 --- !u!114 &1294426338
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2373,7 +2373,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _setAngle: 1
   _angle: 55.8
-  _projectionDistance: 15
+  _projectionDistance: 8
 --- !u!114 &1451719316
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2629,7 +2629,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _setAngle: 1
   _angle: 180
-  _projectionDistance: 15
+  _projectionDistance: 8
 --- !u!114 &1812858225
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2885,7 +2885,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _setAngle: 1
   _angle: 55.8
-  _projectionDistance: 15
+  _projectionDistance: 8
 --- !u!114 &1903366095
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3141,7 +3141,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _setAngle: 0
   _angle: 18
-  _projectionDistance: 15
+  _projectionDistance: 8
 --- !u!114 &1976862332
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3682,7 +3682,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _setAngle: 1
   _angle: 55.8
-  _projectionDistance: 15
+  _projectionDistance: 8
 --- !u!114 &2078739725
 MonoBehaviour:
   m_ObjectHideFlags: 0

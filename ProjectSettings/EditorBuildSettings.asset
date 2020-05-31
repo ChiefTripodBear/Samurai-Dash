@@ -4,5 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/Automatic Chain Driven Version.unity
+    guid: 1021287fac066db4bab1c76ec4021ac7
   m_configObjects: {}

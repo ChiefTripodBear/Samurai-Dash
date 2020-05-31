@@ -11,7 +11,7 @@ public class EnemyChainHandler : MonoBehaviour
 
     public int ChainCount { get; set; }
 
-    private ChainFinder _chainFinder;
+    private AutomaticChainFinder _automaticChainFinder;
 
     private Enemy _enemy;
     private Player _player;
@@ -20,7 +20,7 @@ public class EnemyChainHandler : MonoBehaviour
     {
         _player = FindObjectOfType<Player>();
         _enemy = GetComponent<Enemy>();
-        _chainFinder = FindObjectOfType<ChainFinder>();
+        _automaticChainFinder = FindObjectOfType<AutomaticChainFinder>();
     }
 
     public void SetIntersectionPoint(Vector2? point)
@@ -34,7 +34,7 @@ public class EnemyChainHandler : MonoBehaviour
         
         if (Vector2.Distance(transform.position, _player.transform.position) < 3f)
         {
-            _chain = _chainFinder.BuildChain(_enemy);
+            _chain = _automaticChainFinder.BuildChain(_enemy);
         }
     }
 }

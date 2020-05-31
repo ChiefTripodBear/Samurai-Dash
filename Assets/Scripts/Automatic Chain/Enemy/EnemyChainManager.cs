@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class EnemyChainEvaluator : MonoBehaviour
+public class EnemyChainManager : MonoBehaviour
 {
-    private ChainFinder _chainFinder;
+    private AutomaticChainFinder _automaticChainFinder;
 
     private List<Enemy> _enemies = new List<Enemy>();
 
     private void Awake()
     {
-        _chainFinder = GetComponent<ChainFinder>();
+        _automaticChainFinder = GetComponent<AutomaticChainFinder>();
         _enemies = FindObjectsOfType<Enemy>().ToList();
         
         _enemies.ForEach(t => t.OnDeath += () =>
