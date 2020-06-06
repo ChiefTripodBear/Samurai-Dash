@@ -146,7 +146,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 195482704}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -28.250177, y: -0.073302, z: -5.3452053}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -161,9 +161,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 195482704}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: be7b40c0ead5403588ae6bcbec8ff418, type: 3}
+  m_Script: {fileID: 11500000, guid: e8d6f35d6e0f40cf9ecf596aac6c5ca9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _ringOrder: 0
   _minAttackers: 1
   _maxAttackers: 3
   _minAttackTime: 5
@@ -331,7 +332,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 896117055}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.78, y: 4.4, z: 0}
+  m_LocalPosition: {x: 2.89, y: 1.51, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -648,9 +649,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 049ce3d0c4b24abd95bbec512517312e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _pathfindingUnitPrefab: {fileID: 1650850710468414362, guid: e88a9dec3c41d5e4ab7ed2df8ba6e945,
+  _gruntUnit: {fileID: 4513942268174516336, guid: e88a9dec3c41d5e4ab7ed2df8ba6e945,
     type: 3}
-  _spawnCount: 20
+  _gruntSpawnCount: 10
 --- !u!1 &2043025289
 GameObject:
   m_ObjectHideFlags: 0
@@ -697,7 +698,7 @@ MonoBehaviour:
   _ringPositionPrefab: {fileID: 7487700352922249078, guid: 2e8f3df4c428fa047a0a069bdd91769c,
     type: 3}
   _innerRadius: 5
-  _ringPositions: 20
+  _ringPositions: 21
   _numberOfRings: 3
   _ringPositionCountModifier: 1.5
   _ringRadiusModifier: 0.5

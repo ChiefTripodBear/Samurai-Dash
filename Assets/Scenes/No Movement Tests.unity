@@ -349,6 +349,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a96c966b096d41e0a23c0987c717767b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _dangerRedirectRadiusCheck: 1
   _optimalDistancePostKill: 5
   _moveAmountPerSwipe: 5
   _moveTime: 0.35

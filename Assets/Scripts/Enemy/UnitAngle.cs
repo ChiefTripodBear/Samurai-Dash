@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
-[RequireComponent(typeof(EnemyAngleVisualizer))]
-public class EnemyAngle : MonoBehaviour
+[RequireComponent(typeof(UnitAngleVisualizer))]
+public class UnitAngle : MonoBehaviour
 {
     [SerializeField] private float _projectionDistance;
     [SerializeField] private float _angle;

@@ -17,6 +17,7 @@ public class Pool : MonoBehaviour
         
         var pool = new GameObject($"Pool + {prefab.name}").AddComponent<Pool>();
 
+        Debug.Log(pool.name);
         pool._prefab = prefab;
         pool.GrowPool();
         _pools.Add(prefab, pool);

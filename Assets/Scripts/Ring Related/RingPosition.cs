@@ -4,8 +4,7 @@ public class RingPosition : MonoBehaviour
 {
     [SerializeField] private bool _randomizeSpeed;
     [SerializeField] private float _moveSpeed;
-    private PathfindingUnit _pathfindingUnit;
-    private int _ringOrder;
+    private IUnitPathFinder _pathfindingUnit;
     private Vector2 _startingPosition;
     private float _startingAngle;
     private float _radius;
@@ -15,7 +14,6 @@ public class RingPosition : MonoBehaviour
     public Vector2 OppositePoint => _oppositePoint;
 
     public bool Claimed => _pathfindingUnit != null;
-    public int RingOrder => _ringOrder;
 
     private void Awake()
     {
@@ -28,7 +26,7 @@ public class RingPosition : MonoBehaviour
             _moveSpeed = Random.Range(-.5f, .5f);
     }
 
-    public void ClaimPosition(PathfindingUnit pathfindingUnit)
+    public void ClaimPosition(IUnitPathFinder pathfindingUnit)
     {
         _pathfindingUnit = pathfindingUnit;
     }
@@ -44,7 +42,6 @@ public class RingPosition : MonoBehaviour
     {
         _startingAngle = angle;
         _radius = radius;
-        _ringOrder = ringOrder;
 
         _player = FindObjectOfType<Player>();
         _startingPosition = new Vector2(Mathf.Sin(angle), Mathf.Cos(angle)) * _radius + (Vector2)transform.parent.position;

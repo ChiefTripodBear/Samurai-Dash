@@ -4,26 +4,26 @@ using UnityEngine;
 
 public class KillHandler : MonoBehaviour
 {
-    private readonly Queue<EnemyKillHandler> _killQueue = new Queue<EnemyKillHandler>();
+    private readonly Queue<UnitKillHandler> _killQueue = new Queue<UnitKillHandler>();
 
     private void Awake()
     {
-        EnemyKillHandler.OnKillPointReached += AddToKillQueue;
+        UnitKillHandler.OnKillPointReached += AddToKillQueue;
         PlayerMover.OnDestinationReached += Kill;
     }
 
     private void OnDestroy()
     {
-        EnemyKillHandler.OnKillPointReached -= AddToKillQueue;
+        UnitKillHandler.OnKillPointReached -= AddToKillQueue;
         PlayerMover.OnDestinationReached -= Kill;
     }
 
-    private void AddToKillQueue(EnemyKillHandler enemyKillHandler)
+    private void AddToKillQueue(UnitKillHandler unitKillHandler)
     {
-        if (!_killQueue.Contains(enemyKillHandler))
+        if (!_killQueue.Contains(unitKillHandler))
         {
-            enemyKillHandler.GetComponent<PathfindingUnit>().CanMove = false;
-            _killQueue.Enqueue(enemyKillHandler);
+            unitKillHandler.GetComponent<IUnitPathFinder>().CanMoveThroughPath = false;
+            _killQueue.Enqueue(unitKillHandler);
         }
 
     }

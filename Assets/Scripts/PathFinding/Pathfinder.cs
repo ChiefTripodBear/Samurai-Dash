@@ -5,14 +5,14 @@ using UnityEngine;
 public class Pathfinder : MonoBehaviour
 {
     private NodeGrid _nodeGrid;
-    private UnitManager _unitManager;
-    private PathfindingUnit _pathfindingUnit;
+    private Unit _unit;
+    private Player _player;
 
     private void Awake()
     {
         _nodeGrid = FindObjectOfType<NodeGrid>();
-        _unitManager = FindObjectOfType<UnitManager>();
-        _pathfindingUnit = GetComponent<PathfindingUnit>();
+        _unit = GetComponent<Unit>();
+        _player = FindObjectOfType<Player>();
     }
     
     public Vector2[] Path(Vector2 targetPosition, ref bool completedRequest)
@@ -21,7 +21,7 @@ public class Pathfinder : MonoBehaviour
         var startingNode = _nodeGrid.NodeFromWorldPosition(transform.position);
         var targetNode = _nodeGrid.NodeFromWorldPosition(targetPosition);
 
-        if(_unitManager.IsValidNode(targetNode, _pathfindingUnit) && startingNode.IsWalkable && targetNode.IsWalkable)
+        if(GameUnitManager.IsValidNodeFromUnit(targetNode, _unit) && startingNode.IsWalkable && targetNode.IsWalkable)
         {
             var openSet = new Heap<Node>(_nodeGrid.MaxSize);
             var closedSet = new HashSet<Node>();
@@ -41,7 +41,9 @@ public class Pathfinder : MonoBehaviour
 
                 foreach (var neighbor in _nodeGrid.Neighbors(currentNode))
                 {
-                    if (!_unitManager.IsValidNode(neighbor, _pathfindingUnit) || !neighbor.IsWalkable || closedSet.Contains(neighbor)) continue;
+                    if (!GameUnitManager.IsValidNodeFromUnit(neighbor, _unit) ||
+                        !GameUnitManager.IsValidNodeFromPlayer(neighbor, _player) || !neighbor.IsWalkable || closedSet.Contains(neighbor)) 
+                        continue;
                     
                     var newMovementCostToNeighbor = currentNode.GCost + GetDistance(currentNode, neighbor);
 

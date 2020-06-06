@@ -19,7 +19,7 @@ public class TargetEvaluator : MonoBehaviour
     }
 
     
-    public Enemy EnemyInMoveDirection(Transform origin, float rayLength, Vector2 moveDirection)
+    public Unit EnemyInMoveDirection(Transform origin, float rayLength, Vector2 moveDirection)
     {
         var originalAngle = Vector2.SignedAngle(moveDirection, origin.up);
         
@@ -42,7 +42,7 @@ public class TargetEvaluator : MonoBehaviour
             
             if(!hit || hit && hit.collider != null && hit.collider.transform == origin) continue;
 
-            var enemy = hit.collider.GetComponent<Enemy>();
+            var enemy = hit.collider.GetComponent<Unit>();
             
             if(enemy == null) continue;
 
@@ -52,19 +52,19 @@ public class TargetEvaluator : MonoBehaviour
         return null;
     }
 
-    public Enemy GetParallelEnemyFromTargetLocation(Vector2 targetLocation, float rayLength, Vector2 direction)
+    public Unit GetParallelEnemyFromTargetLocation(Vector2 targetLocation, float rayLength, Vector2 direction)
     {
         var hit = Physics2D.Raycast(targetLocation, direction, rayLength, _enemyMask);
 
         if (!hit) return null;
 
-        var enemy = hit.collider.GetComponent<Enemy>();
+        var enemy = hit.collider.GetComponent<Unit>();
 
         return enemy == null ? null : enemy;
     }
 
-    public bool DotProductSuccess(Enemy enemy, Vector2 moveDirection)
+    public bool DotProductSuccess(Unit unit, Vector2 moveDirection)
     {
-        return Vector2.Dot(enemy.EnemyAngle.KillVector, moveDirection) > _dotKillThreshold;
+        return Vector2.Dot(unit.UnitAngle.KillVector, moveDirection) > _dotKillThreshold;
     }
 }

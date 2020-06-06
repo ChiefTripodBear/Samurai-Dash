@@ -10,16 +10,20 @@ public class RingManager : MonoBehaviour
     [SerializeField] private int _numberOfRings = 3;
     [SerializeField] private float _ringPositionCountModifier = 1.5f;
     [SerializeField] private float _ringRadiusModifier = .5f;
-
-    private List<RingPosition> _ringPositionObjects= new List<RingPosition>();
-    private Player _player;
     
-    private Queue<RingPosition> _positionQueue = new Queue<RingPosition>();
-    private List<RingPosition> _orderedRingOrders;
-    private RingPosition currentPosition;
+    private readonly Dictionary<int, List<RingPosition>> _ringOrders = new Dictionary<int, List<RingPosition>>();
+    private readonly Dictionary<int, Queue<RingPosition>> _ringPositionQueues = new Dictionary<int, Queue<RingPosition>>();
+    
+    private static RingManager _instance;
+
+    public static RingManager Instance => _instance;
+
+    private Player _player;
 
     private void Awake()
     {
+        if (_instance == null) _instance = this;
+
         _player = FindObjectOfType<Player>();
         
         for (var i = 0; i < _numberOfRings; i++)
@@ -27,6 +31,7 @@ public class RingManager : MonoBehaviour
             var ringPositionCount = _ringPositions - _ringPositionCountModifier * i;
             var radius = _innerRadius + i * _innerRadius * _ringRadiusModifier;
             
+            var positionsOnRing = new List<RingPosition>();
             for (var j = 0; j < ringPositionCount; j++)
             {
                 var angle = j * Mathf.PI * 2 / ringPositionCount;
@@ -34,64 +39,63 @@ public class RingManager : MonoBehaviour
                 var ringPositionObject =
                     Instantiate(_ringPositionPrefab, _player.transform, true);
 
-                ringPositionObject.name = $"{j + 1} Ring Position - {i + 1}";
-                ringPositionObject.Initialize(angle, radius, i + 1);
+                ringPositionObject.name = $"{j + 1} Ring Position - {i}";
+                ringPositionObject.Initialize(angle, radius, i);
 
-                _ringPositionObjects.Add(ringPositionObject);
+                positionsOnRing.Add(ringPositionObject);
             }
+
+            _ringOrders.Add(i, positionsOnRing);
+            _ringPositionQueues[i] = PopulateQueue(i, _ringOrders[i]);
         }
-        
-        _orderedRingOrders = _ringPositionObjects.Where(t => t.RingOrder == 1).ToList();
-
-        currentPosition = _orderedRingOrders[Random.Range(0, _orderedRingOrders.Count)];
-
-        _positionQueue.Enqueue(currentPosition);
-        
-        PopulatePositionQueue();
     }
 
-    private void PopulatePositionQueue()
+    private Queue<RingPosition> PopulateQueue(int ringOrder, List<RingPosition> ringPositions)
     {
+        var positionQueue = new Queue<RingPosition>();
+        var currentRingPosition = ringPositions[Random.Range(0, ringPositions.Count)];
+
         while (true)
         {
-            var oppositePosition = GetBestPositionFromOppositePoint(currentPosition.OppositePoint);
+            var oppositePosition = GetBestPositionFromOppositePoint(ringOrder, currentRingPosition.OppositePoint, positionQueue);
 
-            if (oppositePosition == null) return;
+            if (oppositePosition == null) return positionQueue;
 
-            currentPosition = oppositePosition;
-            
-            _positionQueue.Enqueue(currentPosition);
+            currentRingPosition = oppositePosition;
+
+            positionQueue.Enqueue(currentRingPosition);
         }
     }
-
-    private RingPosition GetBestPositionFromOppositePoint(Vector2 currentPositionOppositePoint)
+    
+    private RingPosition GetBestPositionFromOppositePoint(int ringOrder, Vector2 currentPositionOppositePoint, Queue<RingPosition> ringOrderQueue)
     {
-        return _ringPositionObjects
-            .Where(t => !t.Claimed && !_positionQueue.Contains(t))
+        return _ringOrders[ringOrder]
+            .Where(t => !t.Claimed && !ringOrderQueue.Contains(t))
             .OrderBy(t => Vector2.Distance(t.transform.position, currentPositionOppositePoint))
             .FirstOrDefault();
     }
 
-    public RingPosition GetNextPosition(RingPosition previousPosition)
-    { 
-        if(previousPosition != null)
-            _positionQueue.Enqueue(previousPosition);
+    public RingPosition SwapPositions(RingPosition previousPosition, int order)
+    {
+        var ringQueue = _ringPositionQueues[order];
 
-        var nextPosition = _positionQueue.Count > 0 &&  _positionQueue.Peek() != previousPosition ? _positionQueue.Dequeue() : null;
-        
-        return nextPosition;
+        var nextAvailable = ringQueue.Count > 0 ? ringQueue.Dequeue() : null;
+
+        if (previousPosition != null)
+            ringQueue.Enqueue(previousPosition);
+
+        return nextAvailable;
     }
     
-    // private void OnDrawGizmos()
-    // {
-    //     if (_positionQueue == null || _positionQueue.Count <= 0) return;
-    //
-    //     var positionList = _positionQueue.ToList();
-    //
-    //     for (var i = 1; i < positionList.Count; i++)
-    //     {
-    //         Gizmos.DrawLine(positionList[i].transform.position, positionList[i - 1].transform.position);
-    //     }
-    // }
-}
+    public RingPosition GetRingPositionFromRingOrder(int ringOrder)
+    {
+        var position = _ringPositionQueues[ringOrder].Peek() != null ? _ringPositionQueues[ringOrder].Dequeue() : null;
+        Debug.Log(_ringPositionQueues[ringOrder].Count);
+        return position;
+    }
 
+    public bool HasPositions(int ringOrder)
+    {
+        return _ringPositionQueues[ringOrder].Count > 0;
+    }
+}

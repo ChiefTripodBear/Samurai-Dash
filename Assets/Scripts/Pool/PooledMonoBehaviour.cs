@@ -20,8 +20,7 @@ public class PooledMonoBehaviour : MonoBehaviour
 
         if (enable)
         {
-            if(pooledObject != null)
-                pooledObject.gameObject.SetActive(true);
+            pooledObject.gameObject.SetActive(true);
         }
 
         return pooledObject;
@@ -46,9 +45,7 @@ public class PooledMonoBehaviour : MonoBehaviour
         where T : PooledMonoBehaviour
     {
         var pooledObject = Get<T>();
-
-        if (pooledObject == null) return null;
-
+        
         pooledObject.transform.SetParent(parent);
 
         pooledObject.transform.localPosition = relativePosition;

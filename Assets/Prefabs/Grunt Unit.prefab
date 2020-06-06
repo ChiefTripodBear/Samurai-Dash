@@ -12,14 +12,15 @@ GameObject:
   - component: {fileID: 2996106953819414678}
   - component: {fileID: 2996106953819414676}
   - component: {fileID: 4860708540992981462}
-  - component: {fileID: 853692307726512089}
+  - component: {fileID: 4513942268174516336}
+  - component: {fileID: 211297131107200291}
+  - component: {fileID: 1332883659772666591}
+  - component: {fileID: 2276852360251255879}
   - component: {fileID: 2996106953819414674}
   - component: {fileID: 8263713084565841891}
-  - component: {fileID: 1650850710468414362}
   - component: {fileID: 4376995301477791015}
-  - component: {fileID: 2276852360251255879}
   m_Layer: 8
-  m_Name: Enemy
+  m_Name: Grunt Unit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -202,7 +203,7 @@ LineRenderer:
     generateLightingData: 0
   m_UseWorldSpace: 1
   m_Loop: 0
---- !u!114 &853692307726512089
+--- !u!114 &4513942268174516336
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -211,9 +212,51 @@ MonoBehaviour:
   m_GameObject: {fileID: 2996106953819414679}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 477fcd667c6b8064192a7fa58bdd111b, type: 3}
+  m_Script: {fileID: 11500000, guid: d35f7f9db82c4c4c88298e6c6acf0cd6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _initialPoolSize: 30
+--- !u!114 &211297131107200291
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2996106953819414679}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b462d751fbfb48ada8bc1dc7960fd7f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _dashAttackSpeed: 6
+--- !u!114 &1332883659772666591
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2996106953819414679}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6dd6a9e1c10c4da7aaa15af6cc6960d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _moveSpeed: 5
+--- !u!114 &2276852360251255879
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2996106953819414679}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d67d278d9ae74da2a78e056d80463dd3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _killPointDistance: 1.5
+  _deathVFX: {fileID: 8283165871974743808, guid: 52d1d95c48304e44e8a52ef4b146ceb7,
+    type: 3}
 --- !u!114 &2996106953819414674
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -241,20 +284,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbbdff2dbaae474b9b7c2aecd52ec539, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1650850710468414362
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2996106953819414679}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6d10fb8042f44a77809783cbc367498f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _initialPoolSize: 50
-  _moveSpeed: 3
 --- !u!114 &4376995301477791015
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -267,18 +296,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92e83da0916f43b6981ff76a0e463edf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &2276852360251255879
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2996106953819414679}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d67d278d9ae74da2a78e056d80463dd3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _killPointDistance: 1.5
-  _deathVFX: {fileID: 8283165871974743808, guid: 52d1d95c48304e44e8a52ef4b146ceb7,
-    type: 3}

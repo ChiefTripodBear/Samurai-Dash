@@ -4,17 +4,15 @@ using Random = UnityEngine.Random;
 
 public class UnitSpawner : MonoBehaviour
 {
-    public static event Action<PathfindingUnit> OnUnitSpawned;
-    [SerializeField] private PathfindingUnit _pathfindingUnitPrefab;
-    [SerializeField] private int _spawnCount;
+    [SerializeField] private GruntUnit _gruntUnit;
+    [SerializeField] private int _gruntSpawnCount;
 
     private void Awake()
     {
-        for (var i = 0; i < _spawnCount; i++)
+        for (var i = 0; i < _gruntSpawnCount; i++)
         {
-            var unit = _pathfindingUnitPrefab.Get<PathfindingUnit>(null, GetRandomSpawnPosition(), Quaternion.identity);
-
-            OnUnitSpawned?.Invoke(unit);
+            var gruntUnit = _gruntUnit.Get<GruntUnit>(null, GetRandomSpawnPosition(), Quaternion.identity);
+            gruntUnit.Register();
         }
     }
 

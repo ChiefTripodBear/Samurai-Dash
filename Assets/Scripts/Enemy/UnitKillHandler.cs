@@ -2,9 +2,9 @@
 using System.Collections;
 using UnityEngine;
 
-public class EnemyKillHandler : MonoBehaviour, IKillable
+public class UnitKillHandler : MonoBehaviour, IKillable
 {
-    public static event Action<EnemyKillHandler> OnKillPointReached;
+    public static event Action<UnitKillHandler> OnKillPointReached;
     public event Action OnDeath;
 
     [SerializeField] private float _killPointDistance = 1.5f;
@@ -14,13 +14,13 @@ public class EnemyKillHandler : MonoBehaviour, IKillable
     private Vector2? _killPoint;
     public Vector2? KillPoint => _killPoint;
 
-    private EnemyAngle _enemyAngle;
+    private UnitAngle _unitAngle;
     private Player _player;
 
     private void Awake()
     {
         _player = FindObjectOfType<Player>();
-        _enemyAngle = GetComponent<EnemyAngle>();
+        _unitAngle = GetComponent<UnitAngle>();
     }
     
     private void OnDestroy()
@@ -30,7 +30,7 @@ public class EnemyKillHandler : MonoBehaviour, IKillable
 
     public void SetKillPoint()
     {
-        _killPoint = ((Vector2)transform.position - _enemyAngle.GetPointClosestTo(_player.transform.position)).normalized * _killPointDistance + (Vector2)transform.position;
+        _killPoint = ((Vector2)transform.position - _unitAngle.GetPointClosestTo(_player.transform.position)).normalized * _killPointDistance + (Vector2)transform.position;
     }
 
     private void Update()
