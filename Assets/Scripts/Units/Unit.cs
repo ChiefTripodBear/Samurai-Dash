@@ -2,12 +2,13 @@
 
 [RequireComponent(typeof(UnitAngle))]
 [RequireComponent(typeof(UnitKillHandler))]
-public abstract class Unit : PooledMonoBehaviour
+public abstract class Unit : PooledMonoBehaviour, IKillableWithAngle
 {
     public IUnitPathFinder UnitPathFinder { get; private set; }
     public IUnitAttack UnitAttack { get; private set; }
     public UnitAngle UnitAngle { get; private set; }
     public UnitKillHandler UnitKillHandler { get; private set; }
+    public Transform Transform => transform;
 
     private NodeGrid _nodeGrid;
     public Node CurrentNode { get; private set; }

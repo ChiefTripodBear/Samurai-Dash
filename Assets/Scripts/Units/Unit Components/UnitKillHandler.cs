@@ -61,7 +61,7 @@ public class UnitKillHandler : MonoBehaviour, IKillable
 
         var currentColorLerpTime = 0f;
 
-        GetComponent<CircleCollider2D>().enabled = false;
+        GetComponent<Collider2D>().enabled = false;
         
         while (true)
         {

@@ -22,6 +22,7 @@ public abstract class UnitManager<T> : MonoBehaviour where T : Unit
     {
         Units.Add(unit);
         GameUnitManager.RegisterUnit(unit);
+        UnitChainEvaluator.Instance.RegisterKillableUnit(unit);
     }
 
     public void RemoveUnit(T unit)
@@ -38,7 +39,6 @@ public abstract class UnitManager<T> : MonoBehaviour where T : Unit
         {
             if(unit.UnitPathFinder.CurrentRingPosition != null) continue;
             
-            Debug.Log($"Setting position for {unit.name}");
             unit.UnitPathFinder.SetRingPosition(RingManager.Instance.GetRingPositionFromRingOrder(_ringOrder));
         }
     }

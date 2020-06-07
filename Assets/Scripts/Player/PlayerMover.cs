@@ -22,7 +22,7 @@ public class PlayerMover : MonoBehaviour
 
     private TargetEvaluator _targetEvaluator;
 
-    private Unit _currentUnit;
+    private IKillableWithAngle _currentUnit;
     private LayerMask _enemyLayer;
 
     private void Awake()
@@ -45,7 +45,7 @@ public class PlayerMover : MonoBehaviour
 
             if (enemy != null)
             {
-                if (Vector2.Distance(enemy.transform.position, transform.position) > 1f)
+                if (Vector2.Distance(enemy.Transform.position, transform.position) > 1f)
                 {
                     if (_targetEvaluator.DotProductSuccess(enemy, _moveDirection))
                     {
@@ -54,7 +54,7 @@ public class PlayerMover : MonoBehaviour
                         _currentUnit = enemy;
                         var checkPoint = _currentUnit.UnitAngle.GetPointClosestTo(transform.position);
                         _currentUnit.UnitKillHandler.SetKillPoint();
-                        _moveDirection = ((Vector2) _currentUnit.transform.position - checkPoint).normalized;
+                        _moveDirection = ((Vector2) _currentUnit.Transform.position - checkPoint).normalized;
                         _destination = checkPoint;
                     }
                     else
@@ -76,9 +76,9 @@ public class PlayerMover : MonoBehaviour
         }
     }
 
-    private Unit _nextUnit;
+    private IKillableWithAngle _nextUnit;
     private bool _evaluating;
-    private List<Unit> _intersectingEnemies = new List<Unit>();
+    private List<IKillableWithAngle> _intersectingUnits = new List<IKillableWithAngle>();
 
     private IEnumerator MoveTo()
     {
@@ -100,30 +100,30 @@ public class PlayerMover : MonoBehaviour
             {
                 GetComponent<BoxCollider2D>().enabled = false;
                 _evaluating = true;
-                var parallelEnemy = _targetEvaluator.GetParallelEnemyFromTargetLocation(_currentUnit.UnitKillHandler.KillPoint.Value,
+                var parallelEnemy = _targetEvaluator.GetParallelUnitFromTargetLocation(_currentUnit.UnitKillHandler.KillPoint.Value,
                     _optimalDistancePostKill, _moveDirection);
 
-                var intersections = UnitChainEvaluator.Instance.GetIntersectionsRelativeTo(_currentUnit, _currentUnit.transform.position, _currentUnit.UnitAngle.RearPointRelative);
+                var intersections = UnitChainEvaluator.Instance.GetIntersectionsRelativeTo(_currentUnit, _currentUnit.Transform.position, _currentUnit.UnitAngle.RearPointRelative);
 
-                _intersectingEnemies.Clear();
+                _intersectingUnits.Clear();
                 RedirectDisplayManager.Instance.ResetDisplay();
                 if (intersections != null)
                 {
-                    _intersectingEnemies = intersections.ToList();
+                    _intersectingUnits = intersections.ToList();
 
-                    for (var i = 0; i < _intersectingEnemies.Count; i++)
+                    for (var i = 0; i < _intersectingUnits.Count; i++)
                     {
                         if(i == 0)
-                            RedirectDisplayManager.Instance.SetActiveDisplayWithIntersectionAt(_intersectingEnemies[i].UnitAngle.IntersectionPoint);
+                            RedirectDisplayManager.Instance.SetActiveDisplayWithIntersectionAt(_intersectingUnits[i].UnitAngle.IntersectionPoint);
                         RedirectDisplayManager.Instance.DisplayCorrectVector(
-                            (_intersectingEnemies[i].UnitAngle.IntersectionPoint - (Vector2)_intersectingEnemies[i].transform.position).normalized,
-                            _intersectingEnemies[i].UnitAngle.IntersectionPoint);
+                            (_intersectingUnits[i].UnitAngle.IntersectionPoint - (Vector2)_intersectingUnits[i].Transform.position).normalized,
+                            _intersectingUnits[i].UnitAngle.IntersectionPoint);
                     }
                 }
         
                 var intersectingEnemy = intersections?.Dequeue();
                 
-                _moveDirection = (_currentUnit.transform.position - transform.position).normalized;
+                _moveDirection = (_currentUnit.Transform.position - transform.position).normalized;
                 
                 if (intersectingEnemy != null && parallelEnemy == null)
                 {
@@ -148,7 +148,7 @@ public class PlayerMover : MonoBehaviour
                 else if (parallelEnemy != null && intersectingEnemy != null)
                 {
                     var parallelEnemyDistance =
-                        Vector2.Distance(parallelEnemy.transform.position, _currentUnit.transform.position);
+                        Vector2.Distance(parallelEnemy.Transform.position, _currentUnit.Transform.position);
                     var intersectionDistance =
                         Vector2.Distance(intersectingEnemy.UnitAngle.IntersectionPoint, transform.position);
 
@@ -168,7 +168,11 @@ public class PlayerMover : MonoBehaviour
                 {
                     if (_currentUnit != null)
                     {
-                        _destination = (Vector2)_currentUnit.transform.position + _moveDirection *
+                        var directionTowardsUnit =
+                            (_currentUnit.Transform.position -
+                             (Vector3) _currentUnit.UnitAngle.GetPointClosestTo(transform.position)).normalized;
+                        
+                        _destination = (Vector2)_currentUnit.Transform.position + (Vector2)directionTowardsUnit *
                             _optimalDistancePostKill;
                     }
                 }
@@ -251,19 +255,23 @@ public class PlayerMover : MonoBehaviour
         return Physics2D.OverlapCircle(destination, _dangerRedirectRadiusCheck, _enemyLayer) && _currentUnit == null;
     }
 
-    private IEnumerator HandleIntersection(Unit currentIntersectingUnit, Queue<Unit> intersections)
+    private IEnumerator HandleIntersection(IKillableWithAngle currentIntersectingUnit, Queue<IKillableWithAngle> intersections)
     {
+
         Vector2? currentIntersection = currentIntersectingUnit.UnitAngle.IntersectionPoint;
+
+        Vector2? previousDestination = null;
+        
         while (currentIntersection != null)
         {
             if (_currentUnit == null || currentIntersectingUnit == null) yield break;
             
             // If we're in range of our redirect
             if (Vector2.Distance(transform.position, currentIntersection.Value) <
-                Vector2.Distance(_currentUnit.transform.position, currentIntersection.Value) / 4)
+                Vector2.Distance(_currentUnit.Transform.position, currentIntersection.Value) / 4)
             {
                 // Check for any parallel enemies
-                var parallelEnemy = _targetEvaluator.GetParallelEnemyFromTargetLocation(
+                var parallelEnemy = _targetEvaluator.GetParallelUnitFromTargetLocation(
                     currentIntersection.Value, _moveAmountPerSwipe, _moveDirection);
 
                 // Slow down the player and the world.
@@ -274,7 +282,7 @@ public class PlayerMover : MonoBehaviour
                 // Read input to evaluate the redirect.
                 var mousePosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
                 var directionFromIntersectToEnemy =
-                    ((Vector2) currentIntersectingUnit.transform.position - currentIntersection.Value).normalized;
+                    ((Vector2) currentIntersectingUnit.Transform.position - currentIntersection.Value).normalized;
                 var mouseDirection = ((Vector2) mousePosition - currentIntersection.Value).normalized;
 
                 var mouseDot = Vector2.Dot(directionFromIntersectToEnemy, mouseDirection);
@@ -296,12 +304,12 @@ public class PlayerMover : MonoBehaviour
                         // Set our move direction down the new vector towards our intersecting enemy.
                         // We mainly use the move direction as a means of detecting any parallel enemies.
                         _moveDirection =
-                            ((Vector2) currentIntersectingUnit.transform.position -
+                            ((Vector2) currentIntersectingUnit.Transform.position -
                              currentIntersection.Value).normalized;
 
                         // Check for any parallel enemies along our path to the intersecting enemy.
                         var parallelEnemyFromIntersect =
-                            _targetEvaluator.GetParallelEnemyFromTargetLocation(currentIntersection.Value,
+                            _targetEvaluator.GetParallelUnitFromTargetLocation(currentIntersection.Value,
                                 _moveAmountPerSwipe, _moveDirection);
 
                         // If there's a parallel enemy on our way, set it's kill point - we'll inevitably pass this enemy.
@@ -316,6 +324,7 @@ public class PlayerMover : MonoBehaviour
                         _currentUnit = currentIntersectingUnit;
                         _currentUnit.UnitKillHandler.SetKillPoint();
                         _destination = currentIntersectingUnit.UnitAngle.GetPointClosestTo(currentIntersection.Value);
+                        
                         currentIntersection = null;
                     }
                     else
@@ -336,7 +345,9 @@ public class PlayerMover : MonoBehaviour
                             // to this new intersection.
                             var nextIntersectingEnemy = intersections.Dequeue();
                             currentIntersectingUnit = nextIntersectingEnemy;
+                            
                             currentIntersection = nextIntersectingEnemy.UnitAngle.IntersectionPoint;
+                            
                             RedirectDisplayManager.Instance.SetActiveDisplayWithIntersectionAt(currentIntersection.Value);
                             _destination = currentIntersection.Value;
             
@@ -346,11 +357,11 @@ public class PlayerMover : MonoBehaviour
                                 // intersection is closer.  If the intersection is closer, we don't need to worry about setting the parallel enemy's kill point yet
                                 // because we might not actually move through it.  If the parallel enemy is before the intersection, we'll inevitably run through it,
                                 // so, set it's kill point.
-                                var parallelEnemyDistance = Vector2.Distance(parallelEnemy.transform.position,
-                                    _currentUnit.transform.position);
+                                var parallelEnemyDistance = Vector2.Distance(parallelEnemy.Transform.position,
+                                    _currentUnit.Transform.position);
 
                                 var nextIntersectionDistance = Vector2.Distance(nextIntersectingEnemy.UnitAngle.IntersectionPoint,
-                                    _currentUnit.transform.position);
+                                    _currentUnit.Transform.position);
 
                                 // Parallel before intersection, set the kill point, we will inevitably pass this enemy
                                 if (parallelEnemyDistance < nextIntersectionDistance)

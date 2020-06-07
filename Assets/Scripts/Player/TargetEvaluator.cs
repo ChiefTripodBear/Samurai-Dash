@@ -19,7 +19,7 @@ public class TargetEvaluator : MonoBehaviour
     }
 
     
-    public Unit EnemyInMoveDirection(Transform origin, float rayLength, Vector2 moveDirection)
+    public IKillableWithAngle EnemyInMoveDirection(Transform origin, float rayLength, Vector2 moveDirection)
     {
         var originalAngle = Vector2.SignedAngle(moveDirection, origin.up);
         
@@ -42,7 +42,7 @@ public class TargetEvaluator : MonoBehaviour
             
             if(!hit || hit && hit.collider != null && hit.collider.transform == origin) continue;
 
-            var enemy = hit.collider.GetComponent<Unit>();
+            var enemy = hit.collider.GetComponent<IKillableWithAngle>();
             
             if(enemy == null) continue;
 
@@ -52,18 +52,18 @@ public class TargetEvaluator : MonoBehaviour
         return null;
     }
 
-    public Unit GetParallelEnemyFromTargetLocation(Vector2 targetLocation, float rayLength, Vector2 direction)
+    public IKillableWithAngle GetParallelUnitFromTargetLocation(Vector2 targetLocation, float rayLength, Vector2 direction)
     {
         var hit = Physics2D.Raycast(targetLocation, direction, rayLength, _enemyMask);
 
         if (!hit) return null;
 
-        var enemy = hit.collider.GetComponent<Unit>();
+        var enemy = hit.collider.GetComponent<IKillableWithAngle>();
 
-        return enemy == null ? null : enemy;
+        return enemy;
     }
 
-    public bool DotProductSuccess(Unit unit, Vector2 moveDirection)
+    public bool DotProductSuccess(IKillableWithAngle unit, Vector2 moveDirection)
     {
         return Vector2.Dot(unit.UnitAngle.KillVector, moveDirection) > _dotKillThreshold;
     }

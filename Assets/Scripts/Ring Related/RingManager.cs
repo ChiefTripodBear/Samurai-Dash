@@ -90,7 +90,6 @@ public class RingManager : MonoBehaviour
     public RingPosition GetRingPositionFromRingOrder(int ringOrder)
     {
         var position = _ringPositionQueues[ringOrder].Peek() != null ? _ringPositionQueues[ringOrder].Dequeue() : null;
-        Debug.Log(_ringPositionQueues[ringOrder].Count);
         return position;
     }
 

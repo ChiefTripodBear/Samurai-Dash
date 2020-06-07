@@ -22,10 +22,12 @@ public class KillHandler : MonoBehaviour
     {
         if (!_killQueue.Contains(unitKillHandler))
         {
-            unitKillHandler.GetComponent<IUnitPathFinder>().CanMoveThroughPath = false;
+            var pathFinder = unitKillHandler.GetComponent<IUnitPathFinder>();
+            if (pathFinder != null)
+                pathFinder.CanMoveThroughPath = false;
+            
             _killQueue.Enqueue(unitKillHandler);
         }
-
     }
 
     private void Kill()

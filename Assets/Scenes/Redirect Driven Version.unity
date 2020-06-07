@@ -131,6 +131,7 @@ GameObject:
   m_Component:
   - component: {fileID: 195482705}
   - component: {fileID: 195482706}
+  - component: {fileID: 195482707}
   m_Layer: 0
   m_Name: Unit Manager
   m_TagString: Untagged
@@ -165,10 +166,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _ringOrder: 0
-  _minAttackers: 1
-  _maxAttackers: 3
+  _minAttackers: 0
+  _maxAttackers: 0
   _minAttackTime: 5
   _maxAttackTime: 10
+--- !u!114 &195482707
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 195482704}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76d5602718f44f30877fc67f890416b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _ringOrder: 1
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -651,7 +665,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _gruntUnit: {fileID: 4513942268174516336, guid: e88a9dec3c41d5e4ab7ed2df8ba6e945,
     type: 3}
-  _gruntSpawnCount: 10
+  _gruntSpawnCount: 20
+  _rangedUnit: {fileID: 3673379690362226724, guid: 4e38dd8f3b6200b4aa331ea704ebf85d,
+    type: 3}
+  _rangedUnitSpawnCount: 5
 --- !u!1 &2043025289
 GameObject:
   m_ObjectHideFlags: 0

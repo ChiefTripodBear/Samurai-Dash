@@ -22,7 +22,7 @@ public class Player : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        var enemy = other.GetComponent<Unit>();
+        var enemy = other.GetComponent<IKillableWithAngle>();
 
         if (enemy == null) return;
 

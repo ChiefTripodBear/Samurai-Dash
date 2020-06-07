@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class GruntPathfindingUnit : MonoBehaviour, IUnitPathFinder
+public class GruntPathfinder : MonoBehaviour, IUnitPathFinder
 {
     [SerializeField] private float _moveSpeed;
 

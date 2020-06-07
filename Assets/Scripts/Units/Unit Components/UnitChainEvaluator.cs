@@ -8,24 +8,25 @@ public class UnitChainEvaluator : MonoBehaviour
 
     public static UnitChainEvaluator Instance => _instance;
     
-    private List<Unit> _enemies = new List<Unit>();
+    private List<IKillableWithAngle> _units = new List<IKillableWithAngle>();
 
     private void Start()
     {
         if (_instance == null)
             _instance = this;
+    }
 
-        _enemies = FindObjectsOfType<Unit>().ToList();
-        
-        _enemies.ForEach(t => t.UnitKillHandler.OnDeath += () => _enemies.Remove(t));
+    public void RegisterKillableUnit(IKillableWithAngle killableUnit)
+    {
+        _units.Add(killableUnit);
+        killableUnit.UnitKillHandler.OnDeath += () => _units.Remove(killableUnit);
     }
     
-    
-    public Queue<Unit> GetIntersectionsRelativeTo(Unit firstUnit, Vector2 firstStartCheckPoint, Vector2 firstRearCheckPoint)
+    public Queue<IKillableWithAngle> GetIntersectionsRelativeTo(IKillableWithAngle firstUnit, Vector2 firstStartCheckPoint, Vector2 firstRearCheckPoint)
     {
-        var possibleIntersections = new List<Unit>();
+        var possibleIntersections = new List<IKillableWithAngle>();
 
-        foreach (var enemy in _enemies)
+        foreach (var enemy in _units)
         {    
             if(firstUnit != null && enemy == firstUnit) continue;
 
@@ -38,9 +39,9 @@ public class UnitChainEvaluator : MonoBehaviour
 
                 if (intersect != null)
                 {
-                    if(Vector2.Distance(enemy.transform.position, intersect.Value) < 2f 
-                       || Vector2.Distance(enemy.transform.position, firstStartCheckPoint) < 1f
-                       || firstUnit != null && Vector2.Distance(firstUnit.transform.position, intersect.Value) < 1f) continue;
+                    if(Vector2.Distance(enemy.Transform.position, intersect.Value) < 2f 
+                       || Vector2.Distance(enemy.Transform.position, firstStartCheckPoint) < 1f
+                       || firstUnit != null && Vector2.Distance(firstUnit.Transform.position, intersect.Value) < 1f) continue;
                     
                     enemy.UnitAngle.SetIntersectionPoint(intersect.Value);
                     possibleIntersections.Add(enemy);
@@ -53,7 +54,7 @@ public class UnitChainEvaluator : MonoBehaviour
         var orderedIntersections = possibleIntersections.OrderBy(t =>
             Vector2.Distance(firstStartCheckPoint, t.UnitAngle.IntersectionPoint));
         
-        var intersectOrder = new Queue<Unit>();
+        var intersectOrder = new Queue<IKillableWithAngle>();
 
         for (var i = 0; i < orderedIntersections.Count(); i++)
         {
@@ -62,9 +63,9 @@ public class UnitChainEvaluator : MonoBehaviour
         return intersectOrder.Count > 0 ? intersectOrder : null;
     }
 
-    public void RemoveEnemyFromPotentialChains(Unit currentIntersectingUnit)
+    public void RemoveEnemyFromPotentialChains(IKillableWithAngle currentIntersectingUnit)
     {
-        if(_enemies.Contains(currentIntersectingUnit))
-            _enemies.Remove(currentIntersectingUnit);
+        if(_units.Contains(currentIntersectingUnit))
+            _units.Remove(currentIntersectingUnit);
     }
 }
