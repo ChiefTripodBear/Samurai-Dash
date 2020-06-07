@@ -18,6 +18,7 @@ public class UnitChainEvaluator : MonoBehaviour
 
     public void RegisterKillableUnit(IKillableWithAngle killableUnit)
     {
+        Debug.Log($"Adding {killableUnit}");
         _units.Add(killableUnit);
         killableUnit.UnitKillHandler.OnDeath += () => _units.Remove(killableUnit);
     }

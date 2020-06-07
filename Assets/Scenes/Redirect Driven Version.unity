@@ -630,6 +630,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2012987717}
   - component: {fileID: 2012987718}
+  - component: {fileID: 2012987719}
   m_Layer: 0
   m_Name: Unit Spawner
   m_TagString: Untagged
@@ -658,17 +659,33 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2012987716}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 049ce3d0c4b24abd95bbec512517312e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _gruntUnit: {fileID: 4513942268174516336, guid: e88a9dec3c41d5e4ab7ed2df8ba6e945,
     type: 3}
-  _gruntSpawnCount: 20
+  _gruntSpawnCount: 10
   _rangedUnit: {fileID: 3673379690362226724, guid: 4e38dd8f3b6200b4aa331ea704ebf85d,
     type: 3}
   _rangedUnitSpawnCount: 5
+--- !u!114 &2012987719
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2012987716}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad0ed2934f1044d6aef84fc4c7d2ef97, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _waveOrder:
+  - {fileID: 11400000, guid: 8feacf6331d171b4695a096a6601c9bf, type: 2}
+  - {fileID: 11400000, guid: 008143e53b0b003468f1290ee2cd1f61, type: 2}
+  _looping: 0
 --- !u!1 &2043025289
 GameObject:
   m_ObjectHideFlags: 0

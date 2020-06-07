@@ -6,15 +6,12 @@ public abstract class UnitManager<T> : MonoBehaviour where T : Unit
     [SerializeField] private int _ringOrder;
     
     protected List<T> Units = new List<T>();
-
-    private Player _player;
-
+    
     private static UnitManager<T> _instance;
     public static UnitManager<T> Instance => _instance;
 
     private void Awake()
     {
-        _player = FindObjectOfType<Player>();
         _instance = this;
     }
 
