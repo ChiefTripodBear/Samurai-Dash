@@ -8,4 +8,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Redirect Driven Version.unity
     guid: 86a2e9018be00fd47b649340a3926a3a
+  - enabled: 1
+    path: Assets/Scenes/Redirect Driven Version With Tilemap.unity
+    guid: 17d5f3270e49e49468bbb2c007496139
   m_configObjects: {}
