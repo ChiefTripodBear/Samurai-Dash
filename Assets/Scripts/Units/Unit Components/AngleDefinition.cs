@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 [RequireComponent(typeof(UnitAngleVisualizer))]
-public class UnitAngle : MonoBehaviour
+public class AngleDefinition : MonoBehaviour
 {
     [SerializeField] private float _projectionDistance;
     [SerializeField] private float _angle;
@@ -18,8 +18,7 @@ public class UnitAngle : MonoBehaviour
     public Vector2 KillVector => _killVector;
     public Vector2 IntersectionPoint => _intersectionPoint;
     public float Angle => _angle;
-
-
+    
     private Player _player;
     private bool _alreadyRegisteredToKillQueue;
     

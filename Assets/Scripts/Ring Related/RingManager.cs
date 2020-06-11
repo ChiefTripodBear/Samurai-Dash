@@ -97,4 +97,9 @@ public class RingManager : MonoBehaviour
     {
         return _ringPositionQueues[ringOrder].Count > 0;
     }
+
+    public void TurnInPosition(RingPosition ringPosition, int ringOrder)
+    {
+        _ringPositionQueues[ringOrder].Enqueue(ringPosition);
+    }
 }

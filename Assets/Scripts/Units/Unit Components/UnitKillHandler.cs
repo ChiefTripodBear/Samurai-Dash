@@ -2,9 +2,8 @@
 using System.Collections;
 using UnityEngine;
 
-public class UnitKillHandler : MonoBehaviour, IKillable
+public class UnitKillHandler : MonoBehaviour
 {
-    public static event Action<UnitKillHandler> OnKillPointReached;
     public event Action OnDeath;
 
     [SerializeField] private float _killPointDistance = 1.5f;
@@ -14,15 +13,21 @@ public class UnitKillHandler : MonoBehaviour, IKillable
     private Vector2? _killPoint;
     public Vector2? KillPoint => _killPoint;
 
-    private UnitAngle _unitAngle;
+    private AngleDefinition _unitAngle;
     private Player _player;
 
     private void Awake()
     {
         _player = FindObjectOfType<Player>();
-        _unitAngle = GetComponent<UnitAngle>();
+        _unitAngle = GetComponent<AngleDefinition>();
     }
-    
+
+    private void OnEnable()
+    {
+        GetComponent<SpriteRenderer>().color = Color.white;
+        GetComponent<Collider2D>().enabled = true;
+    }
+
     private void OnDestroy()
     {
         OnDeath?.Invoke();
@@ -45,20 +50,20 @@ public class UnitKillHandler : MonoBehaviour, IKillable
                 Vector2.Distance(_player.transform.position, _killPoint.Value) > 0.1f)
             {
                 _alreadyRegisteredToKillQueue = true;
-                OnKillPointReached?.Invoke(this);
+                Kill();
             }
         }
     }
 
     public void Kill()
     {
+        UnitChainEvaluator.Instance.RemoveUnit(GetComponent<IUnit>());
+        OnDeath?.Invoke();
         StartCoroutine(KillWithDelay());
     }
 
     private IEnumerator KillWithDelay()
     {
-        OnDeath?.Invoke();
-
         var currentColorLerpTime = 0f;
 
         GetComponent<Collider2D>().enabled = false;
@@ -79,5 +84,4 @@ public class UnitKillHandler : MonoBehaviour, IKillable
             yield return null;
         }
     }
-
 }

@@ -1,21 +1,20 @@
 ﻿using System.Collections.Generic;
-using UnityEngine;
 
 public static class GameUnitManager
 {
-    private static readonly List<Unit> _allUnits = new List<Unit>();
+    private static readonly List<IUnit> _allUnits = new List<IUnit>();
     
-    public static void RegisterUnit(Unit unit)
+    public static void RegisterUnit(IUnit unit)
     {
         _allUnits.Add(unit);
     }
 
-    public static void RemoveUnit(Unit unit)
+    public static void RemoveUnit(IUnit unit)
     {
         _allUnits.Remove(unit);
     }
     
-    public static bool IsValidNodeFromUnit(Node nodeQuery, Unit unitQuery)
+    public static bool IsValidNodeFromUnit(Node nodeQuery, IUnit unitQuery)
     {
         foreach (var unit in _allUnits)
             if (unit != unitQuery && unit.CurrentNode == nodeQuery)

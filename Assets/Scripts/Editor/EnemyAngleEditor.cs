@@ -3,12 +3,12 @@ using UnityEditor;
 using UnityEngine;
 
 [CanEditMultipleObjects]
-[CustomEditor(typeof(UnitAngle))]
+[CustomEditor(typeof(AngleDefinition))]
 public class EnemyAngleEditor : Editor
 {
     private void OnSceneGUI()
     {
-        var angleDefiner = target as UnitAngle;
+        var angleDefiner = target as AngleDefinition;
 
         if (angleDefiner == null) return;
 

@@ -1,25 +1,35 @@
 ﻿using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
-[RequireComponent(typeof(UnitAngle))]
+[RequireComponent(typeof(AngleDefinition))]
 [RequireComponent(typeof(UnitKillHandler))]
-public class RangedUnitProjectile : PooledMonoBehaviour, IKillableWithAngle
+public class RangedUnitProjectile : PooledMonoBehaviour, IUnit
 {
-    public UnitAngle UnitAngle { get; private set; }
-    public UnitKillHandler UnitKillHandler { get; private set; }
+    public AngleDefinition AngleDefinition { get; private set; }
+    public UnitKillHandler KillHandler { get; private set; }
+    public IUnitPathFinder UnitPathFinder { get; }
+    public IUnitAttack UnitAttack { get; }
+    public Node CurrentNode { get; private set; }
     public Transform Transform => transform;
     private Rigidbody2D _rigidbody2D;
-    
+    private NodeGrid _gridNode;
+
     private void Awake()
     {
         _rigidbody2D = GetComponent<Rigidbody2D>();
-        UnitAngle = GetComponent<UnitAngle>();
-        UnitKillHandler = GetComponent<UnitKillHandler>();
+        AngleDefinition = GetComponent<AngleDefinition>();
+        KillHandler = GetComponent<UnitKillHandler>();
+        _gridNode = FindObjectOfType<NodeGrid>();
     }
 
     private void Start()
     {
-        UnitChainEvaluator.Instance.RegisterKillableUnit(this);
+        UnitChainEvaluator.Instance.AddUnit(this);
+    }
+
+    private void Update()
+    {
+        CurrentNode = _gridNode.NodeFromWorldPosition(transform.position);
     }
 
     public void Launch(Vector3 shotDirection)

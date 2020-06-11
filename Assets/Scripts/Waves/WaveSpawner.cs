@@ -52,9 +52,7 @@ public class WaveSpawner : MonoBehaviour
         
         for (var i = 0; i < currentWave.SpawnOrder.Count; i++)
         {
-
             var unit = currentWave.SpawnOrder[i].Get<Unit>(null, GetRandomSpawnPosition(), Quaternion.identity);
-            Debug.Log($"Spawning unit {unit}");
             
             unit.Register();
             
@@ -65,7 +63,6 @@ public class WaveSpawner : MonoBehaviour
             }
             
             yield return new WaitForSeconds(currentWave.SpawnDelay);
-            Debug.Log("Next enemy");
         }
     }
     

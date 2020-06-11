@@ -1,13 +1,13 @@
 ﻿using UnityEngine;
 
-[RequireComponent(typeof(UnitAngle))]
+[RequireComponent(typeof(AngleDefinition))]
 [RequireComponent(typeof(UnitKillHandler))]
-public abstract class Unit : PooledMonoBehaviour, IKillableWithAngle
+public abstract class Unit : PooledMonoBehaviour, IUnit
 {
     public IUnitPathFinder UnitPathFinder { get; private set; }
     public IUnitAttack UnitAttack { get; private set; }
-    public UnitAngle UnitAngle { get; private set; }
-    public UnitKillHandler UnitKillHandler { get; private set; }
+    public AngleDefinition AngleDefinition { get; private set; }
+    public UnitKillHandler KillHandler { get; private set; }
     public Transform Transform => transform;
 
     private NodeGrid _nodeGrid;
@@ -18,8 +18,8 @@ public abstract class Unit : PooledMonoBehaviour, IKillableWithAngle
         _nodeGrid = FindObjectOfType<NodeGrid>();
         UnitAttack = GetComponent<IUnitAttack>();
         UnitPathFinder = GetComponent<IUnitPathFinder>();
-        UnitAngle = GetComponent<UnitAngle>();
-        UnitKillHandler = GetComponent<UnitKillHandler>();
+        AngleDefinition = GetComponent<AngleDefinition>();
+        KillHandler = GetComponent<UnitKillHandler>();
     }
     
     private void Update()

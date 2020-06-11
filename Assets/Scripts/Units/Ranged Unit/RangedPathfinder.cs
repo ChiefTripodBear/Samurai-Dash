@@ -15,6 +15,7 @@ public class RangedPathfinder : MonoBehaviour, IUnitPathFinder
     private bool _arrived;
     private IUnitAttack _unitAttack;
     private RangedUnitManager _rangedUnitManager;
+    private UnitKillHandler _unitKillHandler;
 
     private void Awake()
     {
@@ -22,6 +23,15 @@ public class RangedPathfinder : MonoBehaviour, IUnitPathFinder
         _pathfinder = FindObjectOfType<Pathfinder>();
         _rangedUnitManager = FindObjectOfType<RangedUnitManager>();
         _unitAttack.OnAttackFinished += HandleFinishedAttack;
+        _unitKillHandler = GetComponent<UnitKillHandler>();
+        _unitKillHandler.OnDeath += () =>
+        {
+            if (_ringPosition != null)
+            {
+                _rangedUnitManager.TurnInRingPosition(_ringPosition);
+            }
+            CanMoveThroughPath = false;
+        };
     }
 
     private void OnDestroy()

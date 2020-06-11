@@ -18,12 +18,23 @@ public class GruntPathfinder : MonoBehaviour, IUnitPathFinder
     private Pathfinder _pathfinder;
     private IUnitAttack _unitAttack;
     private GruntUnitManager _gruntUnitManager;
-    
+    private UnitKillHandler _unitKillHandler;
+
     private void Awake()
     {
         _gruntUnitManager = FindObjectOfType<GruntUnitManager>();
         _unitAttack = GetComponent<IUnitAttack>();
         _pathfinder = GetComponent<Pathfinder>();
+
+        _unitKillHandler = GetComponent<UnitKillHandler>();
+        _unitKillHandler.OnDeath += () =>
+        {
+            if (_ringPosition != null)
+            {
+                _gruntUnitManager.TurnInRingPosition(_ringPosition);
+            }
+            CanMoveThroughPath = false;
+        };
 
         _unitAttack.OnAttackStart += HandleAttackStart;
         _unitAttack.OnAttackFinished += HandleAttackFinish;

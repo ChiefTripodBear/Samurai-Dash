@@ -3,12 +3,12 @@
 [RequireComponent(typeof(LineRenderer))]
 public class UnitAngleVisualizer : MonoBehaviour
 {
-    private UnitAngle _unitAngle;
+    private AngleDefinition _unitAngle;
     private LineRenderer _lineRenderer;
 
     private void Awake()
     {
-        _unitAngle = GetComponent<UnitAngle>();
+        _unitAngle = GetComponent<AngleDefinition>();
         _lineRenderer = GetComponent<LineRenderer>();
     }
     

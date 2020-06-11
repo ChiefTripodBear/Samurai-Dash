@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class UnitManager<T> : MonoBehaviour where T : Unit
+public abstract class UnitManager<T> : MonoBehaviour where T : IUnit
 {
     [SerializeField] private int _ringOrder;
     
@@ -17,9 +17,11 @@ public abstract class UnitManager<T> : MonoBehaviour where T : Unit
 
     public void RegisterUnit(T unit)
     {
+        if (Units.Contains(unit)) return;
+        
         Units.Add(unit);
         GameUnitManager.RegisterUnit(unit);
-        UnitChainEvaluator.Instance.RegisterKillableUnit(unit);
+        UnitChainEvaluator.Instance.AddUnit(unit);
     }
 
     public void RemoveUnit(T unit)
@@ -48,5 +50,10 @@ public abstract class UnitManager<T> : MonoBehaviour where T : Unit
     public RingPosition GetNextAvailableRingPosition(RingPosition ringPosition)
     {
         return RingManager.Instance.SwapPositions(ringPosition, _ringOrder);
+    }
+
+    public void TurnInRingPosition(RingPosition ringPosition)
+    {
+        RingManager.Instance.TurnInPosition(ringPosition, _ringOrder);
     }
 }
