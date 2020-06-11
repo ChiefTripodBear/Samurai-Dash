@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 [RequireComponent(typeof(AngleDefinition))]
 [RequireComponent(typeof(UnitKillHandler))]
@@ -21,7 +22,18 @@ public abstract class Unit : PooledMonoBehaviour, IUnit
         AngleDefinition = GetComponent<AngleDefinition>();
         KillHandler = GetComponent<UnitKillHandler>();
     }
-    
+
+    private void OnEnable()
+    {
+        Register();
+    }
+
+    protected override void OnDisable()
+    {
+        base.OnDisable();
+        RemoveFromUnitManager();
+    }
+
     private void Update()
     {
         CurrentNode = _nodeGrid.NodeFromWorldPosition(transform.position);

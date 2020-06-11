@@ -16,11 +16,11 @@ public class RedirectDisplayManager : MonoBehaviour
         _instance = this;
     }
 
-    public void DisplayCorrectVector(Vector2 direction, Vector2 intersection)
+    public void InitializeDisplayObject(Vector2 direction, IUnit unit)
     {
-        var redirectObject = Instantiate(_redirectObjectPrefab, intersection, Quaternion.identity);
+        var redirectObject = Instantiate(_redirectObjectPrefab, unit.AngleDefinition.IntersectionPoint, Quaternion.identity);
 
-        redirectObject.SetDisplayParameters(direction, intersection);
+        redirectObject.SetDisplayParameters(direction, unit);
 
         Debug.Log("Creating displays");
         _currentDisplays.Add(redirectObject);

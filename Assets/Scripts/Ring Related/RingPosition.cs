@@ -6,7 +6,7 @@ public class RingPosition : MonoBehaviour
     [SerializeField] private float _moveSpeed;
     private IUnitPathFinder _pathfindingUnit;
     private Vector2 _startingPosition;
-    private float _startingAngle;
+    private float _currentAngle;
     private float _radius;
 
     private Player _player;
@@ -33,14 +33,14 @@ public class RingPosition : MonoBehaviour
 
     private void Update()
     {
-        _startingAngle += Time.deltaTime * _moveSpeed;
-        _startingPosition = new Vector2(Mathf.Sin(_startingAngle), Mathf.Cos(_startingAngle)) * _radius + (Vector2)transform.parent.position;
+        _currentAngle += Time.deltaTime * _moveSpeed;
+        _startingPosition = new Vector2(Mathf.Sin(_currentAngle), Mathf.Cos(_currentAngle)) * _radius + (Vector2)transform.parent.position;
         transform.position = _startingPosition;
     }
 
     public void Initialize(float angle, float radius, int ringOrder)
     {
-        _startingAngle = angle;
+        _currentAngle = angle;
         _radius = radius;
 
         _player = FindObjectOfType<Player>();

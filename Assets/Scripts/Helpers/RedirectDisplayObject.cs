@@ -1,8 +1,11 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class RedirectDisplayObject : MonoBehaviour
 {
     private SpriteRenderer _spriteRenderer;
+    private IUnit _intersectingUnit;
+    private Vector2 _intersectionDirection;
 
     private void Awake()
     {
@@ -16,11 +19,20 @@ public class RedirectDisplayObject : MonoBehaviour
         
         _spriteRenderer.color = new Color(color.r, color.g, color.b, alpha);
     }
-    
-    public void SetDisplayParameters(Vector2 direction, Vector2 intersection)
+
+    private void Update()
     {
-        transform.position = intersection;
-        var angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.Euler(0, 0, angle + 180);
+        if (_intersectingUnit != null)
+        {
+            transform.position = _intersectingUnit.AngleDefinition.IntersectionPoint;
+            var angle = Mathf.Atan2(_intersectionDirection.y, _intersectionDirection.x) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.Euler(0, 0, angle + 180);
+        }
+    }
+
+    public void SetDisplayParameters(Vector2 direction, IUnit unit)
+    {
+        _intersectingUnit = unit;
+        _intersectionDirection = direction;
     }
 }

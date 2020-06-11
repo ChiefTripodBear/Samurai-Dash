@@ -52,7 +52,7 @@ public class WaveSpawner : MonoBehaviour
         
         for (var i = 0; i < currentWave.SpawnOrder.Count; i++)
         {
-            var unit = currentWave.SpawnOrder[i].Get<Unit>(null, GetRandomSpawnPosition(), Quaternion.identity);
+            var unit = currentWave.SpawnOrder[i].Get<Unit>(null, SpawnHelper.Instance.ValidSpawnPosition(), Quaternion.identity);
             
             unit.Register();
             
@@ -64,12 +64,5 @@ public class WaveSpawner : MonoBehaviour
             
             yield return new WaitForSeconds(currentWave.SpawnDelay);
         }
-    }
-    
-    private Vector2 GetRandomSpawnPosition()
-    {
-        var screenSize = new Vector2(Camera.main.orthographicSize * Camera.main.aspect, Camera.main.orthographicSize);
-        
-        return new Vector2(Random.Range(-screenSize.x, screenSize.x), Random.Range(-screenSize.y, screenSize.y));
     }
 }

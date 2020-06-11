@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
@@ -30,15 +29,15 @@ public class Player : MonoBehaviour
     
     private void OnTriggerEnter2D(Collider2D other)
     {
-        var enemy = other.GetComponent<IUnit>();
-
-        if (enemy == null) return;
-
-        if (_reloaded) return;
-
-        _reloaded = true;
-        Time.timeScale = 1f;
-        Pool.ClearPools();
-        SceneManager.LoadScene(0);
+        // var enemy = other.GetComponent<IUnit>();
+        //
+        // if (enemy == null) return;
+        //
+        // if (_reloaded) return;
+        //
+        // _reloaded = true;
+        // Time.timeScale = 1f;
+        // Pool.ClearPools();
+        // SceneManager.LoadScene(0);
     }
 }

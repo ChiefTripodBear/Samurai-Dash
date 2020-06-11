@@ -81,10 +81,15 @@ public class RingManager : MonoBehaviour
 
         var nextAvailable = ringQueue.Count > 0 ? ringQueue.Dequeue() : null;
 
-        if (previousPosition != null)
-            ringQueue.Enqueue(previousPosition);
+        var ringToReturn = nextAvailable == null ? previousPosition : nextAvailable;
 
-        return nextAvailable;
+        if (nextAvailable != null)
+        {
+            if (previousPosition != null)
+                ringQueue.Enqueue(previousPosition);
+        }
+
+        return ringToReturn; 
     }
     
     public RingPosition GetRingPositionFromRingOrder(int ringOrder)

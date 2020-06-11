@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class GruntPathfinder : MonoBehaviour, IUnitPathFinder
 {
@@ -27,6 +28,14 @@ public class GruntPathfinder : MonoBehaviour, IUnitPathFinder
         _pathfinder = GetComponent<Pathfinder>();
 
         _unitKillHandler = GetComponent<UnitKillHandler>();
+    }
+
+    private void OnEnable()
+    {
+        _unitAttack.OnAttackStart += HandleAttackStart;
+        _unitAttack.OnAttackFinished += HandleAttackFinish;
+
+        CanMoveThroughPath = true;
         _unitKillHandler.OnDeath += () =>
         {
             if (_ringPosition != null)
@@ -35,12 +44,9 @@ public class GruntPathfinder : MonoBehaviour, IUnitPathFinder
             }
             CanMoveThroughPath = false;
         };
-
-        _unitAttack.OnAttackStart += HandleAttackStart;
-        _unitAttack.OnAttackFinished += HandleAttackFinish;
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
         _unitAttack.OnAttackStart -= HandleAttackStart;
         _unitAttack.OnAttackFinished -= HandleAttackFinish;
@@ -62,8 +68,12 @@ public class GruntPathfinder : MonoBehaviour, IUnitPathFinder
     {
         _ringPosition = ringPosition;
 
-        if (_ringPosition == null) return;
-        
+
+        if (_ringPosition == null)
+        {
+            Debug.LogError($"Null position for {gameObject.name}");
+            return;
+        }
         _ringPosition.ClaimPosition(this);
         _startingPosition = _ringPosition.transform.position;
         _path = _pathfinder.Path(_ringPosition.transform.position, ref _completedRequest);

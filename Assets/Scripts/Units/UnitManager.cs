@@ -18,7 +18,7 @@ public abstract class UnitManager<T> : MonoBehaviour where T : IUnit
     public void RegisterUnit(T unit)
     {
         if (Units.Contains(unit)) return;
-        
+
         Units.Add(unit);
         GameUnitManager.RegisterUnit(unit);
         UnitChainEvaluator.Instance.AddUnit(unit);
@@ -36,7 +36,7 @@ public abstract class UnitManager<T> : MonoBehaviour where T : IUnit
         
         foreach (var unit in Units)
         {
-            if(unit.UnitPathFinder.CurrentRingPosition != null) continue;
+            if(unit.UnitPathFinder.CurrentRingPosition != null || unit.Transform.gameObject.activeInHierarchy == false) continue;
             
             unit.UnitPathFinder.SetRingPosition(RingManager.Instance.GetRingPositionFromRingOrder(_ringOrder));
         }

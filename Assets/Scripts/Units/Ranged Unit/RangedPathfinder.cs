@@ -4,7 +4,6 @@ public class RangedPathfinder : MonoBehaviour, IUnitPathFinder
 {
     [SerializeField] private float _moveSpeed = 3f;
     private RingPosition _ringPosition;
-    private Vector2 _startingPosition;
     public bool CanMoveThroughPath { get; set; } = true;
     public RingPosition CurrentRingPosition => _ringPosition;
 
@@ -22,19 +21,21 @@ public class RangedPathfinder : MonoBehaviour, IUnitPathFinder
         _unitAttack = GetComponent<IUnitAttack>();
         _pathfinder = FindObjectOfType<Pathfinder>();
         _rangedUnitManager = FindObjectOfType<RangedUnitManager>();
-        _unitAttack.OnAttackFinished += HandleFinishedAttack;
         _unitKillHandler = GetComponent<UnitKillHandler>();
+    }
+
+    private void OnEnable()
+    {
+        _unitAttack.OnAttackFinished += HandleFinishedAttack;
+        CanMoveThroughPath = true;
         _unitKillHandler.OnDeath += () =>
         {
-            if (_ringPosition != null)
-            {
-                _rangedUnitManager.TurnInRingPosition(_ringPosition);
-            }
+            if (_ringPosition != null) _rangedUnitManager.TurnInRingPosition(_ringPosition);
             CanMoveThroughPath = false;
         };
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
         _unitAttack.OnAttackFinished -= HandleFinishedAttack;
     }
@@ -43,6 +44,12 @@ public class RangedPathfinder : MonoBehaviour, IUnitPathFinder
     {
         _ringPosition = _rangedUnitManager.GetNextAvailableRingPosition(_ringPosition);
 
+        if (_ringPosition == null)
+        {
+            _pathfinder.Path(SpawnHelper.Instance.ValidSpawnPosition(), ref _completedRequest);
+            return;
+        }
+        
         _path = _pathfinder.Path(_ringPosition.transform.position, ref _completedRequest);
 
         CanMoveThroughPath = true;
@@ -55,8 +62,7 @@ public class RangedPathfinder : MonoBehaviour, IUnitPathFinder
         if (_ringPosition == null) return;
         
         _ringPosition.ClaimPosition(this);
-        _startingPosition = _ringPosition.transform.position;
-        _path = _pathfinder.Path(_ringPosition.transform.position, ref _completedRequest);
+        _path = _pathfinder.Path(_ringPosition.transform.position, ref _completedRequest) ?? _pathfinder.Path(SpawnHelper.Instance.ValidSpawnPosition(), ref _completedRequest);
     }
 
     public void Tick()

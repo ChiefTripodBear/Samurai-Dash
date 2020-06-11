@@ -26,6 +26,8 @@ public class AngleDefinition : MonoBehaviour
     public Vector2 GetPointOne => _pointOne;
 
     private Vector2 _pointTwo;
+    private float _distanceFromUnit;
+    private Vector2 _directionFromUnitToIntersectPoint;
     public Vector2 GetPointTwo => _pointTwo;
 
     private void Awake()
@@ -42,6 +44,11 @@ public class AngleDefinition : MonoBehaviour
     {
         _killVector = GetKillVector();
         SetRearAndForwardProjectionsRelativeTo(_player.transform.position);
+
+        if (_intersectionPoint != Vector2.zero)
+        {
+            _intersectionPoint = (Vector2) transform.position + _directionFromUnitToIntersectPoint * _distanceFromUnit;
+        }
     }
 
     private Vector2 GetKillVector()
@@ -84,6 +91,8 @@ public class AngleDefinition : MonoBehaviour
     public void SetIntersectionPoint(Vector2 intersection)
     {
         _intersectionPoint = intersection;
+        _distanceFromUnit = Vector2.Distance(transform.position, _intersectionPoint);
+        _directionFromUnitToIntersectPoint = (_intersectionPoint - (Vector2) transform.position).normalized;
     }
     
     private void OnDrawGizmos()

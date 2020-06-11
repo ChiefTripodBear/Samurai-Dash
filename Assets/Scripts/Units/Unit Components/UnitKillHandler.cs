@@ -15,16 +15,18 @@ public class UnitKillHandler : MonoBehaviour
 
     private AngleDefinition _unitAngle;
     private Player _player;
+    private Color _defaultColor;
 
     private void Awake()
     {
         _player = FindObjectOfType<Player>();
         _unitAngle = GetComponent<AngleDefinition>();
+        _defaultColor = GetComponent<SpriteRenderer>().color;
     }
 
     private void OnEnable()
     {
-        GetComponent<SpriteRenderer>().color = Color.white;
+        GetComponent<SpriteRenderer>().color = _defaultColor;
         GetComponent<Collider2D>().enabled = true;
     }
 
@@ -55,7 +57,7 @@ public class UnitKillHandler : MonoBehaviour
         }
     }
 
-    public void Kill()
+    private void Kill()
     {
         UnitChainEvaluator.Instance.RemoveUnit(GetComponent<IUnit>());
         OnDeath?.Invoke();
@@ -76,6 +78,8 @@ public class UnitKillHandler : MonoBehaviour
             {
                 Instantiate(_deathVFX, transform.position, Quaternion.identity);
 
+                _alreadyRegisteredToKillQueue = false;
+                _killPoint = null;
                 gameObject.SetActive(false);
             }
             

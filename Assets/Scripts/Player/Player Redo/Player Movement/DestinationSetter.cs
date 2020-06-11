@@ -16,6 +16,11 @@ public class DestinationSetter
         callback(redirectSuccess
             ? ContinueFromRedirectSuccess(previousPackage)
             : ContinueFromRedirectFailure(previousPackage));
+
+        if (redirectSuccess && previousPackage.IntersectionAnalysis.IntersectingUnit != null)
+        {
+            UnitChainEvaluator.Instance.RemoveUnit(previousPackage.IntersectionAnalysis.IntersectingUnit);
+        }
     }
 
     private MovementPackage ContinueFromRedirectFailure(MovementPackage previousPackage)

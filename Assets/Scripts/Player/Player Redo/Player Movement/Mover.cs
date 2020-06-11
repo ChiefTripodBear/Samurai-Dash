@@ -45,6 +45,8 @@ public class Mover
         if (_movementPackage.Destination.DestinationType == DestinationType.Intersection && !_movementPackage.Finished)
             if (InRedirectRange())
             {
+                _movementPackage.Destination.TargetLocation = _movementPackage.IntersectionAnalysis.IntersectingUnit
+                    .AngleDefinition.IntersectionPoint;
                 Time.timeScale = 0.2f;
                 _currentMoveSpeed = _slowSpeed;
 

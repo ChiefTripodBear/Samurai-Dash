@@ -10,7 +10,7 @@ public class UnitChainEvaluator : MonoBehaviour
     
     private List<IUnit> _units = new List<IUnit>();
 
-    private void Start()
+    private void Awake()
     {
         if (_instance == null)
             _instance = this;
@@ -23,7 +23,7 @@ public class UnitChainEvaluator : MonoBehaviour
 
         foreach (var unit in _units)
         {    
-            if(unit == firstUnit || unit == null) continue;
+            if(unit == firstUnit || unit == null || unit != null && unit.Transform.gameObject.activeInHierarchy == false) continue;
 
             var firstRearCheckPoint = firstUnit.AngleDefinition.RearPointRelative;
             

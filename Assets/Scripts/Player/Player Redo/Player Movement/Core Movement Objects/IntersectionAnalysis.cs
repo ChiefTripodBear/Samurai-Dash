@@ -14,17 +14,15 @@ public class IntersectionAnalysis
         
         if (AllIntersections != null)
         {
-            var intersections = AllIntersections.ToList();
-            for (var i = 0; i < intersections.Count; i++)
-            {
-                if (i == 0)
-                {
-                    RedirectDisplayManager.Instance.SetActiveDisplayWithIntersectionAt(destination.TargetLocation);
-                }
+            var intersections = new List<IUnit>(AllIntersections);
 
+            for (int i = 0; i < intersections.Count; i++)
+            {
                 var direction = intersections[i].AngleDefinition.IntersectionPoint - (Vector2)intersections[i].Transform.position;
-                RedirectDisplayManager.Instance.DisplayCorrectVector(direction, intersections[i].AngleDefinition.IntersectionPoint);
+
+                RedirectDisplayManager.Instance.InitializeDisplayObject(direction, intersections[i]);
             }
+            RedirectDisplayManager.Instance.SetActiveDisplayWithIntersectionAt(intersections[0].AngleDefinition.IntersectionPoint);
         }
     }
     public bool HasIntersections()
