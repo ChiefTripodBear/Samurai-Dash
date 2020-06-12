@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
@@ -11,9 +13,11 @@ public class Player : MonoBehaviour
     public Node CurrentNode { get; private set; }
     private PlayerMovementManager _playerMovementManager;
     private bool _reloaded;
+    public Collider2D PlayerCollider2D { get; private set; }
 
     private void Awake()
     {
+        PlayerCollider2D = GetComponent<Collider2D>();
         _playerMovementManager = new PlayerMovementManager(this);
         _grid = FindObjectOfType<NodeGrid>();
         Time.timeScale = 1f;
@@ -21,7 +25,6 @@ public class Player : MonoBehaviour
     
     private void Update()
     {
-        GetComponent<Collider2D>().enabled = MovementPackage.MovementCount <= 0;
         _playerMovementManager.Tick();
         
         CurrentNode = _grid.NodeFromWorldPosition(transform.position);
@@ -29,15 +32,20 @@ public class Player : MonoBehaviour
     
     private void OnTriggerEnter2D(Collider2D other)
     {
-        // var enemy = other.GetComponent<IUnit>();
-        //
-        // if (enemy == null) return;
-        //
-        // if (_reloaded) return;
-        //
-        // _reloaded = true;
-        // Time.timeScale = 1f;
-        // Pool.ClearPools();
-        // SceneManager.LoadScene(0);
+        var enemy = other.GetComponent<IUnit>();
+        
+        if (enemy == null) return;
+        
+        if (_reloaded) return;
+        
+        _reloaded = true;
+        Time.timeScale = 1f;
+        Pool.ClearPools();
+        SceneManager.LoadScene(0);
+    }
+
+    private void OnDrawGizmos()
+    {
+        _playerMovementManager?.DrawGizmos();
     }
 }

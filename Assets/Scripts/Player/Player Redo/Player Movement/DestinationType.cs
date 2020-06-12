@@ -2,5 +2,6 @@
 {
     ClosestPointToEnemy,
     Intersection,
+    BoundaryPath,
     Exit
 }

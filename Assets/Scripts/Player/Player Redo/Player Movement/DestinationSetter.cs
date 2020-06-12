@@ -44,11 +44,11 @@ public class DestinationSetter
 
     public MovementPackage GetDestinationFromFirstMove(float distanceScalar, Vector2 moveDirection)
     {
-        var unit = TargetDetector.GetUnitInFrontFromTargetPosition(null, distanceScalar, moveDirection, _transform.position);
+        var unit = TargetDetector.GetValidUnitInFrontFromTargetPosition(null, distanceScalar, moveDirection, _transform.position);
 
         var destination = EvaluateStartingMove(unit, distanceScalar, moveDirection);
 
-        var startingPackage = new MovementPackage(destination, distanceScalar);
+        var startingPackage = new MovementPackage(_transform, destination, distanceScalar);
 
         return startingPackage;
 

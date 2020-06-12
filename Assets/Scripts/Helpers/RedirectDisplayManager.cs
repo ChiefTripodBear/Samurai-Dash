@@ -22,7 +22,6 @@ public class RedirectDisplayManager : MonoBehaviour
 
         redirectObject.SetDisplayParameters(direction, unit);
 
-        Debug.Log("Creating displays");
         _currentDisplays.Add(redirectObject);
     }
 
@@ -39,10 +38,8 @@ public class RedirectDisplayManager : MonoBehaviour
         }
 
         if (displayToActivate == null) return;
-
-
+        
         displayToActivate.ToggleActive(true);
-
         foreach (var display in _currentDisplays)
             if (display != displayToActivate)
                 display.ToggleActive(false);

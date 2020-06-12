@@ -97,22 +97,22 @@ public class AngleDefinition : MonoBehaviour
     
     private void OnDrawGizmos()
     {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawLine(_rearPointRelative, _forwardPointRelative);
-        Gizmos.DrawWireSphere(_forwardPointRelative, 1f);
-        
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(_rearPointRelative, 1f);
-        if (_player != null)
-        {
-            Gizmos.color = Color.green;
-            Gizmos.DrawSphere(GetPointClosestTo(_player.transform.position), .3f);
-        }
-
-        if (_intersectionPoint != Vector2.zero)
-        {
-            Gizmos.color = Color.cyan;
-            Gizmos.DrawWireSphere(_intersectionPoint, .5f);
-        }
+        // Gizmos.color = Color.yellow;
+        // Gizmos.DrawLine(_rearPointRelative, _forwardPointRelative);
+        // Gizmos.DrawWireSphere(_forwardPointRelative, 1f);
+        //
+        // Gizmos.color = Color.red;
+        // Gizmos.DrawWireSphere(_rearPointRelative, 1f);
+        // if (_player != null)
+        // {
+        //     Gizmos.color = Color.green;
+        //     Gizmos.DrawSphere(GetPointClosestTo(_player.transform.position), .3f);
+        // }
+        //
+        // if (_intersectionPoint != Vector2.zero)
+        // {
+        //     Gizmos.color = Color.cyan;
+        //     Gizmos.DrawWireSphere(_intersectionPoint, .5f);
+        // }
     }
 }

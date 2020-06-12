@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Security.Cryptography;
+using UnityEngine;
 
 public class MovementPackage
 {
@@ -6,16 +7,24 @@ public class MovementPackage
     public bool Finished { get; private set; }
     public Destination Destination { get; }
     public IntersectionAnalysis IntersectionAnalysis { get; }
+    public BoundaryPathFinder BoundaryPathFinder { get; }
     public float DistanceScalar { get; }
 
     private ParallelAnalysis _parallelAnalysis;
     private Transform _mover;
 
-    public MovementPackage(Destination destination, float distanceScalar)
+    public MovementPackage(Transform mover, Destination destination, float distanceScalar)
     {
+        _mover = mover;
         MovementCount++;
         DistanceScalar = distanceScalar;
         Destination = destination;
+        Destination.TargetLocation = PlayerBoundaryDetector.HandleBoundaryCollision(Destination.TargetLocation, destination.MoveDirection);
+        if (PlayerBoundaryDetector.WillBeMovingThroughBoundary(_mover.transform.position, Destination.TargetLocation,
+            out var boundary))
+        {
+            Destination = null;
+        }
     }
     
     public MovementPackage(Destination destination, IntersectionAnalysis previousIntersectionAnalysis, Transform mover, float distanceScalar)
@@ -30,8 +39,13 @@ public class MovementPackage
         IntersectionAnalysis = ShouldUsePreviousIntersections(previousIntersectionAnalysis) 
             ? previousIntersectionAnalysis 
             : new IntersectionAnalysis(destination);
+        
+        IntersectionAnalysis.DrawIntersectionVectors();    
 
         Evaluate(distanceScalar);
+
+        Destination.TargetLocation = PlayerBoundaryDetector.HandleBoundaryCollision(Destination.TargetLocation, destination.MoveDirection);
+        BoundaryPathFinder = new BoundaryPathFinder(_mover, Destination);
     }
 
     private bool ShouldUsePreviousIntersections(IntersectionAnalysis previousIntersectionAnalysis)
@@ -57,7 +71,7 @@ public class MovementPackage
         {
             var intersectionLocation = IntersectionAnalysis.PeekIntersections().AngleDefinition.IntersectionPoint;
             var parallelUnitLocation = _parallelAnalysis.ParallelUnit.Transform.position;
-
+            
             var parallelIsCloser = Vector2.Distance(parallelUnitLocation, _mover.transform.position) <
                                    Vector2.Distance(intersectionLocation, _mover.transform.position);
 

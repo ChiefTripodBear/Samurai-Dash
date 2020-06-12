@@ -10,10 +10,14 @@ public class UnitChainEvaluator : MonoBehaviour
     
     private List<IUnit> _units = new List<IUnit>();
 
+    private NodeGrid _nodeGrid;
+
     private void Awake()
     {
         if (_instance == null)
             _instance = this;
+
+        _nodeGrid = FindObjectOfType<NodeGrid>();
     }
     
     public Queue<IUnit> GetIntersectionsRelativeTo(IUnit firstUnit)
@@ -23,7 +27,7 @@ public class UnitChainEvaluator : MonoBehaviour
 
         foreach (var unit in _units)
         {    
-            if(unit == firstUnit || unit == null || unit != null && unit.Transform.gameObject.activeInHierarchy == false) continue;
+            if(unit == firstUnit || unit == null || unit.Transform.gameObject.activeInHierarchy == false) continue;
 
             var firstRearCheckPoint = firstUnit.AngleDefinition.RearPointRelative;
             
@@ -37,6 +41,8 @@ public class UnitChainEvaluator : MonoBehaviour
 
                 if (intersect != null)
                 {
+                    if (!_nodeGrid.NodeFromWorldPosition(intersect.Value).IsWalkable) continue;
+
                     if(Vector2.Distance(unit.Transform.position, intersect.Value) < 2f 
                        || Vector2.Distance(unit.Transform.position, firstStartCheckPoint) < 1f
                        || Vector2.Distance(firstUnit.Transform.position, intersect.Value) < 1f) continue;

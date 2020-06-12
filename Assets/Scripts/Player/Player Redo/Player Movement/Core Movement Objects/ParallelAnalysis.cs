@@ -15,7 +15,7 @@ public class ParallelAnalysis
         var rayFirePosition = GetFirePositionFromDestinationType(destination);
 
         if (rayFirePosition.HasValue)
-            ParallelUnit = TargetDetector.GetUnitInFrontFromTargetPosition(destination.Unit, distanceScalar,
+            ParallelUnit = TargetDetector.GetValidUnitInFrontFromTargetPosition(destination.Unit, distanceScalar,
                 destination.MoveDirection, rayFirePosition.Value);
     }
 
