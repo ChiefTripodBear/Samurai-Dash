@@ -1,4 +1,4 @@
-﻿public class RangedUnitManager : UnitManager<RangedUnit>
+﻿public class RangedUnitManager : UnitManager<RangedEnemyUnit>
 {
     
 }

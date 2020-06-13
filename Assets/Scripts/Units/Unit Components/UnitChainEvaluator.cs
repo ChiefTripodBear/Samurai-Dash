@@ -25,7 +25,7 @@ public class UnitChainEvaluator : MonoBehaviour
         var possibleIntersections = new List<IUnit>();
         var firstStartCheckPoint = firstUnit.Transform.position;
 
-        foreach (var unit in _units)
+        foreach (var unit in _units.ToList())
         {    
             if(unit == firstUnit || unit == null || unit.Transform.gameObject.activeInHierarchy == false) continue;
 
@@ -41,7 +41,8 @@ public class UnitChainEvaluator : MonoBehaviour
 
                 if (intersect != null)
                 {
-                    if (!_nodeGrid.NodeFromWorldPosition(intersect.Value).IsWalkable) continue;
+                    if(possibleIntersections.Any(t => Vector2.Distance(intersect.Value, t.AngleDefinition.IntersectionPoint) < 2f)) continue;
+                    if (!_nodeGrid.NodeFromWorldPosition(intersect.Value).IsWalkable || PlayerBoundaryDetector.WillCollideWithBoundaryAtTargetLocation(unit.KillHandler.GetFauxKillPoint())) continue;
 
                     if(Vector2.Distance(unit.Transform.position, intersect.Value) < 2f 
                        || Vector2.Distance(unit.Transform.position, firstStartCheckPoint) < 1f

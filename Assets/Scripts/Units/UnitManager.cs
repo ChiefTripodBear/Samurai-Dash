@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class UnitManager<T> : MonoBehaviour where T : IUnit
+public abstract class UnitManager<T> : MonoBehaviour where T : IUnitEnemy
 {
     [SerializeField] private int _ringOrder;
     

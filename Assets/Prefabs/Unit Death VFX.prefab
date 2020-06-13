@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8283165871974743814}
   - component: {fileID: 8283165871974743809}
   m_Layer: 0
-  m_Name: Particle System
+  m_Name: Unit Death VFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

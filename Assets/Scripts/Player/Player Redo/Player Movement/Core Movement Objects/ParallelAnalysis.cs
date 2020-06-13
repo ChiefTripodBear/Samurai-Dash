@@ -11,7 +11,7 @@ public class ParallelAnalysis
     
     private void CheckForParallelEnemiesAtDestination(Destination destination, float distanceScalar)
     {
-        distanceScalar *= 2;
+        distanceScalar *= 2f;
         var rayFirePosition = GetFirePositionFromDestinationType(destination);
 
         if (rayFirePosition.HasValue)

@@ -1,7 +1,9 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
-public class GruntUnitManager : UnitManager<GruntUnit>
+public class GruntUnitManager : UnitManager<GruntEnemyUnit>
 {
     [SerializeField] private int _minAttackers;
     [SerializeField] private int _maxAttackers;

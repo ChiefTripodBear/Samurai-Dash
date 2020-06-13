@@ -16,7 +16,7 @@ public class UnitKillHandler : MonoBehaviour
     private AngleDefinition _unitAngle;
     private Player _player;
     private Color _defaultColor;
-
+    
     private void Awake()
     {
         _player = FindObjectOfType<Player>();
@@ -30,7 +30,7 @@ public class UnitKillHandler : MonoBehaviour
         GetComponent<Collider2D>().enabled = true;
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
         OnDeath?.Invoke();
     }
@@ -38,6 +38,11 @@ public class UnitKillHandler : MonoBehaviour
     public void SetKillPoint()
     {
         _killPoint = ((Vector2)transform.position - _unitAngle.GetPointClosestTo(_player.transform.position)).normalized * _killPointDistance + (Vector2)transform.position;
+    }
+
+    public Vector2 GetFauxKillPoint()
+    {
+        return ((Vector2)transform.position - _unitAngle.GetPointClosestTo(_player.transform.position)).normalized * _killPointDistance + (Vector2)transform.position;
     }
 
     private void Update()
@@ -87,5 +92,11 @@ public class UnitKillHandler : MonoBehaviour
                 Color.Lerp(GetComponent<SpriteRenderer>().color, Color.red, currentColorLerpTime / 1.5f);
             yield return null;
         }
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.magenta;
+        Gizmos.DrawWireSphere(GetFauxKillPoint(), .5f);
     }
 }

@@ -50,9 +50,6 @@ public class PlayerMovementManager
         var startingDirection = InputDestination();
 
         if (startingDirection.HasValue == false) return;
-
-        // Allows the player to bailout during a chain... or whenever really.
-        // if (_startPosition.HasValue && _endPosition.HasValue) _mover.Reset();
         
         _startPosition = null;
         _endPosition = null;

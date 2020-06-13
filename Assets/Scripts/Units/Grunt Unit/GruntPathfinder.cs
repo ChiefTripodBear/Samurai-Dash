@@ -7,8 +7,7 @@ public class GruntPathfinder : MonoBehaviour, IUnitPathFinder
 
     public bool CanMoveThroughPath { get; set; } = true;
     public RingPosition CurrentRingPosition => _ringPosition;
-
-
+    
     private RingPosition _ringPosition;
     private Vector3 _startingPosition;
 
@@ -133,4 +132,10 @@ public class GruntPathfinder : MonoBehaviour, IUnitPathFinder
     {
         return _path != null && _path.Length > 0 && (Vector2)transform.position == _path[_path.Length - 1];
     }
+}
+
+public interface IUnitEnemy : IUnit
+{
+    IUnitAttack UnitAttack { get; }
+    IUnitPathFinder UnitPathFinder { get; }
 }

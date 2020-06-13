@@ -94,7 +94,7 @@ public class Mover
     private IEnumerator MoveThroughBoundaryPath()
     {
         CanMove = false;
-        Time.timeScale = .5f;
+        // Time.timeScale = .5f;
         while (true)
         {
             if (_movementPackage == null)

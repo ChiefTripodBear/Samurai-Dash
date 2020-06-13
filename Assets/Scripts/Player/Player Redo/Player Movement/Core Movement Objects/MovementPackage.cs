@@ -1,5 +1,4 @@
-﻿using System.Security.Cryptography;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class MovementPackage
 {
@@ -22,9 +21,7 @@ public class MovementPackage
         Destination.TargetLocation = PlayerBoundaryDetector.HandleBoundaryCollision(Destination.TargetLocation, destination.MoveDirection);
         if (PlayerBoundaryDetector.WillBeMovingThroughBoundary(_mover.transform.position, Destination.TargetLocation,
             out var boundary))
-        {
             Destination = null;
-        }
     }
     
     public MovementPackage(Destination destination, IntersectionAnalysis previousIntersectionAnalysis, Transform mover, float distanceScalar)
@@ -47,6 +44,7 @@ public class MovementPackage
         Destination.TargetLocation = PlayerBoundaryDetector.HandleBoundaryCollision(Destination.TargetLocation, destination.MoveDirection);
         BoundaryPathFinder = new BoundaryPathFinder(_mover, Destination);
     }
+
 
     private bool ShouldUsePreviousIntersections(IntersectionAnalysis previousIntersectionAnalysis)
     {
@@ -85,6 +83,12 @@ public class MovementPackage
 
         if (NothingFound())
         {
+            if (IntersectionAnalysis.IntersectingUnit != null)
+            {
+                _parallelAnalysis.ParallelUnit = IntersectionAnalysis.IntersectingUnit;
+                SetDestinationForParallelUnit();
+                return;
+            }
             Finished = true;
             Destination.TargetLocation += Destination.MoveDirection * distanceScalar;
         }

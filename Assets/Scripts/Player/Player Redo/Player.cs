@@ -1,9 +1,9 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
+    [SerializeField] private bool _noDeath;
     [SerializeField] private float _moveAmountPerSwipe = 5f;
     [SerializeField] private float _moveSpeed;
     public float DefaultMovementSpeed => _moveSpeed;
@@ -32,6 +32,8 @@ public class Player : MonoBehaviour
     
     private void OnTriggerEnter2D(Collider2D other)
     {
+        if (_noDeath) return;
+        
         var enemy = other.GetComponent<IUnit>();
         
         if (enemy == null) return;

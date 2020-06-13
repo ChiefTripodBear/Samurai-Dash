@@ -3,7 +3,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(AngleDefinition))]
 [RequireComponent(typeof(UnitKillHandler))]
-public abstract class Unit : PooledMonoBehaviour, IUnit
+public abstract class EnemyUnit : PooledMonoBehaviour, IUnitEnemy
 {
     public IUnitPathFinder UnitPathFinder { get; private set; }
     public IUnitAttack UnitAttack { get; private set; }

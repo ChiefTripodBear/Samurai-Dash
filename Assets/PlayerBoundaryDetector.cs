@@ -33,7 +33,7 @@ public static class PlayerBoundaryDetector
         return hit && !WillCollideWithBoundaryAtTargetLocation(targetLocation);
     }
 
-    private static bool WillCollideWithBoundaryAtTargetLocation(Vector2 targetLocation)
+    public static bool WillCollideWithBoundaryAtTargetLocation(Vector2 targetLocation)
     {
         return Physics2D.OverlapBox(targetLocation, Vector2.one, 0, UnwalkableLayer);
     }

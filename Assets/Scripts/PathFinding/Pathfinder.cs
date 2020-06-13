@@ -5,13 +5,13 @@ using UnityEngine;
 public class Pathfinder : MonoBehaviour
 {
     private NodeGrid _nodeGrid;
-    private Unit _unit;
+    private EnemyUnit _enemyUnit;
     private Player _player;
 
     private void Awake()
     {
         _nodeGrid = FindObjectOfType<NodeGrid>();
-        _unit = GetComponent<Unit>();
+        _enemyUnit = GetComponent<EnemyUnit>();
         _player = FindObjectOfType<Player>();
     }
     
@@ -21,7 +21,7 @@ public class Pathfinder : MonoBehaviour
         var startingNode = _nodeGrid.NodeFromWorldPosition(transform.position);
         var targetNode = _nodeGrid.NodeFromWorldPosition(targetPosition);
 
-        if(GameUnitManager.IsValidNodeFromUnit(targetNode, _unit) && startingNode.IsWalkable && targetNode.IsWalkable)
+        if(GameUnitManager.IsValidNodeFromUnit(targetNode, _enemyUnit) && startingNode.IsWalkable && targetNode.IsWalkable)
         {
             var openSet = new Heap<Node>(_nodeGrid.MaxSize);
             var closedSet = new HashSet<Node>();
@@ -41,7 +41,7 @@ public class Pathfinder : MonoBehaviour
 
                 foreach (var neighbor in _nodeGrid.Neighbors(currentNode))
                 {
-                    if (!GameUnitManager.IsValidNodeFromUnit(neighbor, _unit) ||
+                    if (!GameUnitManager.IsValidNodeFromUnit(neighbor, _enemyUnit) ||
                         !GameUnitManager.IsValidNodeFromPlayer(neighbor, _player) || !neighbor.IsWalkable || closedSet.Contains(neighbor)) 
                         continue;
                     

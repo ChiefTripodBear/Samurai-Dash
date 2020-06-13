@@ -32,16 +32,21 @@ public static class TargetDetector
             var hit = Physics2D.Raycast(firePosition, (point - firePosition).normalized,
                 rayLength + CheckCushion, EnemyMask);
             
-            if(!hit ) continue;
-
+            if(!hit) continue;
+            
             var unit = hit.collider.GetComponent<IUnit>();
             
-            if(unit == null || startingUnit != null && startingUnit == unit || !DotProductSuccess(unit, moveDirection)) continue;
+            if(unit == null || startingUnit != null && startingUnit == unit || !DotProductSuccess(unit, moveDirection) || UnitKillPointInUnwalkable(unit)) continue;
 
             return unit;
         }
 
         return null;
+    }
+
+    private static bool UnitKillPointInUnwalkable(IUnit unit)
+    {
+        return PlayerBoundaryDetector.WillCollideWithBoundaryAtTargetLocation(unit.KillHandler.GetFauxKillPoint());
     }
 
     public static bool FoundInvalidEnemy(float rayLength, Vector2 moveDirection, Vector2 firePosition)

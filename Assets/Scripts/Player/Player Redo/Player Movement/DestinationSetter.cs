@@ -40,8 +40,7 @@ public class DestinationSetter
         
         return new MovementPackage(newRedirectDestination, null, _transform, previousPackage.DistanceScalar);
     }
-
-
+    
     public MovementPackage GetDestinationFromFirstMove(float distanceScalar, Vector2 moveDirection)
     {
         var unit = TargetDetector.GetValidUnitInFrontFromTargetPosition(null, distanceScalar, moveDirection, _transform.position);
@@ -51,7 +50,6 @@ public class DestinationSetter
         var startingPackage = new MovementPackage(_transform, destination, distanceScalar);
 
         return startingPackage;
-
     }
 
     private Destination EvaluateStartingMove(IUnit unit, float distanceScalar, Vector2 moveDirection)

@@ -11,7 +11,7 @@ public class WaveSpawner : MonoBehaviour
 
     private WaitForSeconds _spawnDelay;
     
-    private List<Unit> _currentWaveUnits = new List<Unit>();
+    private List<EnemyUnit> _currentWaveUnits = new List<EnemyUnit>();
     private int _waveCompletionCount;
     private int _currentWaveEnemyCount;
 
@@ -52,7 +52,7 @@ public class WaveSpawner : MonoBehaviour
         
         for (var i = 0; i < currentWave.SpawnOrder.Count; i++)
         {
-            var unit = currentWave.SpawnOrder[i].Get<Unit>(null, SpawnHelper.Instance.ValidSpawnPosition(), Quaternion.identity);
+            var unit = currentWave.SpawnOrder[i].Get<EnemyUnit>(null, SpawnHelper.Instance.ValidSpawnPosition(), Quaternion.identity);
             
             unit.Register();
             

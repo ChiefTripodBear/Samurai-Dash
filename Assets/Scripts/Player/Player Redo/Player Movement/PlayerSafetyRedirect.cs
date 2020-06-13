@@ -23,7 +23,7 @@ public class PlayerSafetyRedirect
             return;
         }
         
-        if (InSafetyRedirectRange() && _mover.MovementPackage.Finished || InSafetyRedirectRange() && MovementPackage.MovementCount == 1)
+        if (InSafetyRedirectRange() && _mover.MovementPackage.Finished || InSafetyRedirectRange() && MovementPackage.MovementCount == 1 || _mover.MovementPackage.Destination.DestinationType == DestinationType.Exit)
         {
             if (InDangerAtTargetLocation())
             {

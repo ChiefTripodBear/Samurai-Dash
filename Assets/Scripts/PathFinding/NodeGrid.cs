@@ -15,8 +15,15 @@ public class NodeGrid : MonoBehaviour
     private LayerMask _unwalkableLayer;
     public int MaxSize => _nodeCountX * _nodeCountY;
 
+    private static NodeGrid _instance;
+    public static NodeGrid Instance => _instance;
+
     private void Awake()
     {
+        if (_instance == null)
+        {
+            _instance = this;
+        }
         _nodeDiameter = _nodeRadius * 2;
         _nodeCountX = Mathf.RoundToInt(_gridSize.x / _nodeDiameter);
         _nodeCountY = Mathf.RoundToInt(_gridSize.y / _nodeDiameter);
