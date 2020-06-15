@@ -98,10 +98,10 @@ public class Boundary : MonoBehaviour
 
     private void Update()
     {
-        if (Mouse.current.middleButton.wasReleasedThisFrame)
-        {
-            DisplayBestPath();
-        }
+        // if (Mouse.current.middleButton.wasReleasedThisFrame)
+        // {
+        //     DisplayBestPath();
+        // }
     }
 
     public List<Vector2> BoundaryPath(Vector2 targetLocation, Vector2 pointClosestToBoundary)

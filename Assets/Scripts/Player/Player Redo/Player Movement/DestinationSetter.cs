@@ -37,7 +37,7 @@ public class DestinationSetter
         var newRedirectDestination = new Destination();
         newRedirectDestination.Initialize(previousPackage.Destination.TargetLocation, redirectedMoveDirection, null);
         newRedirectDestination.DestinationType = previousPackage.Destination.DestinationType;
-        
+        newRedirectDestination.PreviousIntersectingUnit = previousPackage.IntersectionAnalysis.IntersectingUnit;
         return new MovementPackage(newRedirectDestination, null, _transform, previousPackage.DistanceScalar);
     }
     
@@ -46,6 +46,8 @@ public class DestinationSetter
         var unit = TargetDetector.GetValidUnitInFrontFromTargetPosition(null, distanceScalar, moveDirection, _transform.position);
 
         var destination = EvaluateStartingMove(unit, distanceScalar, moveDirection);
+
+        if (Vector2.Distance(_transform.position, destination.TargetLocation) < 0.1f) return null;
 
         var startingPackage = new MovementPackage(_transform, destination, distanceScalar);
 

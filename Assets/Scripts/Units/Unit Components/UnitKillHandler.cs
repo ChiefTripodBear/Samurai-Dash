@@ -5,6 +5,7 @@ using UnityEngine;
 public class UnitKillHandler : MonoBehaviour
 {
     public event Action OnDeath;
+    public static event Action UnitKillPointReached;
 
     [SerializeField] private float _killPointDistance = 1.5f;
     [SerializeField] private GameObject _deathVFX;
@@ -54,7 +55,7 @@ public class UnitKillHandler : MonoBehaviour
             var dot = Vector2.Dot(killPointToThis, killPointToPlayer);
 
             if (!_alreadyRegisteredToKillQueue && dot < 0 &&
-                Vector2.Distance(_player.transform.position, _killPoint.Value) > 0.1f)
+                Vector2.Distance(_player.transform.position, _killPoint.Value) > 0f)
             {
                 _alreadyRegisteredToKillQueue = true;
                 Kill();
@@ -64,6 +65,7 @@ public class UnitKillHandler : MonoBehaviour
 
     private void Kill()
     {
+        UnitKillPointReached?.Invoke();
         UnitChainEvaluator.Instance.RemoveUnit(GetComponent<IUnit>());
         OnDeath?.Invoke();
         StartCoroutine(KillWithDelay());
@@ -97,6 +99,15 @@ public class UnitKillHandler : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.magenta;
-        Gizmos.DrawWireSphere(GetFauxKillPoint(), .5f);
+
+        if (_unitAngle != null)
+        {
+            Gizmos.DrawWireSphere(GetFauxKillPoint(), .5f);
+        }
+
+        if (_killPoint.HasValue)
+        {
+            Gizmos.DrawSphere(_killPoint.Value, .5f);
+        }
     }
 }

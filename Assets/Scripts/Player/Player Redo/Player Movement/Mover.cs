@@ -21,6 +21,7 @@ public class Mover
     private bool _requested;
     private Player _player;
     private int _boundaryPathIndex = 0;
+    private float _currentDistanceFromTargetLocation;
 
     public Mover(Player player, float defaultMoveSpeed)
     {
@@ -36,7 +37,7 @@ public class Mover
         _requested = false;
         _movementPackage = movementPackage;
         
-        if(movementPackage.Destination != null)
+        if(movementPackage?.Destination != null)
             _distanceToCurrentDestination = Vector2.Distance(_transform.position, _movementPackage.Destination.TargetLocation);
     }
 
@@ -55,8 +56,7 @@ public class Mover
                 _movementPackage.Destination.TargetLocation = _movementPackage.IntersectionAnalysis.IntersectingUnit
                     .AngleDefinition.IntersectionPoint;
 
-                Time.timeScale = 0.1f;
-                _currentMoveSpeed = _slowSpeed;
+                HandleIntersectionTimeSlow();
                 var successfulRedirect = RedirectEvaluator.ValidRedirect(
                     _movementPackage.IntersectionAnalysis.IntersectingUnit.Transform.position,
                     _movementPackage.Destination.TargetLocation, 0.85f);
@@ -89,6 +89,19 @@ public class Mover
         
         IsMoving = true;
         _transform.position = Vector2.MoveTowards(_transform.position, _movementPackage.Destination.TargetLocation, _currentMoveSpeed * Time.deltaTime);
+    }
+
+    private void HandleIntersectionTimeSlow()
+    {
+        var currentDistanceToTargetLocation =
+            Vector2.Distance(_transform.position, _movementPackage.Destination.TargetLocation);
+
+        var totalDistanceTraveled = _distanceToCurrentDestination - currentDistanceToTargetLocation;
+
+        var percent = totalDistanceTraveled / _distanceToCurrentDestination;
+
+        Time.timeScale = Mathf.Lerp(1f, 0.1f, Mathf.Sin(percent * Mathf.PI * 0.5f));
+        _currentMoveSpeed = _slowSpeed;
     }
 
     private IEnumerator MoveThroughBoundaryPath()

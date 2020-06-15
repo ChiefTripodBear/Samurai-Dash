@@ -29,14 +29,15 @@ public static class TargetDetector
                 new Vector2(Mathf.Sin(previousAngle * Mathf.Deg2Rad), Mathf.Cos(previousAngle * Mathf.Deg2Rad)) 
                 * (rayLength + CheckCushion) + firePosition;
 
+            Debug.DrawLine(firePosition, point, Color.red);
             var hit = Physics2D.Raycast(firePosition, (point - firePosition).normalized,
                 rayLength + CheckCushion, EnemyMask);
             
             if(!hit) continue;
             
             var unit = hit.collider.GetComponent<IUnit>();
-            
-            if(unit == null || startingUnit != null && startingUnit == unit || !DotProductSuccess(unit, moveDirection) || UnitKillPointInUnwalkable(unit)) continue;
+
+            if (unit == null || startingUnit != null && startingUnit == unit || !DotProductSuccess(unit, moveDirection)) continue;;
 
             return unit;
         }
@@ -71,7 +72,7 @@ public static class TargetDetector
             if (!hit) continue;
 
             var unit = hit.collider.GetComponent<IUnit>();
-
+            
             if (unit != null && !DotProductSuccess(unit, moveDirection)) return true;
         }
 

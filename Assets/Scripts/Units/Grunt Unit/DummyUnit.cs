@@ -1,4 +1,7 @@
 ﻿using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Controls;
+using UnityEngine.SceneManagement;
 
 public class DummyUnit : MonoBehaviour, IUnit
 {
@@ -27,5 +30,10 @@ public class DummyUnit : MonoBehaviour, IUnit
     private void Update()
     {
         CurrentNode = _nodeGrid.NodeFromWorldPosition(transform.position);
+
+        if (Mouse.current.middleButton.wasReleasedThisFrame)
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
     }
 }
