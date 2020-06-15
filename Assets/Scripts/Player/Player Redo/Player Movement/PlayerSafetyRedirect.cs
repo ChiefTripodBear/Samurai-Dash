@@ -28,7 +28,7 @@ public class PlayerSafetyRedirect
             if (InDangerAtTargetLocation())
             {
                 SafetyRedirectAllowed = true;
-                Time.timeScale = .2f;
+                Time.timeScale = .3f;
                 _mover.SetMoveSpeed(_safetyRedirectMoveSpeed);
                 _mover.IsMoving = false;
             }

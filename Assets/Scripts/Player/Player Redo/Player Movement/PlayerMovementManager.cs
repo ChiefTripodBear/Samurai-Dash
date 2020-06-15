@@ -19,7 +19,7 @@ public class PlayerMovementManager
         _destinationSetter = new DestinationSetter(_player.transform, _mover);
         _inputProcessor = new InputProcessor();
         _playerSafetyRedirect = new PlayerSafetyRedirect(_mover, _player);
-        _playerDashMonitor = new PlayerDashMonitor(this);
+        _playerDashMonitor = new PlayerDashMonitor();
     }
     
     public void Tick()

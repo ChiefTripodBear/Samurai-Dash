@@ -4,18 +4,16 @@ using UnityEngine;
 public class PlayerDashMonitor
 {
     public static event Action<int> OnDashChargesChanged;
-    private readonly PlayerMovementManager _playerMovementManager;
 
     public int CurrentCharges => _currentCharges;
     private int _currentCharges;
-    private int _maxCharges = 5;
+    private int _maxCharges = 8;
 
     private float _rechargeTime = 1f;
     private float _rechargeTimer;
 
-    public PlayerDashMonitor(PlayerMovementManager playerMovementManager)
+    public PlayerDashMonitor()
     {
-        _playerMovementManager = playerMovementManager;
         UnitKillHandler.UnitKillPointReached += AddCharge;
         MovementPackage.OnFirstMove += RemoveCharge;
         MovementPackage.OnCollisionWithEnemyWhileMovingThroughIntersection += RemoveCharge;
@@ -31,7 +29,7 @@ public class PlayerDashMonitor
 
     private void AddCharge()
     {
-        _currentCharges = _currentCharges >= _maxCharges ? _maxCharges : _currentCharges += 1;
+        _currentCharges = _currentCharges >= _maxCharges ? _maxCharges : _currentCharges += 2;
         OnDashChargesChanged?.Invoke(_currentCharges);
     }
 
