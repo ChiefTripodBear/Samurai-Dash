@@ -12,21 +12,24 @@ public class Mover
     private float _defaultMoveSpeed;
     private float _slowSpeed;
     private float _currentMoveSpeed;
-    private Transform _transform;
     
     private MovementPackage _movementPackage;
     public MovementPackage MovementPackage => _movementPackage;
 
     private float _distanceToCurrentDestination;
     private bool _requested;
-    private Player _player;
     private int _boundaryPathIndex = 0;
     private float _currentDistanceFromTargetLocation;
+    
+    private Player _player;
+    private Transform _transform;
+    private ParallelMovingCheck _parallelMovingCheck;
 
     public Mover(Player player, float defaultMoveSpeed)
     {
         _player = player;
         _transform = _player.transform;
+        _parallelMovingCheck = new ParallelMovingCheck(_transform);
         _defaultMoveSpeed = defaultMoveSpeed;
         _slowSpeed = defaultMoveSpeed / 4;
         _currentMoveSpeed = defaultMoveSpeed;
@@ -44,6 +47,8 @@ public class Mover
     public void Move()
     {
         if (!CanMove) return;
+
+        _parallelMovingCheck.Tick(_movementPackage.Destination.MoveDirection);
 
         if (_movementPackage.Destination.DestinationType == DestinationType.BoundaryPath)
         {
@@ -181,5 +186,34 @@ public class Mover
     public void SetMoveSpeed(float safetyRedirectMoveSpeed)
     {
         _currentMoveSpeed = safetyRedirectMoveSpeed;
+    }
+}
+
+public class ParallelMovingCheck
+{
+    private readonly Transform _mover;
+
+    private Collider2D[] _potentialParallelUnits = new Collider2D[20];
+    
+    public ParallelMovingCheck(Transform mover)
+    {
+        _mover = mover;
+    }
+    
+    public void Tick(Vector2 moveDirection)
+    {
+        var colliderCount = Physics2D.OverlapCircleNonAlloc(_mover.position, 1f, _potentialParallelUnits);
+
+        for (var i = 0; i < colliderCount; i++)
+        {
+            var unit = _potentialParallelUnits[i].GetComponent<IUnit>();
+            
+            if(unit == null) continue;
+
+            if (!TargetDetector.DotProductSuccess(unit, moveDirection)) continue;
+            
+            Debug.Log($"Parallel moving success for {unit.Transform.name}");
+            unit.KillHandler.SetKillPoint();
+        }
     }
 }

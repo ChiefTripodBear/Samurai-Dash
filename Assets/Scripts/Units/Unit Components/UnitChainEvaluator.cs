@@ -27,7 +27,7 @@ public class UnitChainEvaluator : MonoBehaviour
 
         foreach (var unit in _units.ToList())
         {    
-            if(unit == firstUnit || unit == null || unit.Transform.gameObject.activeInHierarchy == false) continue;
+            if(unit == firstUnit || unit == null || unit.Transform.gameObject.activeInHierarchy == false || unit.KillHandler.KillPoint.HasValue) continue;
 
             var firstRearCheckPoint = firstUnit.AngleDefinition.RearPointRelative;
             
