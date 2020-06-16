@@ -23,7 +23,7 @@ public class PlayerSafetyRedirect
             return;
         }
         
-        if (InSafetyRedirectRange() && _mover.MovementPackage.Finished || InSafetyRedirectRange() && MovementPackage.MovementCount == 1 || _mover.MovementPackage.Destination.DestinationType == DestinationType.Exit)
+        if (InSafetyRedirectRange() && MovementPackage.MovementCount == 1 && _mover.MovementPackage.Destination.Unit == null)
         {
             if (InDangerAtTargetLocation())
             {
@@ -39,7 +39,7 @@ public class PlayerSafetyRedirect
     {
         var distanceToTargetLocation =
             Vector2.Distance(_mover.MovementPackage.Destination.TargetLocation, _player.transform.position);
-        return _mover.MovementPackage?.Destination != null && TargetDetector.FoundInvalidEnemy(distanceToTargetLocation + 1, _mover.MovementPackage.Destination.MoveDirection,
+        return _mover.MovementPackage?.Destination != null && TargetDetector.FoundInvalidEnemy(distanceToTargetLocation, _mover.MovementPackage.Destination.MoveDirection,
             _player.transform.position);
     } 
     

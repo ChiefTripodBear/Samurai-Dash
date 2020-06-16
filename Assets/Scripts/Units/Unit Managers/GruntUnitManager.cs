@@ -1,9 +1,7 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
-public class GruntUnitManager : UnitManager<GruntEnemyUnit>
+public class GruntUnitManager : UnitManager
 {
     [SerializeField] private int _minAttackers;
     [SerializeField] private int _maxAttackers;
@@ -21,13 +19,11 @@ public class GruntUnitManager : UnitManager<GruntEnemyUnit>
         _attackerCount = Random.Range(_minAttackers, _maxAttackers);
         _attacksThatHaveBeenFinished = _attackerCount;
 
-        Units.ForEach(t => t.GetComponent<IKillable>().OnDeath += () => Units.Remove(t));
+        Units.ForEach(t => t.Transform.GetComponent<IKillable>().OnDeath += () => Units.Remove(t));
     }
 
-    protected override void Update()
+    private void Update()
     {
-        base.Update();
-        
         _attackTimer += Time.deltaTime;
 
         if (_attackTimer >= _timeUntilAttack && _attacksThatHaveBeenFinished >= _attackerCount)

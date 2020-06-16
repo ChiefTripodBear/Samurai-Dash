@@ -1,8 +1,11 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 
 public static class GameUnitManager
 {
     private static readonly List<IUnit> _allUnits = new List<IUnit>();
+    private static Collider2D[] _fearedEnemyResults = new Collider2D[20];
+    private static LayerMask EnemyUnitMask => LayerMask.GetMask("Enemy");
     
     public static void RegisterUnit(IUnit unit)
     {
@@ -26,5 +29,18 @@ public static class GameUnitManager
     public static bool IsValidNodeFromPlayer(Node nodeQuery, Player player)
     {
         return nodeQuery != player.CurrentNode;
+    }
+
+    public static void PerformPostKillFear(Player player)
+    {
+        var size =
+            Physics2D.OverlapCircleNonAlloc(player.transform.position, 8f, _fearedEnemyResults, EnemyUnitMask);
+
+        for (var i = 0; i < size; i++)
+        {
+            var unit = _fearedEnemyResults[i].GetComponent<IUnitEnemy>();
+
+            unit?.UnitEventSpecificMovements.PerformFear();
+        }
     }
 }

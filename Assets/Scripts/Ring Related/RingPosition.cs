@@ -1,19 +1,22 @@
 ﻿using UnityEngine;
 
-public class RingPosition : MonoBehaviour
+public class RingPosition : MonoBehaviour, IWaypoint
 {
+    public Transform Transform => transform;
+    public bool IsClaimed => _unitEnemyMover != null;
+
     [SerializeField] private bool _randomizeSpeed;
     [SerializeField] private float _moveSpeed;
-    private IUnitPathFinder _pathfindingUnit;
+
     private Vector2 _startingPosition;
     private float _currentAngle;
     private float _radius;
-
-    private Player _player;
     private Vector2 _oppositePoint;
     public Vector2 OppositePoint => _oppositePoint;
 
-    public bool Claimed => _pathfindingUnit != null;
+    private EnemyUnitMover _unitEnemyMover;
+    private Player _player;
+    private int _ringOrder;
 
     private void Awake()
     {
@@ -25,12 +28,12 @@ public class RingPosition : MonoBehaviour
         if(_randomizeSpeed)
             _moveSpeed = Random.Range(-.5f, .5f);
     }
-
-    public void ClaimPosition(IUnitPathFinder pathfindingUnit)
+    
+    public void Claim(EnemyUnitMover enemyUnitMover)
     {
-        _pathfindingUnit = pathfindingUnit;
+        _unitEnemyMover = enemyUnitMover;
     }
-
+    
     private void Update()
     {
         _currentAngle += Time.deltaTime * _moveSpeed;
@@ -40,6 +43,7 @@ public class RingPosition : MonoBehaviour
 
     public void Initialize(float angle, float radius, int ringOrder)
     {
+        _ringOrder = ringOrder;
         _currentAngle = angle;
         _radius = radius;
 
@@ -56,6 +60,6 @@ public class RingPosition : MonoBehaviour
 
     public void ResetClaim()
     {
-        _pathfindingUnit = null;
+        _unitEnemyMover = null;
     }
 }

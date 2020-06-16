@@ -15,9 +15,7 @@ GameObject:
   - component: {fileID: 8631477006666043292}
   - component: {fileID: 4739023574646047561}
   - component: {fileID: 1945186667678286904}
-  - component: {fileID: 6119861632633018108}
   - component: {fileID: 4739023574646047555}
-  - component: {fileID: 4739023574646047554}
   - component: {fileID: 3673379690362226724}
   m_Layer: 8
   m_Name: Ranged Unit
@@ -215,7 +213,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d67d278d9ae74da2a78e056d80463dd3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _killPointDistance: 0.55
   _deathVFX: {fileID: 8283165871974743808, guid: 52d1d95c48304e44e8a52ef4b146ceb7,
     type: 3}
 --- !u!114 &4739023574646047561
@@ -245,18 +242,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbbdff2dbaae474b9b7c2aecd52ec539, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &6119861632633018108
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4739023574646047564}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 92e83da0916f43b6981ff76a0e463edf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &4739023574646047555
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -272,19 +257,6 @@ MonoBehaviour:
   _projectilePrefab: {fileID: 4211372308748911053, guid: dd95728549a20744fa953799ac7ebcfe,
     type: 3}
   _shotSpeed: 5
---- !u!114 &4739023574646047554
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4739023574646047564}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 980067abe20e4adc880ac90867117349, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _moveSpeed: 3
 --- !u!114 &3673379690362226724
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -297,4 +269,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d90eb3af089467dbc6773da1c6b2ec8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _initialPoolSize: 20
+  _initialPoolSize: 5

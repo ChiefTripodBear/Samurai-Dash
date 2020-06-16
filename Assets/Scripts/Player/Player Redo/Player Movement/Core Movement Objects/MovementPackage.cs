@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class MovementPackage
@@ -28,10 +27,8 @@ public class MovementPackage
             out var boundary))
             Destination = null;
 
-        if (Vector2.Distance(destination.TargetLocation, mover.transform.position) > 0.1f)
-        {
+        if (Vector2.Distance(destination.TargetLocation, mover.transform.position) > 0.1f) 
             OnFirstMove?.Invoke();
-        }
     }
     
     public MovementPackage(Destination destination, IntersectionAnalysis previousIntersectionAnalysis, Transform mover, float distanceScalar)

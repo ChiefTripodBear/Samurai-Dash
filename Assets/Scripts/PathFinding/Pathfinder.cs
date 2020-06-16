@@ -2,23 +2,22 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Pathfinder : MonoBehaviour
+public class Pathfinder
 {
     private NodeGrid _nodeGrid;
-    private EnemyUnit _enemyUnit;
+    private IUnitEnemy _enemyUnit;
     private Player _player;
 
-    private void Awake()
+    public Pathfinder(IUnitEnemy enemyUnit, Player player, NodeGrid nodeGrid)
     {
-        _nodeGrid = FindObjectOfType<NodeGrid>();
-        _enemyUnit = GetComponent<EnemyUnit>();
-        _player = FindObjectOfType<Player>();
+        _nodeGrid = nodeGrid;
+        _enemyUnit = enemyUnit;
+        _player = player;
     }
-    
-    public Vector2[] Path(Vector2 targetPosition, ref bool completedRequest)
+
+    public Vector2[] Path(Vector2 targetPosition)
     {
-        completedRequest = false;
-        var startingNode = _nodeGrid.NodeFromWorldPosition(transform.position);
+        var startingNode = _nodeGrid.NodeFromWorldPosition(_enemyUnit.Transform.position);
         var targetNode = _nodeGrid.NodeFromWorldPosition(targetPosition);
 
         if(GameUnitManager.IsValidNodeFromUnit(targetNode, _enemyUnit) && startingNode.IsWalkable && targetNode.IsWalkable)
@@ -35,15 +34,17 @@ public class Pathfinder : MonoBehaviour
 
                 if (currentNode == targetNode)
                 {
-                    completedRequest = true;
                     return RetracePath(startingNode, targetNode);
                 }
 
                 foreach (var neighbor in _nodeGrid.Neighbors(currentNode))
                 {
                     if (!GameUnitManager.IsValidNodeFromUnit(neighbor, _enemyUnit) ||
-                        !GameUnitManager.IsValidNodeFromPlayer(neighbor, _player) || !neighbor.IsWalkable || closedSet.Contains(neighbor)) 
+                        !GameUnitManager.IsValidNodeFromPlayer(neighbor, _player) || !neighbor.IsWalkable ||
+                        closedSet.Contains(neighbor))
+                    {
                         continue;
+                    }
                     
                     var newMovementCostToNeighbor = currentNode.GCost + GetDistance(currentNode, neighbor);
 
@@ -62,7 +63,6 @@ public class Pathfinder : MonoBehaviour
             }
         }
 
-        completedRequest = true;
         return null;
     }
 

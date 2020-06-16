@@ -16,9 +16,7 @@ GameObject:
   - component: {fileID: 6317276388153817555}
   - component: {fileID: 6317276388153817551}
   - component: {fileID: 6317276388153817550}
-  - component: {fileID: 6317276388153817540}
   - component: {fileID: 6317276388153817547}
-  - component: {fileID: 6317276388153817541}
   m_Layer: 8
   m_Name: Dummy Unit
   m_TagString: Untagged
@@ -257,19 +255,6 @@ MonoBehaviour:
   _projectionDistance: 10
   _angle: -315.3
   _setAngle: 1
---- !u!114 &6317276388153817540
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6317276388153817554}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6dd6a9e1c10c4da7aaa15af6cc6960d0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _moveSpeed: 0
 --- !u!114 &6317276388153817547
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -283,15 +268,3 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _dashAttackSpeed: 6
---- !u!114 &6317276388153817541
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6317276388153817554}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 92e83da0916f43b6981ff76a0e463edf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 

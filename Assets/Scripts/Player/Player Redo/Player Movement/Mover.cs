@@ -20,6 +20,7 @@ public class Mover
     private bool _requested;
     private int _boundaryPathIndex = 0;
     private float _currentDistanceFromTargetLocation;
+    public Vector2 StartingPosition;
     
     private Player _player;
     private Transform _transform;
@@ -88,6 +89,10 @@ public class Mover
 
         if (Arrived(_movementPackage.Destination.TargetLocation))
         {
+            if (MovementPackage.MovementCount > 1)
+            {
+                GameUnitManager.PerformPostKillFear(_player);
+            }
             Reset();
             return;
         }
@@ -186,34 +191,5 @@ public class Mover
     public void SetMoveSpeed(float safetyRedirectMoveSpeed)
     {
         _currentMoveSpeed = safetyRedirectMoveSpeed;
-    }
-}
-
-public class ParallelMovingCheck
-{
-    private readonly Transform _mover;
-
-    private Collider2D[] _potentialParallelUnits = new Collider2D[20];
-    
-    public ParallelMovingCheck(Transform mover)
-    {
-        _mover = mover;
-    }
-    
-    public void Tick(Vector2 moveDirection)
-    {
-        var colliderCount = Physics2D.OverlapCircleNonAlloc(_mover.position, 1f, _potentialParallelUnits);
-
-        for (var i = 0; i < colliderCount; i++)
-        {
-            var unit = _potentialParallelUnits[i].GetComponent<IUnit>();
-            
-            if(unit == null) continue;
-
-            if (!TargetDetector.DotProductSuccess(unit, moveDirection)) continue;
-            
-            Debug.Log($"Parallel moving success for {unit.Transform.name}");
-            unit.KillHandler.SetKillPoint();
-        }
     }
 }

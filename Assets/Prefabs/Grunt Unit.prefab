@@ -14,11 +14,9 @@ GameObject:
   - component: {fileID: 4860708540992981462}
   - component: {fileID: 4513942268174516336}
   - component: {fileID: 211297131107200291}
-  - component: {fileID: 1332883659772666591}
   - component: {fileID: 2276852360251255879}
   - component: {fileID: 2996106953819414674}
   - component: {fileID: 8263713084565841891}
-  - component: {fileID: 4376995301477791015}
   m_Layer: 8
   m_Name: Grunt Unit
   m_TagString: Untagged
@@ -229,19 +227,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _dashAttackSpeed: 6
---- !u!114 &1332883659772666591
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2996106953819414679}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6dd6a9e1c10c4da7aaa15af6cc6960d0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _moveSpeed: 3
 --- !u!114 &2276852360251255879
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -282,17 +267,5 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dbbdff2dbaae474b9b7c2aecd52ec539, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &4376995301477791015
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2996106953819414679}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 92e83da0916f43b6981ff76a0e463edf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

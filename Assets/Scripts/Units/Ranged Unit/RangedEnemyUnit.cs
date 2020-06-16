@@ -1,12 +1,13 @@
 ﻿public class RangedEnemyUnit : EnemyUnit
 {
-    public override void Register()
-    {
-        UnitManager<RangedEnemyUnit>.Instance.RegisterUnit(this);
-    }
+    public override EnemyUnitMover EnemyUnitMover { get; protected set; }
+    public override UnitManager UnitManager { get; protected set; }
 
-    public override void RemoveFromUnitManager()
+    protected override void Awake()
     {
-        UnitManager<RangedEnemyUnit>.Instance.RegisterUnit(this);
+        EnemyUnitMover = new RangedUnitMover();
+        UnitManager = FindObjectOfType<RangedUnitManager>();
+
+        base.Awake();
     }
 }

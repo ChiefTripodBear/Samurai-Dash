@@ -7,7 +7,9 @@ public class NodeGrid : MonoBehaviour
     [SerializeField] private bool _drawGizmos;
     [SerializeField] private Vector2 _gridSize;
     [SerializeField] private float _nodeRadius = 0.5f;
-    
+
+    public Vector2 GridSize => _gridSize;
+
     private int _nodeCountX, _nodeCountY;
     private float _nodeDiameter;
 

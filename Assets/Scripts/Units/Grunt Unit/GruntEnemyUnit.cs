@@ -1,12 +1,12 @@
 ﻿public class GruntEnemyUnit : EnemyUnit
 {
-    public override void Register()
-    {
-        UnitManager<GruntEnemyUnit>.Instance.RegisterUnit(this);
-    }
+    public override EnemyUnitMover EnemyUnitMover { get; protected set; }
+    public override UnitManager UnitManager { get; protected set; }
 
-    public override void RemoveFromUnitManager()
+    protected override void Awake()
     {
-        UnitManager<GruntEnemyUnit>.Instance.RemoveUnit(this);
+        EnemyUnitMover = new GruntUnitMover();
+        UnitManager = FindObjectOfType<GruntUnitManager>();
+        base.Awake();
     }
 }

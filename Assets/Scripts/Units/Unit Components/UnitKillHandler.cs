@@ -4,19 +4,20 @@ using UnityEngine;
 
 public class UnitKillHandler : MonoBehaviour
 {
+    private const float KillPointDistance = 0.55f;
     public event Action OnDeath;
     public static event Action UnitKillPointReached;
 
-    [SerializeField] private float _killPointDistance = 1.5f;
     [SerializeField] private GameObject _deathVFX;
 
-    private bool _alreadyRegisteredToKillQueue;
+    private bool _dead;
     private Vector2? _killPoint;
     public Vector2? KillPoint => _killPoint;
 
     private AngleDefinition _unitAngle;
     private Player _player;
     private Color _defaultColor;
+
     
     private void Awake()
     {
@@ -38,12 +39,12 @@ public class UnitKillHandler : MonoBehaviour
 
     public void SetKillPoint()
     {
-        _killPoint = ((Vector2)transform.position - _unitAngle.GetPointClosestTo(_player.transform.position)).normalized * _killPointDistance + (Vector2)transform.position;
+        _killPoint = ((Vector2)transform.position - _unitAngle.GetPointClosestTo(_player.transform.position)).normalized * KillPointDistance + (Vector2)transform.position;
     }
 
     public Vector2 GetFauxKillPoint()
     {
-        return ((Vector2)transform.position - _unitAngle.GetPointClosestTo(_player.transform.position)).normalized * _killPointDistance + (Vector2)transform.position;
+        return ((Vector2)transform.position - _unitAngle.GetPointClosestTo(_player.transform.position)).normalized * KillPointDistance + (Vector2)transform.position;
     }
 
     private void Update()
@@ -54,10 +55,10 @@ public class UnitKillHandler : MonoBehaviour
             var killPointToThis = (_killPoint.Value - (Vector2) transform.position).normalized;
             var dot = Vector2.Dot(killPointToThis, killPointToPlayer);
 
-            if (!_alreadyRegisteredToKillQueue && dot < 0 &&
+            if (!_dead && dot < 0 &&
                 Vector2.Distance(_player.transform.position, _killPoint.Value) > 0f)
             {
-                _alreadyRegisteredToKillQueue = true;
+                _dead = true;
                 Kill();
             }
         }
@@ -85,7 +86,7 @@ public class UnitKillHandler : MonoBehaviour
             {
                 Instantiate(_deathVFX, transform.position, Quaternion.identity);
 
-                _alreadyRegisteredToKillQueue = false;
+                _dead = false;
                 _killPoint = null;
                 gameObject.SetActive(false);
             }

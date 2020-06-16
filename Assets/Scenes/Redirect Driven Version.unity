@@ -1814,8 +1814,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _waveOrder:
-  - {fileID: 11400000, guid: 8feacf6331d171b4695a096a6601c9bf, type: 2}
-  - {fileID: 11400000, guid: 008143e53b0b003468f1290ee2cd1f61, type: 2}
+  - {fileID: 11400000, guid: c1a2a75b689d048488b2bc390a670d09, type: 2}
+  - {fileID: 11400000, guid: c1a2a75b689d048488b2bc390a670d09, type: 2}
   _looping: 1
 --- !u!114 &2012987720
 MonoBehaviour:
@@ -1872,7 +1872,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6082ed96d3f457cb082ded4b02b5530, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _ringPositionPrefab: {fileID: 7487700352922249078, guid: 2e8f3df4c428fa047a0a069bdd91769c,
+  _ringPositionPrefab: {fileID: 3522948385000750636, guid: 2e8f3df4c428fa047a0a069bdd91769c,
     type: 3}
   _innerRadius: 5
   _ringPositions: 21
@@ -2125,7 +2125,7 @@ PrefabInstance:
     - target: {fileID: 259825453002527740, guid: 6d2f829e8eb67534da79ab12cd181718,
         type: 3}
       propertyPath: _noDeath
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 259825453002527741, guid: 6d2f829e8eb67534da79ab12cd181718,
         type: 3}

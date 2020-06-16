@@ -70,7 +70,7 @@ public class RingManager : MonoBehaviour
     private RingPosition GetBestPositionFromOppositePoint(int ringOrder, Vector2 currentPositionOppositePoint, Queue<RingPosition> ringOrderQueue)
     {
         return _ringOrders[ringOrder]
-            .Where(t => !t.Claimed && !ringOrderQueue.Contains(t))
+            .Where(t => !t.IsClaimed && !ringOrderQueue.Contains(t))
             .OrderBy(t => Vector2.Distance(t.transform.position, currentPositionOppositePoint))
             .FirstOrDefault();
     }
@@ -80,13 +80,17 @@ public class RingManager : MonoBehaviour
         var ringQueue = _ringPositionQueues[order];
 
         var nextAvailable = ringQueue.Count > 0 ? ringQueue.Dequeue() : null;
+        // Debug.Log($"Previous {previousPosition} : Next available {nextAvailable}: Order {order}: Count: {ringQueue.Count}");
 
         var ringToReturn = nextAvailable == null ? previousPosition : nextAvailable;
 
         if (nextAvailable != null)
         {
             if (previousPosition != null)
+            {
+                // Debug.Log($"Enqueuing {previousPosition}");
                 ringQueue.Enqueue(previousPosition);
+            }
         }
 
         return ringToReturn; 
@@ -105,6 +109,9 @@ public class RingManager : MonoBehaviour
 
     public void TurnInPosition(RingPosition ringPosition, int ringOrder)
     {
+        if (ringPosition == null) return;
+        
+        ringPosition.ResetClaim();
         _ringPositionQueues[ringOrder].Enqueue(ringPosition);
     }
 }
