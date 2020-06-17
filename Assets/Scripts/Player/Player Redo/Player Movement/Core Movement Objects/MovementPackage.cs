@@ -22,8 +22,8 @@ public class MovementPackage
         MovementCount++;
         DistanceScalar = distanceScalar;
         Destination = destination;
-        Destination.TargetLocation = PlayerBoundaryDetector.HandleBoundaryCollision(Destination.TargetLocation, destination.MoveDirection);
-        if (PlayerBoundaryDetector.WillBeMovingThroughBoundary(_mover.transform.position, Destination.TargetLocation,
+        Destination.TargetLocation = BoundaryHelper.HandleBoundaryCollision(Destination.TargetLocation, destination.MoveDirection);
+        if (BoundaryHelper.WillBeMovingThroughBoundary(_mover.transform.position, Destination.TargetLocation,
             out var boundary))
             Destination = null;
 
@@ -49,7 +49,7 @@ public class MovementPackage
 
         Evaluate(distanceScalar);
 
-        Destination.TargetLocation = PlayerBoundaryDetector.HandleBoundaryCollision(Destination.TargetLocation, destination.MoveDirection);
+        Destination.TargetLocation = BoundaryHelper.HandleBoundaryCollision(Destination.TargetLocation, destination.MoveDirection);
         BoundaryPathFinder = new BoundaryPathFinder(_mover, Destination);
     }
 

@@ -20,7 +20,7 @@ public class Pathfinder
         var startingNode = _nodeGrid.NodeFromWorldPosition(_enemyUnit.Transform.position);
         var targetNode = _nodeGrid.NodeFromWorldPosition(targetPosition);
 
-        if(GameUnitManager.IsValidNodeFromUnit(targetNode, _enemyUnit) && startingNode.IsWalkable && targetNode.IsWalkable)
+        if(GameUnitManager.IsValidNodeFromUnit(targetNode, _enemyUnit) && targetNode.IsWalkable)
         {
             var openSet = new Heap<Node>(_nodeGrid.MaxSize);
             var closedSet = new HashSet<Node>();
@@ -37,7 +37,7 @@ public class Pathfinder
                     return RetracePath(startingNode, targetNode);
                 }
 
-                foreach (var neighbor in _nodeGrid.Neighbors(currentNode))
+                foreach (var neighbor in _nodeGrid.Neighbors(currentNode, 3))
                 {
                     if (!GameUnitManager.IsValidNodeFromUnit(neighbor, _enemyUnit) ||
                         !GameUnitManager.IsValidNodeFromPlayer(neighbor, _player) || !neighbor.IsWalkable ||

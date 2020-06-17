@@ -21,7 +21,7 @@ public class ParallelMovingCheck
             
             if(unit == null) continue;
 
-            if (!TargetDetector.DotProductSuccess(unit, moveDirection)) continue;
+            if (!TargetDetector.DotProductSuccess(unit, moveDirection, .95f)) continue;
             
             unit.KillHandler.SetKillPoint();
         }

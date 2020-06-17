@@ -11,21 +11,63 @@ public class RangedAttack : MonoBehaviour, IUnitAttack
 
     private Player _player;
 
-    private void Awake()
+    private Vector2? _currentDestination;
+    private EnemyUnitMover _enemyMover;
+    private bool _attacked;
+
+    private void Start()
     {
         _player = FindObjectOfType<Player>();
+        var unit  = GetComponent<EnemyUnit>();
+
+        _enemyMover = unit.EnemyUnitMover;
+        _enemyMover.AtDestination += SetDestination;
+    }
+
+    private void OnDestroy()
+    {
+        if (_enemyMover == null) return;
+        
+        _enemyMover.AtDestination -= SetDestination;
+    }
+
+    private void SetDestination(Vector2 destination)
+    {
+        _currentDestination = destination;
     }
 
     public IEnumerator Attack()
     {
+        _currentDestination = null;
         OnAttackStart?.Invoke();
+        _attacked = false;
 
-        var shotDirection = (_player.transform.position - transform.position).normalized;
+        while (true)
+        {
+            while (!_currentDestination.HasValue)
+            {
+                yield return null;
+            }
 
-        var projectile = _projectilePrefab.Get<RangedUnitProjectile>(null, transform.position, Quaternion.identity);
+            if (Vector2.Distance(transform.position, _currentDestination.Value) < 0.5f && !_attacked)
+            {
+                _attacked = true;
+                var shotDirection = (_player.transform.position - transform.position).normalized;
 
-        projectile.Launch(shotDirection * _shotSpeed);
-        OnAttackFinished?.Invoke();
-        yield break;
+                var projectile = _projectilePrefab.Get<RangedUnitProjectile>(null, transform.position, Quaternion.identity);
+
+                projectile.Launch(shotDirection * _shotSpeed);
+                OnAttackFinished?.Invoke();
+                yield break;
+            }
+
+            yield return null;
+        }
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.cyan;
+        if (_currentDestination != null) Gizmos.DrawWireSphere(_currentDestination.Value, 1f);
     }
 }

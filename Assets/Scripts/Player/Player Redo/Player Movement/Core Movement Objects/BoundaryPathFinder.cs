@@ -20,7 +20,7 @@ public class BoundaryPathFinder
 
     private void EvaluateBoundaries()
     {
-        if (PlayerBoundaryDetector.WillBeMovingThroughBoundary(_mover.position, _destination.TargetLocation, out var boundary))
+        if (BoundaryHelper.WillBeMovingThroughBoundary(_mover.position, _destination.TargetLocation, out var boundary))
         {
             if (boundary == null) return;
             

@@ -5,7 +5,7 @@ public static class TargetDetector
     private const int CheckCushion = 1;
     private static int _searchResolution = 15;
     private static float _degreesToCheck = 15;
-    private static float _dotKillThreshold = 0.6f;
+    private static float _dotKillThreshold = 0.7f;
     private static readonly float _angleStep = _degreesToCheck / _searchResolution;
     private static Vector2 _firePosition;
 
@@ -44,12 +44,7 @@ public static class TargetDetector
 
         return null;
     }
-
-    private static bool UnitKillPointInUnwalkable(IUnit unit)
-    {
-        return PlayerBoundaryDetector.WillCollideWithBoundaryAtTargetLocation(unit.KillHandler.GetFauxKillPoint());
-    }
-
+    
     public static bool FoundInvalidEnemy(float rayLength, Vector2 moveDirection, Vector2 firePosition)
     {
         var originalAngle = Vector2.SignedAngle(moveDirection, Vector2.up);
@@ -79,9 +74,14 @@ public static class TargetDetector
         return false;
     }
 
-    public static bool DotProductSuccess(IUnit unit, Vector2 moveDirection)
+    private static bool DotProductSuccess(IUnit unit, Vector2 moveDirection)
     {
         return Vector2.Dot(unit.AngleDefinition.KillVector, moveDirection) > _dotKillThreshold;
+    }
+
+    public static bool DotProductSuccess(IUnit unit, Vector2 moveDirection, float dotThreshold)
+    {
+        return Vector2.Dot(unit.AngleDefinition.KillVector, moveDirection) > dotThreshold;
     }
 
     public static void DrawGizmos()

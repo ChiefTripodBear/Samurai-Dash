@@ -227,6 +227,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _dashAttackSpeed: 6
+  _waitTimeAfterDash: 2
 --- !u!114 &2276852360251255879
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -239,7 +240,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d67d278d9ae74da2a78e056d80463dd3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _killPointDistance: 0.55
   _deathVFX: {fileID: 8283165871974743808, guid: 52d1d95c48304e44e8a52ef4b146ceb7,
     type: 3}
 --- !u!114 &2996106953819414674

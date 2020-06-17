@@ -45,8 +45,8 @@ public class UnitChainEvaluator : MonoBehaviour
                         (unit.KillHandler.GetFauxKillPoint() - (Vector2) unit.Transform.position).normalized;
                     if(possibleIntersections.Any(t => Vector2.Distance(intersect.Value, t.AngleDefinition.IntersectionPoint) < 2f)) continue;
                     if (!_nodeGrid.NodeFromWorldPosition(intersect.Value).IsWalkable 
-                        || PlayerBoundaryDetector.WillCollideWithBoundaryAtTargetLocation(unit.KillHandler.GetFauxKillPoint(), directionThroughKillPoint, 1.5f)
-                        || !PlayerBoundaryDetector.OnScreen(intersect.Value)) continue;
+                        || BoundaryHelper.WillCollideWithBoundaryAtTargetLocation(unit.KillHandler.GetFauxKillPoint(), directionThroughKillPoint, 1.5f)
+                        || !BoundaryHelper.OnScreen(intersect.Value)) continue;
 
                     if(Vector2.Distance(unit.Transform.position, intersect.Value) < 2f 
                        || Vector2.Distance(unit.Transform.position, firstStartCheckPoint) < 1f

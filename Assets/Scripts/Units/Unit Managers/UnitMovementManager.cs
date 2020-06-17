@@ -24,15 +24,10 @@ public class UnitMovementManager
 
         unitEnemy.KillHandler.OnDeath += () =>
         {
+            Debug.Log("Died - movement manager");
             _unitEnemyMover.CanMoveThroughPath = false;
             _unitManager.TurnInRingPosition(_currentWayPoint as RingPosition);
         };
-        
-        unitEnemy.OnActivated += () =>
-        {
-            _unitEnemyMover.CanMoveThroughPath = true;
-            GetPath();
-        };    
     }
 
     private void GetPath()
@@ -56,7 +51,7 @@ public class UnitMovementManager
         if (path == null)
             for (var i = 0; i < _pathRequestAttemptsBeforeRandomizingLocation; i++)
             {
-                var randomPosition = SpawnHelper.Instance.ValidSpawnPosition();
+                var randomPosition = SpawnHelper.Instance.ValidPointOnScreen();
                 path = _pathfinder.Path(randomPosition);
 
                 if (path != null && path.Length > 0) break;
@@ -70,7 +65,12 @@ public class UnitMovementManager
 
         _moveRoutine = _unitManager.StartCoroutine(_unitEnemyMover.MoveToWayPoint(path, _currentWayPoint, _mover, 4f));
     }
-    
+
+    public void MoveToPoint(Vector2 point)
+    {
+        _unitEnemyMover.CanMoveThroughPath = true;
+        _unitManager.StartCoroutine(_unitEnemyMover.MoveToPointWithoutPathfinder(_mover, point, 4f));
+    }
 
     private void SetWayPoint(IWaypoint wayPoint)
     {

@@ -5,10 +5,16 @@ using UnityEngine;
 public abstract class EnemyUnitMover
 {
     public event Action NeedPath;
+    public event Action<Vector2> AtDestination;
+    public abstract event Action InheritancePathRequest;
     private int _pathIndex;
     private Vector2 _startingDestinationPosition;
-
     public bool CanMoveThroughPath { get; set; } = true;
+
+    protected EnemyUnitMover()
+    {
+        InheritancePathRequest += () => NeedPath?.Invoke();
+    }
 
     public IEnumerator MoveToWayPoint(Vector2[] path, IWaypoint targetWayPoint, Transform mover, float moveSpeed)
     {
@@ -35,13 +41,16 @@ public abstract class EnemyUnitMover
             
             var currentWayPoint = path[_pathIndex];
             
-            if (ArrivedAtPointOnPath(mover, currentWayPoint))
+            if (ArrivedAtPoint(mover, currentWayPoint))
             {
                 _pathIndex++;
 
                 if (TargetMoved(_startingDestinationPosition, targetWayPoint.Transform.position))
                 {
                     _pathIndex = 0;
+                    AtDestination?.Invoke(currentWayPoint);
+                    
+                    yield return new WaitForSeconds(.5f);
                     NeedPath?.Invoke();
                     yield break;
                 }
@@ -69,10 +78,9 @@ public abstract class EnemyUnitMover
 
         for (var i = 0f; i < seconds; i += Time.deltaTime)
         {
-            if (_pathIndex >= path.Length)
+            if (FinishedPath(path.Length))
             {
                 yield return new WaitForSeconds(.5f);
-
                 _pathIndex = 0;
                 NeedPath?.Invoke();
                 yield break;
@@ -80,7 +88,7 @@ public abstract class EnemyUnitMover
 
             var currentWayPoint = path[_pathIndex];
 
-            if (ArrivedAtPointOnPath(mover, currentWayPoint))
+            if (ArrivedAtPoint(mover, currentWayPoint))
             {
                 _pathIndex++;
             }
@@ -93,9 +101,20 @@ public abstract class EnemyUnitMover
         }
     }
 
+    public IEnumerator MoveToPointWithoutPathfinder(Transform mover, Vector2 point, float moveSpeed)
+    {
+        while (!ArrivedAtPoint(mover, point))
+        {
+            Move(mover, moveSpeed, point);
+            yield return null;
+        }
+        
+        NeedPath?.Invoke();
+    }
+
     private bool FinishedPath(int pathCount) => _pathIndex >= pathCount;
 
-    private static bool ArrivedAtPointOnPath(Transform mover, Vector2 currentWayPoint) 
+    private static bool ArrivedAtPoint(Transform mover, Vector2 currentWayPoint) 
         => Vector2.Distance(mover.transform.position, currentWayPoint) < 0.1f;
 
     private static void Move(Transform mover, float moveSpeed, Vector2 currentWayPoint) 

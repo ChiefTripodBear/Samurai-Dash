@@ -7,8 +7,6 @@ public class RangedUnitProjectile : PooledMonoBehaviour, IUnit
 {
     public AngleDefinition AngleDefinition { get; private set; }
     public UnitKillHandler KillHandler { get; private set; }
-    public IUnitPathFinder UnitPathFinder { get; }
-    public IUnitAttack UnitAttack { get; }
     public Node CurrentNode { get; private set; }
     public Transform Transform => transform;
     private Rigidbody2D _rigidbody2D;

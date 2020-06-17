@@ -490,10 +490,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _ringOrder: 0
-  _minAttackers: 0
-  _maxAttackers: 0
-  _minAttackTime: 5
-  _maxAttackTime: 10
+  _minAttackers: 1
+  _maxAttackers: 4
+  _minTimeBetweenAttacks: 5
+  _maxTimeBetweenAttacks: 10
+  _attackDelayBetweenAttackers: 3
 --- !u!114 &195482707
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -507,6 +508,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _ringOrder: 1
+  _minAttackerCount: 1
+  _maxAttackerCount: 3
 --- !u!1 &420295125
 GameObject:
   m_ObjectHideFlags: 0
@@ -1814,8 +1817,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _waveOrder:
-  - {fileID: 11400000, guid: c1a2a75b689d048488b2bc390a670d09, type: 2}
-  - {fileID: 11400000, guid: c1a2a75b689d048488b2bc390a670d09, type: 2}
+  - {fileID: 11400000, guid: 8feacf6331d171b4695a096a6601c9bf, type: 2}
+  - {fileID: 11400000, guid: 8feacf6331d171b4695a096a6601c9bf, type: 2}
   _looping: 1
 --- !u!114 &2012987720
 MonoBehaviour:

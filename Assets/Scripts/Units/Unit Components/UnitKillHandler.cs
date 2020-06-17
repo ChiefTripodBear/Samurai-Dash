@@ -26,17 +26,6 @@ public class UnitKillHandler : MonoBehaviour
         _defaultColor = GetComponent<SpriteRenderer>().color;
     }
 
-    private void OnEnable()
-    {
-        GetComponent<SpriteRenderer>().color = _defaultColor;
-        GetComponent<Collider2D>().enabled = true;
-    }
-
-    private void OnDisable()
-    {
-        OnDeath?.Invoke();
-    }
-
     public void SetKillPoint()
     {
         _killPoint = ((Vector2)transform.position - _unitAngle.GetPointClosestTo(_player.transform.position)).normalized * KillPointDistance + (Vector2)transform.position;

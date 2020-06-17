@@ -1,8 +1,5 @@
-﻿using System;
-
-public interface IUnitEnemy : IUnit
+﻿public interface IUnitEnemy : IUnit
 {
-    event Action OnActivated;
     IUnitAttack UnitAttack { get; }
     UnitEventSpecificMovements UnitEventSpecificMovements { get; }
     EnemyUnitMover EnemyUnitMover { get; }

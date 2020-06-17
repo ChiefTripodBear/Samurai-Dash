@@ -13,7 +13,6 @@ public class WaveSpawner : MonoBehaviour
     
     private List<EnemyUnit> _currentWaveUnits = new List<EnemyUnit>();
     private int _waveCompletionCount;
-    private int _currentWaveEnemyCount;
 
     private IEnumerator Start()
     {
@@ -38,7 +37,7 @@ public class WaveSpawner : MonoBehaviour
             }
             else
             {
-                yield return new WaitWhile(() => _currentWaveEnemyCount < _waveCompletionCount);
+                yield return new WaitWhile(() => _currentWaveUnits.Count > 0);
                 yield return new WaitForSeconds(currentWave.TimeUntilNextWave);
             }
             
@@ -48,20 +47,19 @@ public class WaveSpawner : MonoBehaviour
 
     private IEnumerator SpawnAllEnemiesInWave(Wave currentWave)
     {
-        _currentWaveEnemyCount = currentWave.SpawnOrder.Count;
-        
         for (var i = 0; i < currentWave.SpawnOrder.Count; i++)
         {
-            var unit = currentWave.SpawnOrder[i].Get<EnemyUnit>(null, SpawnHelper.Instance.ValidSpawnPosition(), Quaternion.identity);
+            var unit = currentWave.SpawnOrder[i].Get<EnemyUnit>(null, currentWave.SpawnPoint.position, Quaternion.identity);
             
             unit.Register();
+            unit.MoveFromSpawn(currentWave.DestinationAfterSpawn.position);
             
-            if (currentWave.CanStartNewWaveDuringCurrent)
+            if (!currentWave.CanStartNewWaveDuringCurrent)
             {
-                unit.OnDestroyEvent += () => _waveCompletionCount++;
                 _currentWaveUnits.Add(unit);
+                unit.KillHandler.OnDeath += () => _currentWaveUnits.Remove(unit);
             }
-            
+
             yield return new WaitForSeconds(currentWave.SpawnDelay);
         }
     }

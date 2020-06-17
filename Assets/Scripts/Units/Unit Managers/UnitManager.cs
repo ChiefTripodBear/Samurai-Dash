@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class UnitManager : MonoBehaviour
@@ -7,6 +8,13 @@ public abstract class UnitManager : MonoBehaviour
     
     protected List<IUnitEnemy> Units = new List<IUnitEnemy>();
 
+    protected Player Player { get; private set; }
+
+    private void Awake()
+    {
+        Player = FindObjectOfType<Player>();
+    }
+
     public void RegisterUnit(IUnitEnemy unit)
     {
         if (Units.Contains(unit)) return;
@@ -14,12 +22,17 @@ public abstract class UnitManager : MonoBehaviour
         Units.Add(unit);
         GameUnitManager.RegisterUnit(unit);
         UnitChainEvaluator.Instance.AddUnit(unit);
+        OnRegisterUnit(unit);
     }
 
+    protected abstract void OnRegisterUnit(IUnitEnemy unitEnemy);
+    protected abstract void OnRemoveUnit(IUnitEnemy unitEnemy);
+    
     public void RemoveUnit(IUnitEnemy unit)
     {
         Units.Remove(unit);
         GameUnitManager.RemoveUnit(unit);
+        OnRemoveUnit(unit);
     }
 
     public RingPosition GetNextAvailableRingPosition(IWaypoint ringPosition)

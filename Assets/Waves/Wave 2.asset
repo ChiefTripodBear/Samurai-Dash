@@ -16,8 +16,10 @@ MonoBehaviour:
   - {fileID: 3673379690362226724, guid: 4e38dd8f3b6200b4aa331ea704ebf85d, type: 3}
   - {fileID: 3673379690362226724, guid: 4e38dd8f3b6200b4aa331ea704ebf85d, type: 3}
   - {fileID: 4513942268174516336, guid: e88a9dec3c41d5e4ab7ed2df8ba6e945, type: 3}
-  - {fileID: 4513942268174516336, guid: e88a9dec3c41d5e4ab7ed2df8ba6e945, type: 3}
-  - {fileID: 4513942268174516336, guid: e88a9dec3c41d5e4ab7ed2df8ba6e945, type: 3}
   _spawnDelay: 1.5
   _timeUntilNextWave: 5
-  _canStartNewWaveDuringCurrent: 1
+  _canStartNewWaveDuringCurrent: 0
+  _spawnPoint: {fileID: 2055612077463571665, guid: aec0c934d9e831c4484c1228be4e1413,
+    type: 3}
+  _destinationAfterSpawn: {fileID: 2474700062872255118, guid: 060827209b3f19144833237195388a33,
+    type: 3}

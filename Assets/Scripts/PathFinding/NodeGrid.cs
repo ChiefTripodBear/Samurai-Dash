@@ -61,12 +61,13 @@ public class NodeGrid : MonoBehaviour
         return _grid[x, y];
     }
 
-    public List<Node> Neighbors(Node node)
+    public List<Node> Neighbors(Node node, int areaScalar)
     {
+        var scalarStep = areaScalar / 3;
         var neighbors = new List<Node>();
 
-        for (var x = -1; x <= 1; x++)
-        for (var y = -1; y <= 1; y++)
+        for (var x = -scalarStep; x <= scalarStep; x++)
+        for (var y = -scalarStep; y <= scalarStep; y++)
         {
             if(x == 0 && y == 0) continue;
 
@@ -100,7 +101,7 @@ public class NodeGrid : MonoBehaviour
     
     public bool WorldPositionIsOnNodeInSafetyGrid(Vector2 safetyCenter, Vector2 positionToCheck)
     {
-        var neighborSafetyNodes = Neighbors(NodeFromWorldPosition(safetyCenter));
+        var neighborSafetyNodes = Neighbors(NodeFromWorldPosition(safetyCenter), 6);
 
         var nodeToCheck = NodeFromWorldPosition(positionToCheck);
 
@@ -119,6 +120,19 @@ public class NodeGrid : MonoBehaviour
                 Gizmos.color = node.IsWalkable ? Color.white : Color.red;
                 Gizmos.DrawWireCube(node.WorldPosition, Vector2.one * (_nodeDiameter - 0.1f));
             }
+
+            // var player = FindObjectOfType<Player>();
+            //
+            // if (player != null)
+            // {
+            //     var playerNeighbors = Neighbors(NodeFromWorldPosition(player.transform.position), 6);
+            //
+            //     foreach (var node in playerNeighbors)
+            //     {
+            //         Gizmos.color = Color.green;
+            //         Gizmos.DrawCube(node.WorldPosition, Vector2.one * (_nodeDiameter - 0.1f));
+            //     }
+            // }
         }
     }
 }

@@ -19,17 +19,10 @@ MonoBehaviour:
   - {fileID: 4513942268174516336, guid: e88a9dec3c41d5e4ab7ed2df8ba6e945, type: 3}
   - {fileID: 4513942268174516336, guid: e88a9dec3c41d5e4ab7ed2df8ba6e945, type: 3}
   - {fileID: 4513942268174516336, guid: e88a9dec3c41d5e4ab7ed2df8ba6e945, type: 3}
-  - {fileID: 4513942268174516336, guid: e88a9dec3c41d5e4ab7ed2df8ba6e945, type: 3}
-  - {fileID: 4513942268174516336, guid: e88a9dec3c41d5e4ab7ed2df8ba6e945, type: 3}
-  - {fileID: 4513942268174516336, guid: e88a9dec3c41d5e4ab7ed2df8ba6e945, type: 3}
-  - {fileID: 3673379690362226724, guid: 4e38dd8f3b6200b4aa331ea704ebf85d, type: 3}
-  - {fileID: 3673379690362226724, guid: 4e38dd8f3b6200b4aa331ea704ebf85d, type: 3}
-  - {fileID: 3673379690362226724, guid: 4e38dd8f3b6200b4aa331ea704ebf85d, type: 3}
-  - {fileID: 4513942268174516336, guid: e88a9dec3c41d5e4ab7ed2df8ba6e945, type: 3}
-  - {fileID: 4513942268174516336, guid: e88a9dec3c41d5e4ab7ed2df8ba6e945, type: 3}
-  - {fileID: 4513942268174516336, guid: e88a9dec3c41d5e4ab7ed2df8ba6e945, type: 3}
-  - {fileID: 3673379690362226724, guid: 4e38dd8f3b6200b4aa331ea704ebf85d, type: 3}
-  - {fileID: 3673379690362226724, guid: 4e38dd8f3b6200b4aa331ea704ebf85d, type: 3}
   _spawnDelay: 0.5
-  _timeUntilNextWave: 10
+  _timeUntilNextWave: 5
   _canStartNewWaveDuringCurrent: 0
+  _spawnPoint: {fileID: 1310394301387245001, guid: 3c31cd35388f41b498cb9fc5b3ecfc68,
+    type: 3}
+  _destinationAfterSpawn: {fileID: 855221919279611892, guid: e26df2199d8430d488654c1a5ff0253c,
+    type: 3}

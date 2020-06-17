@@ -17,7 +17,7 @@ public class SpawnHelper : MonoBehaviour
         _mainCam = Camera.main;
     }
 
-    public Vector2 ValidSpawnPosition()
+    public Vector2 ValidPointOnScreen()
     {
         Vector2? bestPosition = null;
 

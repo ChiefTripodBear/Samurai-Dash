@@ -8,9 +8,13 @@ public class Wave : ScriptableObject
     [SerializeField] private float _spawnDelay;
     [SerializeField] private float _timeUntilNextWave;
     [SerializeField] private bool _canStartNewWaveDuringCurrent;
+    [SerializeField] private Transform _spawnPoint;
+    [SerializeField] private Transform _destinationAfterSpawn;
 
     public List<EnemyUnit> SpawnOrder => _spawnOrder;
     public float SpawnDelay => _spawnDelay;
     public float TimeUntilNextWave => _timeUntilNextWave;
     public bool CanStartNewWaveDuringCurrent => _canStartNewWaveDuringCurrent;
+    public Transform SpawnPoint => _spawnPoint;
+    public Transform DestinationAfterSpawn => _destinationAfterSpawn;
 }
