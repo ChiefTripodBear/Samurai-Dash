@@ -1,5 +1,8 @@
-﻿public interface IUnitEnemy : IUnit
+﻿using UnityEngine;
+
+public interface IUnitEnemy : IUnit
 {
+    MonoBehaviour MonoBehaviour { get; }
     IUnitAttack UnitAttack { get; }
     UnitEventSpecificMovements UnitEventSpecificMovements { get; }
     EnemyUnitMover EnemyUnitMover { get; }

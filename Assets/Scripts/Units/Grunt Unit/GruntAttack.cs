@@ -14,12 +14,14 @@ public class GruntAttack : MonoBehaviour, IUnitAttack
     private Vector2 _attackDestination;
     private SpriteRenderer _spriteRenderer;
     private Color _defaultColor;
-
-    private void Awake()
+    private UnitMovementManager _movementManager;
+    
+    private void Start()
     {
-        _player = FindObjectOfType<Player>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _defaultColor = _spriteRenderer.color;
+        _player = FindObjectOfType<Player>();
+        _movementManager = GetComponent<IUnitEnemy>().UnitMovementManager;
     }
 
     public IEnumerator Attack()
@@ -31,16 +33,14 @@ public class GruntAttack : MonoBehaviour, IUnitAttack
         var projectedDestination = _player.transform.position + directionToPlayer * 10f;
         _attackDestination = BoundaryHelper.PointBeforeCollisionWithBoundaryWithBuffer(transform.position, projectedDestination, 2f);
         
-        while (Vector2.Distance(transform.position, _attackDestination) > 0.1f)
-        {
-            transform.position = Vector2.MoveTowards(transform.position, _attackDestination, _dashAttackSpeed * Time.deltaTime);
-            
-            yield return null;
-        }
-        
-        _spriteRenderer.color = _defaultColor;
+        _movementManager.MoveToPoint(_attackDestination, true, _waitTimeAfterDash, 0f, 6f, OnAttackPathArrival);
 
-        yield return new WaitForSeconds(_waitTimeAfterDash);
+        yield break;
+    }
+
+    private void OnAttackPathArrival()
+    {
+        _spriteRenderer.color = _defaultColor;
 
         OnAttackFinished?.Invoke();
     }

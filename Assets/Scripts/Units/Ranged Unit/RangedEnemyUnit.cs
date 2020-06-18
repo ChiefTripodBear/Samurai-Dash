@@ -7,7 +7,7 @@
     protected override void Awake()
     {
         UnitAttack = GetComponent<RangedAttack>();
-        EnemyUnitMover = new RangedUnitMover();
+        EnemyUnitMover = new RangedUnitMover(UnitAttack);
         UnitManager = FindObjectOfType<RangedUnitManager>();
 
         base.Awake();

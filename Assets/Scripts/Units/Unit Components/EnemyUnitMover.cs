@@ -4,12 +4,13 @@ using UnityEngine;
 
 public abstract class EnemyUnitMover
 {
-    public event Action NeedPath;
-    public event Action<Vector2> AtDestination;
     public abstract event Action InheritancePathRequest;
+    public event Action NeedPath;
     private int _pathIndex;
     private Vector2 _startingDestinationPosition;
     public bool CanMoveThroughPath { get; set; } = true;
+    public Vector2? CurrentDestination { get; private set; }
+    public bool IsCurrentlyMoving { get; private set; }
 
     protected EnemyUnitMover()
     {
@@ -22,6 +23,7 @@ public abstract class EnemyUnitMover
 
         if (path == null || path.Length <= 0)
         {
+            CurrentDestination = null;
             _pathIndex = 0;
             NeedPath?.Invoke();
             yield break;
@@ -29,11 +31,19 @@ public abstract class EnemyUnitMover
 
         while (true)
         {
-            if (!CanMoveThroughPath) yield break;
+            if (!CanMoveThroughPath)
+            {
+                IsCurrentlyMoving = false;
+                yield break;
+            }
+
+            IsCurrentlyMoving = true;
 
             if (FinishedPath(path.Length))
             {
                 yield return new WaitForSeconds(1f);
+                IsCurrentlyMoving = false;
+                CurrentDestination = null;
                 _pathIndex = 0;
                 NeedPath?.Invoke();
                 yield break;
@@ -41,6 +51,8 @@ public abstract class EnemyUnitMover
             
             var currentWayPoint = path[_pathIndex];
             
+            CurrentDestination = currentWayPoint;
+
             if (ArrivedAtPoint(mover, currentWayPoint))
             {
                 _pathIndex++;
@@ -48,9 +60,10 @@ public abstract class EnemyUnitMover
                 if (TargetMoved(_startingDestinationPosition, targetWayPoint.Transform.position))
                 {
                     _pathIndex = 0;
-                    AtDestination?.Invoke(currentWayPoint);
                     
                     yield return new WaitForSeconds(.5f);
+                    IsCurrentlyMoving = false;
+                    CurrentDestination = null;
                     NeedPath?.Invoke();
                     yield break;
                 }
@@ -63,30 +76,42 @@ public abstract class EnemyUnitMover
             yield return null;
         }
     }
-    
-    public IEnumerator MoveThroughPathForTime(Vector2[] path, Transform mover, float moveSpeed, float seconds)
+
+    public IEnumerator MoveThroughPathWithNoWayPoint(Vector2[] path, Transform mover, float moveSpeed,
+        float waitTimeAtPathEnd, Action pathArrivalCallback)
     {
         if (path == null || path.Length <= 0)
         {
-            yield return new WaitForSeconds(seconds);
+            IsCurrentlyMoving = false;
+            CurrentDestination = null;
             _pathIndex = 0;
             NeedPath?.Invoke();
             yield break;
         }
-        
-        yield return new WaitForSeconds(.2f);
 
-        for (var i = 0f; i < seconds; i += Time.deltaTime)
+        while (true)
         {
-            if (FinishedPath(path.Length))
+            if (!CanMoveThroughPath)
             {
-                yield return new WaitForSeconds(.5f);
-                _pathIndex = 0;
-                NeedPath?.Invoke();
+                IsCurrentlyMoving = false;
                 yield break;
             }
 
+            IsCurrentlyMoving = true;
+
+            if (FinishedPath(path.Length))
+            {
+                yield return new WaitForSeconds(waitTimeAtPathEnd);
+                IsCurrentlyMoving = false;
+                CurrentDestination = null;
+                _pathIndex = 0;
+                pathArrivalCallback();
+                yield break;
+            }
+            
             var currentWayPoint = path[_pathIndex];
+            
+            CurrentDestination = currentWayPoint;
 
             if (ArrivedAtPoint(mover, currentWayPoint))
             {
@@ -101,15 +126,149 @@ public abstract class EnemyUnitMover
         }
     }
 
-    public IEnumerator MoveToPointWithoutPathfinder(Transform mover, Vector2 point, float moveSpeed)
+    public IEnumerator MoveThroughPathWithNoWayPoint(Vector2[] path, Transform mover, float moveSpeed,
+        float waitTimeAtPathEnd)
     {
+        if (path == null || path.Length <= 0)
+        {
+            IsCurrentlyMoving = false;
+            CurrentDestination = null;
+            _pathIndex = 0;
+            NeedPath?.Invoke();
+            yield break;
+        }
+
+        while (true)
+        {
+            if (!CanMoveThroughPath)
+            {
+                IsCurrentlyMoving = false;
+                yield break;
+            }
+
+            IsCurrentlyMoving = true;
+
+            if (FinishedPath(path.Length))
+            {
+                yield return new WaitForSeconds(waitTimeAtPathEnd);
+                IsCurrentlyMoving = false;
+                CurrentDestination = null;
+                _pathIndex = 0;
+                yield break;
+            }
+
+            var currentWayPoint = path[_pathIndex];
+
+            CurrentDestination = currentWayPoint;
+
+            if (ArrivedAtPoint(mover, currentWayPoint))
+            {
+                _pathIndex++;
+            }
+            else
+            {
+                Move(mover, moveSpeed, currentWayPoint);
+            }
+
+            yield return null;
+
+        }
+    }
+
+    public IEnumerator MoveThroughPathForTime(Vector2[] path, Transform mover, float moveSpeed, float seconds)
+    {
+        if (path == null || path.Length <= 0)
+        {
+            yield return new WaitForSeconds(seconds);
+            _pathIndex = 0;
+            CurrentDestination = null;
+            NeedPath?.Invoke();
+            yield break;
+        }
+    
+        yield return new WaitForSeconds(.2f);
+
+        for (var i = 0f; i < seconds; i += Time.deltaTime)
+        {
+            IsCurrentlyMoving = true;
+
+            if (!CanMoveThroughPath)
+            {
+                IsCurrentlyMoving = false;
+                yield break;
+            }
+        
+            if (FinishedPath(path.Length))
+            {
+                yield return new WaitForSeconds(.5f);
+                IsCurrentlyMoving = false;
+                _pathIndex = 0;
+                CurrentDestination = null;
+                NeedPath?.Invoke();
+                yield break;
+            }
+
+            var currentWayPoint = path[_pathIndex];
+
+            CurrentDestination = currentWayPoint;
+
+            if (ArrivedAtPoint(mover, currentWayPoint))
+            {
+                _pathIndex++;
+            }
+            else
+            {
+                Move(mover, moveSpeed, currentWayPoint);
+            }
+        
+            yield return null;
+        }
+    }
+
+    public IEnumerator MoveToPointWithoutPathfinder(Transform mover, Vector2 point, float moveSpeed, float endWaitTime, float startWaitTime)
+    {
+        yield return new WaitForSeconds(startWaitTime);
+        
         while (!ArrivedAtPoint(mover, point))
         {
+            IsCurrentlyMoving = true;
+            
+            if (!CanMoveThroughPath)
+            {
+                IsCurrentlyMoving = false;
+                NeedPath?.Invoke();
+                yield break;
+            }
+        
             Move(mover, moveSpeed, point);
             yield return null;
         }
-        
+
+        yield return new WaitForSeconds(endWaitTime);
         NeedPath?.Invoke();
+    }
+    
+    public IEnumerator MoveToPointWithoutPathfinder(Transform mover, Vector2 point, float moveSpeed, float endWaitTime, float startWaitTime, Action pathArrivalCallback)
+    {
+        yield return new WaitForSeconds(startWaitTime);
+        
+        while (!ArrivedAtPoint(mover, point))
+        {
+            IsCurrentlyMoving = true;
+            
+            if (!CanMoveThroughPath)
+            {
+                pathArrivalCallback();
+                IsCurrentlyMoving = false;
+                yield break;
+            }
+        
+            Move(mover, moveSpeed, point);
+            yield return null;
+        }
+
+        yield return new WaitForSeconds(endWaitTime);
+        pathArrivalCallback();
     }
 
     private bool FinishedPath(int pathCount) => _pathIndex >= pathCount;
@@ -122,4 +281,13 @@ public abstract class EnemyUnitMover
 
     private static bool TargetMoved(Vector2 startingPosition, Vector2 currentDestination) 
         => Vector2.Distance(startingPosition, currentDestination) > 2f;
+
+    public void DrawGizmos()
+    {
+        if (CurrentDestination.HasValue)
+        {
+            Gizmos.color = Color.green;
+            Gizmos.DrawWireSphere(CurrentDestination.Value, 1f);
+        }
+    }
 }

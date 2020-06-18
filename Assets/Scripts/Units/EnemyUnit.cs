@@ -1,11 +1,11 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 [RequireComponent(typeof(AngleDefinition))]
 [RequireComponent(typeof(UnitKillHandler))]
 public abstract class EnemyUnit : PooledMonoBehaviour, IUnitEnemy
 {
     public UnitEventSpecificMovements UnitEventSpecificMovements { get; private set; }
+    public MonoBehaviour MonoBehaviour => this;
     public abstract IUnitAttack UnitAttack { get; protected set; }
     public AngleDefinition AngleDefinition { get; private set; }
     public UnitKillHandler KillHandler { get; private set; }
@@ -50,11 +50,16 @@ public abstract class EnemyUnit : PooledMonoBehaviour, IUnitEnemy
 
     public void MoveFromSpawn(Vector2 point)
     {
-        UnitMovementManager.MoveToPoint(point);
+        UnitMovementManager.MoveToPoint(point, true, 0f, 0f);
     }
     
     private void RemoveFromUnitManager()
     {
         UnitManager.RemoveUnit(this);
+    }
+
+    private void OnDrawGizmos()
+    {
+        EnemyUnitMover?.DrawGizmos();
     }
 }

@@ -5,43 +5,29 @@ public class SpawnHelper : MonoBehaviour
     private static SpawnHelper _instance;
     public static SpawnHelper Instance => _instance;
     
-    private NodeGrid _grid;
-    private Player _player;
-    private Camera _mainCam;
     private void Awake()
     {
         if (_instance == null) _instance = this;
-
-        _player = FindObjectOfType<Player>();
-        _grid = FindObjectOfType<NodeGrid>();
-        _mainCam = Camera.main;
     }
 
     public Vector2 ValidPointOnScreen()
     {
-        Vector2? bestPosition = null;
-
-        while (bestPosition == null) bestPosition = FindBestNode();
-
-        return bestPosition.Value;
+        return FindBestNode();
     }
 
-    private Vector2? FindBestNode()
+    private Vector2 FindBestNode()
     {
-        var position = GetRandomSpawnPosition();
-        var invalidPosition = IsInvalid(position);
-        return invalidPosition ? null : (Vector2?)position;
+        var position = NodeGrid.Instance.GetRandomWalkableNode().WorldPosition;
+        return position;
+    }
+    
+    public Vector2 ValidPointOnScreenXDistanceFromTarget(Vector2 targetPosition, float distance)
+    {
+        return FindBestNodeGivenDistance(targetPosition, distance);
     }
 
-    private bool IsInvalid(Vector2 position)
+    private Vector2 FindBestNodeGivenDistance(Vector2 targetPosition, float distance)
     {
-        return _grid.WorldPositionOnUnwalkableLayer(position) || _grid.WorldPositionIsOnNodeInSafetyGrid(_player.transform.position, position);
-    }
-
-    private Vector2 GetRandomSpawnPosition()
-    {
-        var screenSize = new Vector2(_mainCam.orthographicSize * _mainCam.aspect, _mainCam.orthographicSize);
-        
-        return new Vector2(Random.Range(-screenSize.x, screenSize.x), Random.Range(-screenSize.y, screenSize.y));
+        return NodeGrid.Instance.GetRandomWalkableNodeXUnitsFromTarget(distance, targetPosition).WorldPosition;
     }
 }

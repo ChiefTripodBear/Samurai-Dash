@@ -108,6 +108,35 @@ public class NodeGrid : MonoBehaviour
         return neighborSafetyNodes.Any(t => t == nodeToCheck);
     }
 
+    public Node GetRandomWalkableNode()
+    {
+        var nodes = new List<Node>();
+
+        foreach (var node in _grid)
+        {
+            if(node.IsWalkable)
+                nodes.Add(node);
+        }
+        
+        nodes.Shuffle();
+        return nodes.FirstOrDefault();
+    }
+
+    public Node GetRandomWalkableNodeXUnitsFromTarget(float distance, Vector2 target)
+    {
+        var nodes = new List<Node>();
+
+        foreach (var node in _grid)
+        {
+            if (node.IsWalkable)
+                nodes.Add(node);
+        }
+
+        nodes = nodes.Where(t => Vector2.Distance(target, t.WorldPosition) > distance).ToList();
+        nodes.Shuffle();
+        return nodes.FirstOrDefault();
+    }
+
     private void OnDrawGizmos()
     {
         if (!_drawGizmos) return;
