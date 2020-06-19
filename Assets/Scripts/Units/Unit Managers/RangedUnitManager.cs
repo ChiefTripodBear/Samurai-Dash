@@ -39,7 +39,6 @@ public class RangedUnitManager : UnitManager
         if (_attackFinishedCount >= _currentAttackerCount)
         {
             _performingAttacks = false;
-            Debug.Log("Redoing attacks");
         }
     }
 

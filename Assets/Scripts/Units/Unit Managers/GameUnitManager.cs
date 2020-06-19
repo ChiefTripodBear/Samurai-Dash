@@ -39,8 +39,10 @@ public static class GameUnitManager
         for (var i = 0; i < size; i++)
         {
             var unit = _fearedEnemyResults[i].GetComponent<IUnitEnemy>();
-
-            unit?.UnitEventSpecificMovements.PerformFear();
+            
+            if(unit?.EnemyUnitMovementController?.UnitEventSpecificMovements == null || !unit.EnemyUnitMovementController.UnitEventSpecificMovements.CanBeFeared) continue;
+            
+            unit.EnemyUnitMovementController.UnitEventSpecificMovements.PerformFear();
         }
     }
 }

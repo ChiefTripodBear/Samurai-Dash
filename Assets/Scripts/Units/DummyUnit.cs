@@ -7,8 +7,6 @@ public class DummyUnit : MonoBehaviour, IUnit
     public AngleDefinition AngleDefinition { get; private set; }
     public UnitKillHandler KillHandler { get; private set; }
     public Transform Transform => transform;
-    public IUnitPathFinder UnitPathFinder { get; } = null;
-    public IUnitAttack UnitAttack { get; } = null;
     public Node CurrentNode { get; private set; }
 
     private NodeGrid _nodeGrid;

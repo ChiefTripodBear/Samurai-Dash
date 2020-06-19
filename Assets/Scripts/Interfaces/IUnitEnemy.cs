@@ -2,10 +2,8 @@
 
 public interface IUnitEnemy : IUnit
 {
+    EnemyUnitMovementController EnemyUnitMovementController { get; }
     MonoBehaviour MonoBehaviour { get; }
     IUnitAttack UnitAttack { get; }
-    UnitEventSpecificMovements UnitEventSpecificMovements { get; }
-    EnemyUnitMover EnemyUnitMover { get; }
     UnitManager UnitManager { get; }
-    UnitMovementManager UnitMovementManager { get; }
 }

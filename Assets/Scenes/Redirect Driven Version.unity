@@ -613,8 +613,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _ringOrder: 0
-  _minAttackers: 1
-  _maxAttackers: 4
+  _defaultMinAttackers: 4
+  _defaultMaxAttackers: 5
   _minTimeBetweenAttacks: 5
   _maxTimeBetweenAttacks: 10
   _attackDelayBetweenAttackers: 3
@@ -632,8 +632,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _ringOrder: 1
   _attackDelayBetweenAttackers: 5
-  _minAttackerCount: 1
-  _maxAttackerCount: 3
+  _minAttackerCount: 4
+  _maxAttackerCount: 5
   _timeUntilAttack: 5
 --- !u!1 &420295125
 GameObject:

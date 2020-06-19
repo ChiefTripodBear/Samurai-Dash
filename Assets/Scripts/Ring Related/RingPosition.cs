@@ -14,7 +14,7 @@ public class RingPosition : MonoBehaviour, IWaypoint
     private Vector2 _oppositePoint;
     public Vector2 OppositePoint => _oppositePoint;
 
-    private EnemyUnitMover _unitEnemyMover;
+    private IUnitEnemy _unitEnemyMover;
     private Player _player;
     private int _ringOrder;
 
@@ -29,7 +29,7 @@ public class RingPosition : MonoBehaviour, IWaypoint
             _moveSpeed = Random.Range(-.5f, .5f);
     }
     
-    public void Claim(EnemyUnitMover enemyUnitMover)
+    public void Claim(IUnitEnemy enemyUnitMover)
     {
         _unitEnemyMover = enemyUnitMover;
     }

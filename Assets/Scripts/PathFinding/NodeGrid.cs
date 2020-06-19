@@ -82,31 +82,15 @@ public class NodeGrid : MonoBehaviour
 
         return neighbors;
     }
-
-    public bool WorldPositionOnUnwalkableLayer(Vector2 worldPosition)
-    {
-        var worldPositionNode = NodeFromWorldPosition(worldPosition);
-
-        foreach (var node in _grid)
-        {
-            if (!node.IsWalkable)
-            {
-                if (node == worldPositionNode)
-                    return true;
-            }
-        }
-        
-        return false;
-    }
     
-    public bool WorldPositionIsOnNodeInSafetyGrid(Vector2 safetyCenter, Vector2 positionToCheck)
-    {
-        var neighborSafetyNodes = Neighbors(NodeFromWorldPosition(safetyCenter), 6);
-
-        var nodeToCheck = NodeFromWorldPosition(positionToCheck);
-
-        return neighborSafetyNodes.Any(t => t == nodeToCheck);
-    }
+    // public bool WorldPositionIsOnNodeInSafetyGrid(Vector2 safetyCenter, Vector2 positionToCheck)
+    // {
+    //     var neighborSafetyNodes = Neighbors(NodeFromWorldPosition(safetyCenter), 6);
+    //
+    //     var nodeToCheck = NodeFromWorldPosition(positionToCheck);
+    //
+    //     return neighborSafetyNodes.Any(t => t == nodeToCheck);
+    // }
 
     public Node GetRandomWalkableNode()
     {

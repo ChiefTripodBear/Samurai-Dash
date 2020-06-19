@@ -6,8 +6,8 @@ using Random = UnityEngine.Random;
 
 public class GruntUnitManager : UnitManager
 {
-    [SerializeField] private int _minAttackers;
-    [SerializeField] private int _maxAttackers;
+    [SerializeField] private int _defaultMinAttackers;
+    [SerializeField] private int _defaultMaxAttackers;
     [SerializeField] private float _minTimeBetweenAttacks = 5f;
     [SerializeField] private float _maxTimeBetweenAttacks = 10f;
     [SerializeField] private float _attackDelayBetweenAttackers;
@@ -19,9 +19,15 @@ public class GruntUnitManager : UnitManager
     private int _attackCountDifference;
     private bool _performingAttacks;
 
+    private int _currentMinAttackers;
+    private int _currentMaxAttackers;
+
     private void Start()
     {
-        _attackCountDifference = _maxAttackers - _minAttackers;
+        _attackCountDifference = _defaultMaxAttackers - _defaultMinAttackers;
+
+        _currentMinAttackers = _defaultMinAttackers;
+        _currentMaxAttackers = _defaultMaxAttackers;
     }
 
     private void SetAttackingParameters()
@@ -29,15 +35,15 @@ public class GruntUnitManager : UnitManager
         _timeUntilAttack = Random.Range(_minTimeBetweenAttacks, _maxTimeBetweenAttacks);
         _attacksThatHaveBeenFinished = _attackerCount;
         
-        _minAttackers = _minAttackers > Units.Count ? Units.Count : _minAttackers;
+        _currentMinAttackers = _defaultMinAttackers > Units.Count ? Units.Count : _defaultMinAttackers;
 
-        _maxAttackers = _minAttackers == Units.Count ? _minAttackers : _maxAttackers;
+        _currentMaxAttackers = _defaultMinAttackers == Units.Count ? _defaultMinAttackers : _defaultMaxAttackers;
 
-        _maxAttackers = _minAttackers + _attackCountDifference <= Units.Count
-            ? _minAttackers + _attackCountDifference
+        _currentMaxAttackers = _defaultMinAttackers + _attackCountDifference <= Units.Count
+            ? _defaultMinAttackers + _attackCountDifference
             : Units.Count;
 
-        _attackerCount = Random.Range(_minAttackers, _maxAttackers);
+        _attackerCount = Random.Range(_currentMinAttackers, _currentMaxAttackers);
         _attacksThatHaveBeenFinished = _attackerCount;
     }
 

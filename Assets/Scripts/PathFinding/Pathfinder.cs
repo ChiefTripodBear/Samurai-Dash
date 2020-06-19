@@ -1,28 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
-public class Pathfinder
+public static class Pathfinder
 {
-    private NodeGrid _nodeGrid;
-    private IUnitEnemy _enemyUnit;
-    private Player _player;
-
-    public Pathfinder(IUnitEnemy enemyUnit, Player player, NodeGrid nodeGrid)
+    private static Player Player;
+    static Pathfinder()
     {
-        _nodeGrid = nodeGrid;
-        _enemyUnit = enemyUnit;
-        _player = player;
+        Player = Object.FindObjectOfType<Player>();
     }
 
-    public Vector2[] Path(Vector2 targetPosition)
+    public static Vector2[] Path(IUnitEnemy unitEnemy, Vector2 targetPosition)
     {
-        var startingNode = _nodeGrid.NodeFromWorldPosition(_enemyUnit.Transform.position);
-        var targetNode = _nodeGrid.NodeFromWorldPosition(targetPosition);
+        var startingNode = NodeGrid.Instance.NodeFromWorldPosition(unitEnemy.Transform.position);
+        var targetNode = NodeGrid.Instance.NodeFromWorldPosition(targetPosition);
 
-        if(GameUnitManager.IsValidNodeFromUnit(targetNode, _enemyUnit) && targetNode.IsWalkable)
+        if(GameUnitManager.IsValidNodeFromUnit(targetNode, unitEnemy) && targetNode.IsWalkable)
         {
-            var openSet = new Heap<Node>(_nodeGrid.MaxSize);
+            var openSet = new Heap<Node>(NodeGrid.Instance.MaxSize);
             var closedSet = new HashSet<Node>();
 
             openSet.Add(startingNode);
@@ -32,20 +28,15 @@ public class Pathfinder
                 var currentNode = openSet.RemoveFirst();
                 closedSet.Add(currentNode);
 
-                if (currentNode == targetNode)
-                {
-                    return RetracePath(startingNode, targetNode);
-                }
+                if (currentNode == targetNode) return RetracePath(startingNode, targetNode);
 
-                foreach (var neighbor in _nodeGrid.Neighbors(currentNode, 3))
+                foreach (var neighbor in NodeGrid.Instance.Neighbors(currentNode, 3))
                 {
-                    if (!GameUnitManager.IsValidNodeFromUnit(neighbor, _enemyUnit) ||
-                        !GameUnitManager.IsValidNodeFromPlayer(neighbor, _player) || !neighbor.IsWalkable ||
+                    if (!GameUnitManager.IsValidNodeFromUnit(neighbor, unitEnemy) ||
+                        !GameUnitManager.IsValidNodeFromPlayer(neighbor, Player) || !neighbor.IsWalkable ||
                         closedSet.Contains(neighbor))
-                    {
                         continue;
-                    }
-                    
+
                     var newMovementCostToNeighbor = currentNode.GCost + GetDistance(currentNode, neighbor);
 
                     if (newMovementCostToNeighbor < neighbor.GCost || !openSet.Contains(neighbor))
@@ -66,7 +57,7 @@ public class Pathfinder
         return null;
     }
 
-    private Vector2[] RetracePath(Node startingNode, Node targetNode)
+    private static Vector2[] RetracePath(Node startingNode, Node targetNode)
     {
         var path = new List<Node>();
         
@@ -86,7 +77,7 @@ public class Pathfinder
         return wayPoints;
     }
 
-    private Vector2[] SimplifyPath(List<Node> path)
+    private static Vector2[] SimplifyPath(List<Node> path)
     {
         var wayPoints = new List<Vector2>();
 
@@ -104,7 +95,7 @@ public class Pathfinder
         return wayPoints.ToArray();
     }
 
-    private int GetDistance(Node nodeA, Node nodeB)
+    private static int GetDistance(Node nodeA, Node nodeB)
     {
         var distanceX = Mathf.Abs(nodeA.GridX - nodeB.GridX);
         var distanceY = Mathf.Abs(nodeA.GridY - nodeB.GridY);
