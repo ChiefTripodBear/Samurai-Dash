@@ -15,16 +15,6 @@ public static class PathTypeComparison
         };
     }
 
-    public static PathRequest Priority(PathRequest pathRequestOne, PathRequest pathRequestTwo)
-    {
-        return _pathPriorities[pathRequestOne.PathValues.PathType] < _pathPriorities[pathRequestTwo.PathValues.PathType] ? pathRequestOne : pathRequestTwo;
-    }
-
-    public static bool SameType(PathRequest pathRequestOne, PathRequest pathRequestTwo)
-    {
-        return pathRequestOne.PathValues.PathType == pathRequestTwo.PathValues.PathType;
-    }
-
     public static int PriorityLevel(PathType pathType)
     {
         return _pathPriorities[pathType];
