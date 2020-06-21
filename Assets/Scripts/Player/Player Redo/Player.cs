@@ -43,7 +43,9 @@ public class Player : MonoBehaviour
         _reloaded = true;
         Time.timeScale = 1f;
         Pool.ClearPools();
-        SceneManager.LoadScene(0);
+        GameUnitManager.Clear();
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        SceneManager.LoadScene("Game Menu UI Scene", LoadSceneMode.Additive);
     }
 
     private void OnDrawGizmos()

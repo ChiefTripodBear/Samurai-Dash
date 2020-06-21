@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Mover
 {
+    public static event Action OnArrival;
     public event Action<MovementPackage, Action<MovementPackage>, bool> NewMovementPackageRequested;
     public bool IsMoving { get; set; }
     public bool CanMove { get; set; } = true;
@@ -89,10 +90,7 @@ public class Mover
 
         if (Arrived(_movementPackage.Destination.TargetLocation))
         {
-            if (MovementPackage.MovementCount > 1)
-            {
-                GameUnitManager.PerformPostKillFear(_player);
-            }
+            OnArrival?.Invoke();
             Reset();
             return;
         }

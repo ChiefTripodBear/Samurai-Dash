@@ -12,6 +12,11 @@ public static class GameUnitManager
         _allUnits.Add(unit);
     }
 
+    public static int UnitsOnScreenFromPercent(float percent)
+    {
+        return Mathf.CeilToInt(_allUnits.Count * percent);
+    }
+
     public static void RemoveUnit(IUnit unit)
     {
         _allUnits.Remove(unit);
@@ -44,5 +49,10 @@ public static class GameUnitManager
             
             unit.EnemyUnitMovementController.UnitEventSpecificMovements.PerformFear();
         }
+    }
+
+    public static void Clear()
+    {
+        _allUnits.Clear();
     }
 }

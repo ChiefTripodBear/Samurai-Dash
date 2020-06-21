@@ -52,8 +52,7 @@ public class MovementPackage
         Destination.TargetLocation = BoundaryHelper.HandleBoundaryCollision(Destination.TargetLocation, destination.MoveDirection);
         BoundaryPathFinder = new BoundaryPathFinder(_mover, Destination);
     }
-
-
+    
     private bool ShouldUsePreviousIntersections(IntersectionAnalysis previousIntersectionAnalysis)
     {
         return previousIntersectionAnalysis != null && previousIntersectionAnalysis.HasIntersections();

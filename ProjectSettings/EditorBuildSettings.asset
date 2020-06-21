@@ -6,9 +6,15 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Redirect Driven Version.unity
+    path: Assets/Scenes/Main Scenes/Main Menu.unity
+    guid: 8e73729086b7c514388db2909f6a8067
+  - enabled: 1
+    path: Assets/Scenes/Main Scenes/Level 1.unity
     guid: 86a2e9018be00fd47b649340a3926a3a
   - enabled: 1
-    path: Assets/Scenes/Redirect Driven Version With Tilemap.unity
-    guid: 17d5f3270e49e49468bbb2c007496139
+    path: Assets/Scenes/Main Scenes/Level Select.unity
+    guid: db95e43bc73cfdc4cb3041c2df65b31c
+  - enabled: 1
+    path: Assets/Scenes/Main Scenes/Game Menu UI Scene.unity
+    guid: 607ca4f22142cef41a3b1e6f5644798d
   m_configObjects: {}
