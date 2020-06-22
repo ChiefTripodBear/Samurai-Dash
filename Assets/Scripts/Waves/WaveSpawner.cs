@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class WaveSpawner : MonoBehaviour
@@ -29,7 +30,7 @@ public class WaveSpawner : MonoBehaviour
         for (_waveIndex = 0; _waveIndex < _waveOrder.Count; _waveIndex++)
         {
             var currentWave = _waveOrder[_waveIndex];
-            yield return StartCoroutine(SpawnAllEnemiesInWave(currentWave));
+            yield return StartCoroutine(SpawnAllEnemiesInSubWaves(currentWave));
             
             if (currentWave.CanStartNewWaveDuringCurrent)
             {
@@ -45,22 +46,32 @@ public class WaveSpawner : MonoBehaviour
         }
     }
 
-    private IEnumerator SpawnAllEnemiesInWave(Wave currentWave)
+    private IEnumerator SpawnAllEnemiesInSubWaves(Wave currentWave)
     {
-        for (var i = 0; i < currentWave.SpawnOrder.Count; i++)
+        var max = currentWave.SubWaves.Max(t => t.Units.Count);
+        
+        for (var i = 0; i < max; i++)
         {
-            var unit = currentWave.SpawnOrder[i].Get<EnemyUnit>(null, currentWave.SpawnPoint.position, Quaternion.identity);
-            
-            unit.Register();
-            unit.MoveFromSpawn(currentWave.DestinationAfterSpawn.position);
-            
-            if (!currentWave.CanStartNewWaveDuringCurrent)
+            for (var j = 0; j < currentWave.SubWaves.Count; j++)
             {
-                _currentWaveUnits.Add(unit);
-                unit.KillHandler.OnDeath += () => _currentWaveUnits.Remove(unit);
-            }
+                var currentSubWave = currentWave.SubWaves[j];
 
-            yield return new WaitForSeconds(currentWave.SpawnDelay);
+                if (i > currentSubWave.Units.Count - 1)
+                    continue;
+
+                var unit = currentSubWave.Units[i].Get<EnemyUnit>(null, currentSubWave.SpawnPoint.position, Quaternion.identity);
+            
+                unit.Register();
+                unit.MoveFromSpawn(currentSubWave.PostSpawnDestination.position);
+            
+                if (!currentWave.CanStartNewWaveDuringCurrent)
+                {
+                    _currentWaveUnits.Add(unit);
+                    unit.KillHandler.OnDeath += () => _currentWaveUnits.Remove(unit);
+                }
+            
+                yield return new WaitForSeconds(currentSubWave.SpawnDelay);
+            }
         }
     }
 }

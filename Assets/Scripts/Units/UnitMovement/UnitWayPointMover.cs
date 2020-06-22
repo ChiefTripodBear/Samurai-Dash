@@ -24,7 +24,7 @@ public class UnitWayPointMover : IPathRequester
             enemyUnit.UnitManager.TurnInRingPosition(_currentWayPoint as RingPosition);
         };
         
-        _ringPathValues = new PathValues(4, .1f, 0f, PathType.Ring);
+        _ringPathValues = new PathValues(4, .1f, 1f, PathType.Ring);
         _spawnPathValues = new PathValues(3.5f, 0f, 0f, PathType.Spawn);
     }
         
