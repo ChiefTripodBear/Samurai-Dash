@@ -5,6 +5,7 @@ using UnityEngine;
 public class Mover
 {
     public static event Action OnArrival;
+    public static event Action<DestinationType> OnMovementStart;
     public event Action<MovementPackage, Action<MovementPackage>, bool> NewMovementPackageRequested;
     public bool IsMoving { get; set; }
     public bool CanMove { get; set; } = true;
@@ -21,7 +22,6 @@ public class Mover
     private bool _requested;
     private int _boundaryPathIndex = 0;
     private float _currentDistanceFromTargetLocation;
-    public Vector2 StartingPosition;
     
     private Player _player;
     private Transform _transform;
@@ -44,6 +44,8 @@ public class Mover
         
         if(movementPackage?.Destination != null)
             _distanceToCurrentDestination = Vector2.Distance(_transform.position, _movementPackage.Destination.TargetLocation);
+
+        OnMovementStart?.Invoke(_movementPackage.Destination.DestinationType);
     }
 
     public void Move()

@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class NodeGrid : MonoBehaviour
 {
+    [SerializeField] private bool _drawPlayerNeighborsOnly;
     [SerializeField] private bool _drawGizmos;
     [SerializeField] private Vector2 _gridSize;
     [SerializeField] private float _nodeRadius = 0.5f;
@@ -82,15 +83,13 @@ public class NodeGrid : MonoBehaviour
 
         return neighbors;
     }
-    
-    // public bool WorldPositionIsOnNodeInSafetyGrid(Vector2 safetyCenter, Vector2 positionToCheck)
-    // {
-    //     var neighborSafetyNodes = Neighbors(NodeFromWorldPosition(safetyCenter), 6);
-    //
-    //     var nodeToCheck = NodeFromWorldPosition(positionToCheck);
-    //
-    //     return neighborSafetyNodes.Any(t => t == nodeToCheck);
-    // }
+
+    public bool NodeTooCloseToSafetyGrid(Vector2 safetyCenter, Node nodeToCheck)
+    {
+        var neighborSafetyNodes = Neighbors(NodeFromWorldPosition(safetyCenter), 9);
+        
+        return neighborSafetyNodes.Any(t => t == nodeToCheck);
+    }
 
     public Node GetRandomWalkableNode()
     {
@@ -123,7 +122,27 @@ public class NodeGrid : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        if (!_drawGizmos) return;
+        if (!_drawGizmos)
+        {
+            if (_drawPlayerNeighborsOnly)
+            {
+                var player = FindObjectOfType<Player>();
+            
+                if (player != null)
+                {
+                    var playerNeighbors = Neighbors(NodeFromWorldPosition(player.transform.position), 9);
+            
+                    foreach (var node in playerNeighbors)
+                    {
+                        Gizmos.color = Color.green;
+                        Gizmos.DrawCube(node.WorldPosition, Vector2.one * (_nodeDiameter - 0.1f));
+                    }
+                }
+            }
+            
+            return;
+        }
+        
         Gizmos.DrawWireCube(transform.position, _gridSize);
 
         if (_grid != null)
@@ -134,18 +153,18 @@ public class NodeGrid : MonoBehaviour
                 Gizmos.DrawWireCube(node.WorldPosition, Vector2.one * (_nodeDiameter - 0.1f));
             }
 
-            // var player = FindObjectOfType<Player>();
-            //
-            // if (player != null)
-            // {
-            //     var playerNeighbors = Neighbors(NodeFromWorldPosition(player.transform.position), 6);
-            //
-            //     foreach (var node in playerNeighbors)
-            //     {
-            //         Gizmos.color = Color.green;
-            //         Gizmos.DrawCube(node.WorldPosition, Vector2.one * (_nodeDiameter - 0.1f));
-            //     }
-            // }
+            var player = FindObjectOfType<Player>();
+            
+            if (player != null)
+            {
+                var playerNeighbors = Neighbors(NodeFromWorldPosition(player.transform.position), 9);
+            
+                foreach (var node in playerNeighbors)
+                {
+                    Gizmos.color = Color.green;
+                    Gizmos.DrawCube(node.WorldPosition, Vector2.one * (_nodeDiameter - 0.1f));
+                }
+            }
         }
     }
 }

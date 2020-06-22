@@ -5,7 +5,8 @@ using Object = UnityEngine.Object;
 
 public static class Pathfinder
 {
-    private static Player Player;
+    private static readonly Player Player;
+    private static int _defaultNeighborScalar = 3;
     static Pathfinder()
     {
         Player = Object.FindObjectOfType<Player>();
@@ -30,11 +31,12 @@ public static class Pathfinder
 
                 if (currentNode == targetNode) return RetracePath(startingNode, targetNode);
 
-                foreach (var neighbor in NodeGrid.Instance.Neighbors(currentNode, 3))
+                foreach (var neighbor in NodeGrid.Instance.Neighbors(currentNode, _defaultNeighborScalar))
                 {
-                    if (!GameUnitManager.IsValidNodeFromUnit(neighbor, unitEnemy) ||
-                        !GameUnitManager.IsValidNodeFromPlayer(neighbor, Player) || !neighbor.IsWalkable ||
-                        closedSet.Contains(neighbor))
+                    if (!GameUnitManager.IsValidNodeFromUnit(neighbor, unitEnemy)
+                        || !GameUnitManager.IsValidNodeFromPlayer(neighbor, Player) 
+                        || !neighbor.IsWalkable 
+                        || closedSet.Contains(neighbor))
                         continue;
 
                     var newMovementCostToNeighbor = currentNode.GCost + GetDistance(currentNode, neighbor);

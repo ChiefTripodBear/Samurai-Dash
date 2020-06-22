@@ -29,7 +29,7 @@ MonoBehaviour:
   _destinationAfterSpawn: {fileID: 855221919279611892, guid: e26df2199d8430d488654c1a5ff0253c,
     type: 3}
   _subWaves:
-  - _spawnPoint: {fileID: 272120913108246382, guid: 1ce83223a8441a04e9477ec6417935c5,
+  - _spawnPoint: {fileID: 6996779051339568060, guid: 20dfe8c58dab36448abc82e6f5754b50,
       type: 3}
     _postSpawnDestination: {fileID: 272120913108246382, guid: 1ce83223a8441a04e9477ec6417935c5,
       type: 3}
@@ -61,19 +61,3 @@ MonoBehaviour:
     - {fileID: 3673379690362226724, guid: 4e38dd8f3b6200b4aa331ea704ebf85d, type: 3}
     - {fileID: 3673379690362226724, guid: 4e38dd8f3b6200b4aa331ea704ebf85d, type: 3}
     _spawnDelay: 1
-  - _spawnPoint: {fileID: 5185386644359708867, guid: 06382344fa012de42a8e279eaaebe329,
-      type: 3}
-    _postSpawnDestination: {fileID: 5248448058647697277, guid: 99fbb622bbb9bbd498c88e0accd445f0,
-      type: 3}
-    _units:
-    - {fileID: 4513942268174516336, guid: e88a9dec3c41d5e4ab7ed2df8ba6e945, type: 3}
-    - {fileID: 3673379690362226724, guid: 4e38dd8f3b6200b4aa331ea704ebf85d, type: 3}
-    - {fileID: 4513942268174516336, guid: e88a9dec3c41d5e4ab7ed2df8ba6e945, type: 3}
-    - {fileID: 4513942268174516336, guid: e88a9dec3c41d5e4ab7ed2df8ba6e945, type: 3}
-    - {fileID: 3673379690362226724, guid: 4e38dd8f3b6200b4aa331ea704ebf85d, type: 3}
-    - {fileID: 4513942268174516336, guid: e88a9dec3c41d5e4ab7ed2df8ba6e945, type: 3}
-    - {fileID: 3673379690362226724, guid: 4e38dd8f3b6200b4aa331ea704ebf85d, type: 3}
-    - {fileID: 4513942268174516336, guid: e88a9dec3c41d5e4ab7ed2df8ba6e945, type: 3}
-    - {fileID: 3673379690362226724, guid: 4e38dd8f3b6200b4aa331ea704ebf85d, type: 3}
-    - {fileID: 4513942268174516336, guid: e88a9dec3c41d5e4ab7ed2df8ba6e945, type: 3}
-    _spawnDelay: 0.5

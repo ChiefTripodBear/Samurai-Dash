@@ -12,7 +12,7 @@ public class WaveSpawner : MonoBehaviour
 
     private WaitForSeconds _spawnDelay;
     
-    private List<EnemyUnit> _currentWaveUnits = new List<EnemyUnit>();
+    private readonly List<EnemyUnit> _currentWaveUnits = new List<EnemyUnit>();
     private int _waveCompletionCount;
 
     private IEnumerator Start()

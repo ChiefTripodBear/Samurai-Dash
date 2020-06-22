@@ -67,9 +67,7 @@ public class PlayerMovementManager
         {
             return;
         }
-
-        _mover.StartingPosition = _player.transform.position;
-
+        
         _currentMovementPackage = _destinationSetter.GetDestinationFromFirstMove(_player.MoveAmountPerSwipe, startingDirection.Value);
 
         _mover.SetMovementPackage(_currentMovementPackage);
