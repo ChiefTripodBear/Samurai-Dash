@@ -22,7 +22,7 @@ MonoBehaviour:
   - {fileID: 4513942268174516336, guid: e88a9dec3c41d5e4ab7ed2df8ba6e945, type: 3}
   - {fileID: 3673379690362226724, guid: 4e38dd8f3b6200b4aa331ea704ebf85d, type: 3}
   _spawnDelay: 0.5
-  _timeUntilNextWave: 5
+  _timeUntilNextWave: 2
   _canStartNewWaveDuringCurrent: 0
   _spawnPoint: {fileID: 1310394301387245001, guid: 3c31cd35388f41b498cb9fc5b3ecfc68,
     type: 3}
@@ -38,6 +38,9 @@ MonoBehaviour:
     - {fileID: 3673379690362226724, guid: 4e38dd8f3b6200b4aa331ea704ebf85d, type: 3}
     - {fileID: 4513942268174516336, guid: e88a9dec3c41d5e4ab7ed2df8ba6e945, type: 3}
     - {fileID: 4513942268174516336, guid: e88a9dec3c41d5e4ab7ed2df8ba6e945, type: 3}
+    - {fileID: 4513942268174516336, guid: e88a9dec3c41d5e4ab7ed2df8ba6e945, type: 3}
+    - {fileID: 4513942268174516336, guid: e88a9dec3c41d5e4ab7ed2df8ba6e945, type: 3}
+    - {fileID: 3673379690362226724, guid: 4e38dd8f3b6200b4aa331ea704ebf85d, type: 3}
     _spawnDelay: 0.5
   - _spawnPoint: {fileID: 2850478702320202614, guid: 7911d3606249caa4796ca2a6c3281eaf,
       type: 3}
@@ -50,6 +53,8 @@ MonoBehaviour:
     - {fileID: 4513942268174516336, guid: e88a9dec3c41d5e4ab7ed2df8ba6e945, type: 3}
     - {fileID: 4513942268174516336, guid: e88a9dec3c41d5e4ab7ed2df8ba6e945, type: 3}
     - {fileID: 3673379690362226724, guid: 4e38dd8f3b6200b4aa331ea704ebf85d, type: 3}
+    - {fileID: 3673379690362226724, guid: 4e38dd8f3b6200b4aa331ea704ebf85d, type: 3}
+    - {fileID: 4513942268174516336, guid: e88a9dec3c41d5e4ab7ed2df8ba6e945, type: 3}
     _spawnDelay: 0.75
   - _spawnPoint: {fileID: 3488284607305739811, guid: f27c720fb4db74e46b70137421c3ef88,
       type: 3}
@@ -60,4 +65,7 @@ MonoBehaviour:
     - {fileID: 3673379690362226724, guid: 4e38dd8f3b6200b4aa331ea704ebf85d, type: 3}
     - {fileID: 3673379690362226724, guid: 4e38dd8f3b6200b4aa331ea704ebf85d, type: 3}
     - {fileID: 3673379690362226724, guid: 4e38dd8f3b6200b4aa331ea704ebf85d, type: 3}
+    - {fileID: 3673379690362226724, guid: 4e38dd8f3b6200b4aa331ea704ebf85d, type: 3}
+    - {fileID: 4513942268174516336, guid: e88a9dec3c41d5e4ab7ed2df8ba6e945, type: 3}
+    - {fileID: 4513942268174516336, guid: e88a9dec3c41d5e4ab7ed2df8ba6e945, type: 3}
     _spawnDelay: 1

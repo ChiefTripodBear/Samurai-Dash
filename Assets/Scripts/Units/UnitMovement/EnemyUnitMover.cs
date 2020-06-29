@@ -115,7 +115,6 @@ public class EnemyUnitMover
 
                 if (TargetMoved(startingDestinationPosition, request.WayPoint.Transform.position))
                 {
-                    yield return new WaitForSeconds(request.PathValues.PostPathWaitTime);
                     _currentRequest = null;
                     request.PathCompleteCallback?.Invoke(true);
                     _isCurrentlyMoving = false;

@@ -44,4 +44,9 @@ public abstract class UnitManager : MonoBehaviour
     {
         RingManager.Instance.TurnInPosition(ringPosition, _ringOrder);
     }
+
+    public RingPosition FindBestStartingNode(Vector2 startingPosition)
+    {
+        return RingManager.Instance.FindBestStartingRing(startingPosition, _ringOrder);
+    }
 }

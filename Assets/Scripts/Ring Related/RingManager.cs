@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class RingManager : MonoBehaviour
 {
+    [SerializeField] private float _neighborCheckRadius = 5f;
     [SerializeField] private RingPosition _ringPositionPrefab;
     [SerializeField] private float _innerRadius = 5f;
     [SerializeField] private int _ringPositions = 20;
@@ -14,6 +15,9 @@ public class RingManager : MonoBehaviour
     private readonly Dictionary<int, List<RingPosition>> _ringOrders = new Dictionary<int, List<RingPosition>>();
     private readonly Dictionary<int, Queue<RingPosition>> _ringPositionQueues = new Dictionary<int, Queue<RingPosition>>();
     
+    private List<RingPosition> _allPositions = new List<RingPosition>();
+    public List<RingPosition> AllPositions => _allPositions;
+
     private static RingManager _instance;
 
     public static RingManager Instance => _instance;
@@ -40,14 +44,18 @@ public class RingManager : MonoBehaviour
                     Instantiate(_ringPositionPrefab, _player.transform, true);
 
                 ringPositionObject.name = $"{j + 1} Ring Position - {i}";
-                ringPositionObject.Initialize(angle, radius, i);
+                ringPositionObject.InitializePositionValues(angle, radius, i);
 
                 positionsOnRing.Add(ringPositionObject);
+                _allPositions.Add(ringPositionObject);
             }
 
             _ringOrders.Add(i, positionsOnRing);
             _ringPositionQueues[i] = PopulateQueue(i, _ringOrders[i]);
         }
+
+
+        foreach (var ringPosition in _allPositions) ringPosition.SetRingNode();
     }
 
     private Queue<RingPosition> PopulateQueue(int ringOrder, List<RingPosition> ringPositions)
@@ -85,13 +93,9 @@ public class RingManager : MonoBehaviour
         var ringToReturn = nextAvailable == null ? previousPosition : nextAvailable;
 
         if (nextAvailable != null)
-        {
             if (previousPosition != null)
-            {
                 // Debug.Log($"Enqueuing {previousPosition}");
                 ringQueue.Enqueue(previousPosition);
-            }
-        }
 
         return ringToReturn; 
     }
@@ -113,5 +117,29 @@ public class RingManager : MonoBehaviour
         
         ringPosition.ResetClaim();
         _ringPositionQueues[ringOrder].Enqueue(ringPosition);
+    }
+
+
+    public List<RingNode> GetNeighborsFor(RingNode currentNode)
+    {
+        var neighbors = new List<RingNode>();
+        foreach (var ringPosition in _allPositions)
+        {
+            var xDistanceSquared = (ringPosition.transform.position.x - currentNode.RingPosition.transform.position.x) *
+                                   (ringPosition.transform.position.x - currentNode.RingPosition.transform.position.x);
+            var yDistanceSquared = (ringPosition.transform.position.y - currentNode.RingPosition.transform.position.y) *
+                                   (ringPosition.transform.position.y - currentNode.RingPosition.transform.position.y);
+
+            var distance = xDistanceSquared + yDistanceSquared;
+
+            if (distance < _neighborCheckRadius * _neighborCheckRadius || distance == _neighborCheckRadius * _neighborCheckRadius) neighbors.Add(ringPosition.RingNode);
+        }
+        
+        return neighbors;
+    }
+
+    public RingPosition FindBestStartingRing(Vector3 startPosition, int order)
+    {
+        return _allPositions.OrderBy(t => Vector2.Distance(t.transform.position, startPosition)).FirstOrDefault();
     }
 }

@@ -1,11 +1,13 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class PlayerSafetyRedirect
 {
+    public static event Action InDanger;
     public bool SafetyRedirectAllowed { get; set; }
     private Mover _mover;
     private readonly Player _player;
-    private float _safetyCheckRange = 3f;
+    private float _safetyCheckRange = 4f;
 
     private float _safetyRedirectMoveSpeed = 10f;
 
@@ -23,12 +25,13 @@ public class PlayerSafetyRedirect
             return;
         }
         
-        if (InSafetyRedirectRange() && MovementPackage.MovementCount == 1 && _mover.MovementPackage.Destination.Unit == null)
+        if (InSafetyRedirectRange() && _mover.MovementPackage.Destination?.Unit == null && _mover.MovementPackage.Destination?.DestinationType != DestinationType.Intersection || InSafetyRedirectRange() && _mover.MovementPackage.Finished)
         {
             if (InDangerAtTargetLocation())
             {
+                InDanger?.Invoke();
                 SafetyRedirectAllowed = true;
-                Time.timeScale = .3f;
+                Time.timeScale = .1f;
                 _mover.SetMoveSpeed(_safetyRedirectMoveSpeed);
                 _mover.IsMoving = false;
             }
@@ -37,11 +40,20 @@ public class PlayerSafetyRedirect
 
     private bool InDangerAtTargetLocation()
     {
+        var targetPosition = _mover.MovementPackage.RequiredCollisionHandling
+            ? _mover.MovementPackage.LocationBeforeCollisionAdjustment
+            : _mover.MovementPackage.Destination.TargetLocation;
         var distanceToTargetLocation =
-            Vector2.Distance(_mover.MovementPackage.Destination.TargetLocation, _player.transform.position);
-        return _mover.MovementPackage?.Destination != null && TargetDetector.FoundInvalidEnemy(distanceToTargetLocation, _mover.MovementPackage.Destination.MoveDirection,
+            Vector2.Distance(targetPosition, _player.transform.position);
+        return _mover.MovementPackage?.Destination != null && TargetDetector.FoundInvalidEnemy(distanceToTargetLocation + distanceToTargetLocation * 0.125f, _mover.MovementPackage.Destination.MoveDirection,
             _player.transform.position);
-    } 
-    
-    private bool InSafetyRedirectRange() => Vector2.Distance(_player.transform.position, _mover.MovementPackage.Destination.TargetLocation) < _safetyCheckRange;
+    }
+
+    private bool InSafetyRedirectRange()
+    {
+        var targetPosition = _mover.MovementPackage.RequiredCollisionHandling
+            ? _mover.MovementPackage.LocationBeforeCollisionAdjustment
+            : _mover.MovementPackage.Destination.TargetLocation;
+        return Vector2.Distance(_player.transform.position, targetPosition) < _safetyCheckRange;
+    }
 }

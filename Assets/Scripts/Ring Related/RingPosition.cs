@@ -1,10 +1,15 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class RingPosition : MonoBehaviour, IWaypoint
 {
+    public Transform FCostLocation;
+    public Transform GCostLocation;
+    public Transform HCostLocation;
     public Transform Transform => transform;
     public bool IsClaimed => _unitEnemyMover != null;
 
+    [SerializeField] private float _neighborRadius = 5;
     [SerializeField] private bool _randomizeSpeed;
     [SerializeField] private float _moveSpeed;
 
@@ -17,7 +22,9 @@ public class RingPosition : MonoBehaviour, IWaypoint
     private IUnitEnemy _unitEnemyMover;
     private Player _player;
     private int _ringOrder;
-
+    
+    public RingNode RingNode { get; private set; }
+    
     private void Awake()
     {
         _player = FindObjectOfType<Player>();
@@ -41,7 +48,7 @@ public class RingPosition : MonoBehaviour, IWaypoint
         transform.position = _startingPosition;
     }
 
-    public void Initialize(float angle, float radius, int ringOrder)
+    public void InitializePositionValues(float angle, float radius, int ringOrder)
     {
         _ringOrder = ringOrder;
         _currentAngle = angle;
@@ -62,4 +69,45 @@ public class RingPosition : MonoBehaviour, IWaypoint
     {
         _unitEnemyMover = null;
     }
+
+    public void SetRingNode()
+    {
+        RingNode = new RingNode(this);
+    }
+}
+
+public class RingNode : IHeap<RingNode>
+{
+    private readonly RingPosition _ringPosition;
+    public RingPosition RingPosition => _ringPosition;
+
+    private readonly float _neighborRadius;
+
+    public float HCost, GCost;
+    public float FCost => HCost + GCost;
+    public RingNode ParentRing;
+    
+    
+    public RingNode(RingPosition ringPosition)
+    {
+        _ringPosition = ringPosition;
+    }
+    
+    public bool IsWalkable()
+    {
+        if (!NodeGrid.Instance.PositionInsideBounds(_ringPosition.transform.position)) return false;
+        return NodeGrid.Instance.NodeFromWorldPosition(_ringPosition.transform.position).IsWalkable;
+    }
+
+    public int CompareTo(RingNode other)
+    {
+        var comparison = FCost.CompareTo(other.FCost);
+
+        if (comparison == 0)
+            comparison = HCost.CompareTo(other.HCost);
+
+        return -comparison;
+    }
+
+    public int HeapIndex { get; set; }
 }

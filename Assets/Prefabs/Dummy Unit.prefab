@@ -16,7 +16,6 @@ GameObject:
   - component: {fileID: 6317276388153817555}
   - component: {fileID: 6317276388153817551}
   - component: {fileID: 6317276388153817550}
-  - component: {fileID: 6317276388153817547}
   m_Layer: 8
   m_Name: Dummy Unit
   m_TagString: Untagged
@@ -225,7 +224,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d67d278d9ae74da2a78e056d80463dd3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _killPointDistance: 0.55
   _deathVFX: {fileID: 8283165871974743808, guid: 52d1d95c48304e44e8a52ef4b146ceb7,
     type: 3}
 --- !u!114 &6317276388153817551
@@ -255,16 +253,3 @@ MonoBehaviour:
   _projectionDistance: 10
   _angle: -315.3
   _setAngle: 1
---- !u!114 &6317276388153817547
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6317276388153817554}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b462d751fbfb48ada8bc1dc7960fd7f9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _dashAttackSpeed: 6

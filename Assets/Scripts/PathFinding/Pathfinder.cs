@@ -5,7 +5,7 @@ using Object = UnityEngine.Object;
 
 public static class Pathfinder
 {
-    private static readonly Player Player;
+    private static Player Player;
     private static int _defaultNeighborScalar = 3;
     static Pathfinder()
     {
@@ -14,6 +14,10 @@ public static class Pathfinder
 
     public static Vector2[] Path(IUnitEnemy unitEnemy, Vector2 targetPosition)
     {
+        if (Player == null)
+        {
+            Player = Object.FindObjectOfType<Player>();
+        }
         var startingNode = NodeGrid.Instance.NodeFromWorldPosition(unitEnemy.Transform.position);
         var targetNode = NodeGrid.Instance.NodeFromWorldPosition(targetPosition);
 
@@ -33,7 +37,8 @@ public static class Pathfinder
 
                 foreach (var neighbor in NodeGrid.Instance.Neighbors(currentNode, _defaultNeighborScalar))
                 {
-                    if (!GameUnitManager.IsValidNodeFromUnit(neighbor, unitEnemy)
+                    if (!GameUnitManager.IsValidNodeFromUnit(neighbor, unitEnemy) 
+                        || NodeGrid.Instance.NodeTooCloseToSafetyGrid(Player.transform.position, neighbor) 
                         || !GameUnitManager.IsValidNodeFromPlayer(neighbor, Player) 
                         || !neighbor.IsWalkable 
                         || closedSet.Contains(neighbor))

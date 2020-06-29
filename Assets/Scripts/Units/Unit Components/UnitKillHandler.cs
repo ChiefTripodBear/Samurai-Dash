@@ -5,6 +5,7 @@ using UnityEngine;
 public class UnitKillHandler : MonoBehaviour
 {
     private const float KillPointDistance = 0.55f;
+    public static event Action OnAnyEnemyDeath;
     public event Action OnDeath;
     public static event Action UnitKillPointReached;
 
@@ -55,6 +56,7 @@ public class UnitKillHandler : MonoBehaviour
 
     private void Kill()
     {
+        OnAnyEnemyDeath?.Invoke();    
         UnitKillPointReached?.Invoke();
         UnitChainEvaluator.Instance.RemoveUnit(GetComponent<IUnit>());
         OnDeath?.Invoke();

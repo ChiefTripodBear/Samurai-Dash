@@ -5,7 +5,9 @@ using UnityEngine;
 public class Mover
 {
     public static event Action OnArrival;
-    public static event Action<DestinationType> OnMovementStart;
+    public static event Action<DestinationType> OnNewMovementStart;
+    public static event Action OnFirstMove;
+    public static event Action OnKill;
     public event Action<MovementPackage, Action<MovementPackage>, bool> NewMovementPackageRequested;
     public bool IsMoving { get; set; }
     public bool CanMove { get; set; } = true;
@@ -26,26 +28,43 @@ public class Mover
     private Player _player;
     private Transform _transform;
     private ParallelMovingCheck _parallelMovingCheck;
+    private bool _isInDanger;
 
     public Mover(Player player, float defaultMoveSpeed)
     {
         _player = player;
         _transform = _player.transform;
-        _parallelMovingCheck = new ParallelMovingCheck(_transform);
+        _parallelMovingCheck = new ParallelMovingCheck(_transform, this);
         _defaultMoveSpeed = defaultMoveSpeed;
         _slowSpeed = defaultMoveSpeed / 4;
         _currentMoveSpeed = defaultMoveSpeed;
+        PlayerSafetyRedirect.InDanger += HandleDanger;
+    }
+
+    private void HandleDanger()
+    {
+        _isInDanger = true;
     }
 
     public void SetMovementPackage(MovementPackage movementPackage)
     {
         _requested = false;
         _movementPackage = movementPackage;
-        
-        if(movementPackage?.Destination != null)
-            _distanceToCurrentDestination = Vector2.Distance(_transform.position, _movementPackage.Destination.TargetLocation);
 
-        OnMovementStart?.Invoke(_movementPackage.Destination.DestinationType);
+        if (movementPackage?.Destination != null)
+        {
+            _distanceToCurrentDestination = Vector2.Distance(_transform.position, _movementPackage.Destination.TargetLocation);
+            OnNewMovementStart?.Invoke(_movementPackage.Destination.DestinationType);
+
+            if (MovementPackage.MovementCount % 2 != 0)
+            {
+                OnFirstMove?.Invoke();   
+            }
+            else
+            {
+                OnKill?.Invoke();
+            }
+        }
     }
 
     public void Move()
@@ -85,7 +104,7 @@ public class Mover
                 NewMovementPackageRequested?.Invoke(_movementPackage, SetMovementPackage, false);
             }
 
-        if (_movementPackage.Finished)
+        if (_movementPackage.Finished && !_isInDanger)
         {
             _currentMoveSpeed = _defaultMoveSpeed * 2f;
         }
@@ -179,6 +198,7 @@ public class Mover
 
     public void Reset()
     {
+        _isInDanger = false;
         MovementPackage.MovementCount = 0;
         RedirectDisplayManager.Instance.ResetDisplay();
         _movementPackage = null;

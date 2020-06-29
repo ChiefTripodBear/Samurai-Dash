@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class PlayerDashMonitor
 {
+    public static event Action RemovedChargesFromCollisionWithInvalidEnemy;
     public static event Action<int> OnDashChargesChanged;
 
     public int CurrentCharges => _currentCharges;
@@ -24,6 +25,7 @@ public class PlayerDashMonitor
     {
         _rechargeTimer = 0f;
         _currentCharges = _currentCharges <= 0 ? 0 : _currentCharges -= 1;
+        RemovedChargesFromCollisionWithInvalidEnemy?.Invoke();
         OnDashChargesChanged?.Invoke(_currentCharges);
     }
 

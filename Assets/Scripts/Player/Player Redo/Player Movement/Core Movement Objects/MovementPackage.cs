@@ -12,6 +12,8 @@ public class MovementPackage
     public IntersectionAnalysis IntersectionAnalysis { get; }
     public BoundaryPathFinder BoundaryPathFinder { get; }
     public float DistanceScalar { get; }
+    public readonly bool RequiredCollisionHandling;
+    public Vector2 LocationBeforeCollisionAdjustment { get; }
 
     private ParallelAnalysis _parallelAnalysis;
     private Transform _mover;
@@ -22,7 +24,7 @@ public class MovementPackage
         MovementCount++;
         DistanceScalar = distanceScalar;
         Destination = destination;
-        Destination.TargetLocation = BoundaryHelper.HandleBoundaryCollision(Destination.TargetLocation, destination.MoveDirection);
+        Destination.TargetLocation = BoundaryHelper.HandleBoundaryCollision(Destination.TargetLocation, destination.MoveDirection, out RequiredCollisionHandling);
         if (BoundaryHelper.WillBeMovingThroughBoundary(_mover.transform.position, Destination.TargetLocation,
             out var boundary))
             Destination = null;
@@ -48,11 +50,12 @@ public class MovementPackage
         IntersectionAnalysis.DrawIntersectionVectors();    
 
         Evaluate(distanceScalar);
-
-        Destination.TargetLocation = BoundaryHelper.HandleBoundaryCollision(Destination.TargetLocation, destination.MoveDirection);
+        LocationBeforeCollisionAdjustment = Destination.TargetLocation;
+        Destination.TargetLocation = BoundaryHelper.HandleBoundaryCollision(Destination.TargetLocation, destination.MoveDirection, out RequiredCollisionHandling);
         BoundaryPathFinder = new BoundaryPathFinder(_mover, Destination);
     }
     
+
     private bool ShouldUsePreviousIntersections(IntersectionAnalysis previousIntersectionAnalysis)
     {
         return previousIntersectionAnalysis != null && previousIntersectionAnalysis.HasIntersections();
@@ -64,7 +67,7 @@ public class MovementPackage
         {
             for (var i = 0; i < _chargePenaltyForMovingThroughDangerousEnemy; i++)
                 OnCollisionWithEnemyWhileMovingThroughIntersection?.Invoke();
-
+            
             if (Destination.PreviousIntersectingUnit != null)
             {
                 _parallelAnalysis.ParallelUnit = Destination.PreviousIntersectingUnit;
@@ -105,7 +108,7 @@ public class MovementPackage
         if (NothingFound())
         {
             Finished = true;
-            Destination.TargetLocation += Destination.MoveDirection * distanceScalar;
+            Destination.TargetLocation += Destination.MoveDirection * (distanceScalar + distanceScalar * .5f);
         }
     }
 
@@ -116,6 +119,12 @@ public class MovementPackage
 
     private void SetDestinationForNextIntersection()
     {
+        if (IntersectionAnalysis.PeekIntersections().KillHandler.KillPoint.HasValue)
+        {
+            IntersectionAnalysis.GetNextUnit();
+
+            if (!IntersectionAnalysis.HasIntersections()) return;
+        }
         Destination.DestinationType = DestinationType.Intersection;
         Destination.Unit = null;
 

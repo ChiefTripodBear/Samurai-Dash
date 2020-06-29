@@ -53,12 +53,14 @@ public class NodeGrid : MonoBehaviour
 
     public Node NodeFromWorldPosition(Vector2 worldPosition)
     {
+        if (!PositionInsideBounds(worldPosition)) return null;
+        
         var percentX = Mathf.Clamp01((worldPosition.x + _gridSize.x / 2) / _gridSize.x);
         var percentY = Mathf.Clamp01((worldPosition.y + _gridSize.y / 2) / _gridSize.y);
 
         var x = Mathf.RoundToInt((_nodeCountX - 1) * percentX);
         var y = Mathf.RoundToInt((_nodeCountY - 1) * percentY);
-    
+
         return _grid[x, y];
     }
 
@@ -86,7 +88,7 @@ public class NodeGrid : MonoBehaviour
 
     public bool NodeTooCloseToSafetyGrid(Vector2 safetyCenter, Node nodeToCheck)
     {
-        var neighborSafetyNodes = Neighbors(NodeFromWorldPosition(safetyCenter), 9);
+        var neighborSafetyNodes = Neighbors(NodeFromWorldPosition(safetyCenter), 3);
         
         return neighborSafetyNodes.Any(t => t == nodeToCheck);
     }
@@ -128,9 +130,9 @@ public class NodeGrid : MonoBehaviour
             {
                 var player = FindObjectOfType<Player>();
             
-                if (player != null)
+                if (player != null && _grid != null)
                 {
-                    var playerNeighbors = Neighbors(NodeFromWorldPosition(player.transform.position), 9);
+                    var playerNeighbors = Neighbors(NodeFromWorldPosition(player.transform.position), 3);
             
                     foreach (var node in playerNeighbors)
                     {
@@ -157,7 +159,7 @@ public class NodeGrid : MonoBehaviour
             
             if (player != null)
             {
-                var playerNeighbors = Neighbors(NodeFromWorldPosition(player.transform.position), 9);
+                var playerNeighbors = Neighbors(NodeFromWorldPosition(player.transform.position), 3);
             
                 foreach (var node in playerNeighbors)
                 {
@@ -166,5 +168,13 @@ public class NodeGrid : MonoBehaviour
                 }
             }
         }
+    }
+
+    public bool PositionInsideBounds(Vector3 position)
+    {
+        var x = position.x < _gridSize.x && position.x > -_gridSize.x;
+        var y = position.y < _gridSize.y && position.y > -_gridSize.y;
+
+        return x && y;
     }
 }

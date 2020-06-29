@@ -9,19 +9,25 @@ public static class BoundaryHelper
     private static LayerMask UnwalkableLayer => LayerMask.GetMask("Unwalkable");
     private static Camera MainCam => Camera.main;
     
-    public static Vector2 HandleBoundaryCollision(Vector2 targetLocation, Vector2 moveDirection)
+    public static Vector2 HandleBoundaryCollision(Vector2 targetLocation, Vector2 moveDirection, out bool requiredCollisionHandling)
     {
         var willCollideWithBoundary = WillCollideWithBoundaryAtTargetLocation(targetLocation);
         
         var newPosition = targetLocation;
 
-        if (!willCollideWithBoundary) return newPosition;
+        if (!willCollideWithBoundary)
+        {
+            requiredCollisionHandling = false;
+            return newPosition;
+        }
         
         while (willCollideWithBoundary)
         {
             newPosition = MoveTargetLocation(-moveDirection, newPosition); 
             willCollideWithBoundary = Physics2D.OverlapBox(newPosition, Vector2.one, 0, UnwalkableLayer);
         }
+
+        requiredCollisionHandling = newPosition != targetLocation;
 
         return newPosition;
     }
