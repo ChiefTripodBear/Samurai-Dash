@@ -9,7 +9,7 @@ public class IntersectionAnalysis
     {
         if (destination.Unit == null) return;
 
-        AllIntersections = UnitChainEvaluator.Instance.GetIntersectionsRelativeTo(destination.Unit);
+        AllIntersections = UnitChainEvaluator.GetIntersectionsRelativeTo(destination.Unit);
     }
 
     public void DrawIntersectionVectors()

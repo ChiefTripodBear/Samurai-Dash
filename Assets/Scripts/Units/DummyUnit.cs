@@ -20,7 +20,7 @@ public class DummyUnit : MonoBehaviour, IUnit
 
     private void Start()
     {
-        UnitChainEvaluator.Instance.AddUnit(this);
+        UnitChainEvaluator.AddUnit(this);
         GameUnitManager.RegisterUnit(this);
     }
 

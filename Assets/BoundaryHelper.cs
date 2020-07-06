@@ -3,6 +3,7 @@ using UnityEngine;
 
 public static class BoundaryHelper
 {
+    private static readonly float ObstacleMoveThroughAdjustmentStep = 0.2f;
     private const float MoveStep = .1f;
     private const int OnScreenBuffer = 1;
     private const float AngleAdjustmentStep = 10;
@@ -38,7 +39,7 @@ public static class BoundaryHelper
 
         boundary = hit ? hit.collider.GetComponent<Boundary>() : null;
         
-        return hit && !WillCollideWithBoundaryAtTargetLocation(targetLocation);
+        return hit;
     }
 
     private static RaycastHit2D GetUnwalkableRaycastHit2D(Vector2 startPosition, Vector2 targetLocation)
@@ -62,6 +63,68 @@ public static class BoundaryHelper
         return Physics2D.OverlapBox(targetLocation, Vector2.one, 0, UnwalkableLayer);
     }
 
+    public static bool WillBeMovingThroughObstacle(Vector2 startingLocation, Vector2 targetLocation)
+    {
+        var direction = (targetLocation - startingLocation).normalized;
+        var distance = Vector2.Distance(targetLocation, startingLocation);
+        
+        var hit = Physics2D.Raycast(startingLocation, direction, distance, UnwalkableLayer);
+
+        return hit;
+    }
+    
+    public static bool TargetLocationEndsInsideObstacle(Vector2 targetLocation)
+    {
+        return Physics2D.OverlapBox(targetLocation, Vector2.one, 0, UnwalkableLayer);
+    }
+
+    public static bool ContainedInObstacleCollider(Vector2 targetLocation)
+    {
+        for (var i = 0; i < 10; i++)
+        {
+            var angle = i * Mathf.PI * 2.0f / 10;
+
+            var positionReference = targetLocation + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
+
+            var direction = (positionReference - targetLocation).normalized;
+
+            var hit = Physics2D.Raycast(targetLocation, direction, 10f, UnwalkableLayer);
+            
+            if(!hit) continue;
+
+            var obstacle = hit.collider.GetComponent<ObstacleObject>();
+
+            if (obstacle == null) continue;
+
+            var collider = obstacle.GetComponent<Collider2D>();
+            if (collider != null && collider.bounds.Contains(targetLocation))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static bool PointContainedWithinObstacleCollider(Vector2 point, Collider2D collider2D)
+    {
+        return collider2D.bounds.Contains(point);
+    }
+
+    public static Vector2 FindPositionThroughObstacle(Vector2 insideObstacleTargetLocation, Vector2 startPosition)
+    {
+        var direction = (insideObstacleTargetLocation - startPosition).normalized;
+
+        var adjustedPosition = insideObstacleTargetLocation;
+
+        while (ContainedInObstacleCollider(adjustedPosition) || TargetLocationEndsInsideObstacle(adjustedPosition))
+        {
+            adjustedPosition += direction * ObstacleMoveThroughAdjustmentStep;
+        }
+        
+        return adjustedPosition;
+    }
+    
     public static bool WillCollideWithBoundaryAtTargetLocation(Vector2 targetLocation, Vector2 directionThroughTargetLocation, float scalar)
     {
         var projectedTargetLocation = targetLocation + directionThroughTargetLocation * scalar;
@@ -108,8 +171,8 @@ public static class BoundaryHelper
             }
             
             targetPosition = fromPosition +
-                                    new Vector2(Mathf.Sin(angle * Mathf.Deg2Rad), Mathf.Cos(angle * Mathf.Deg2Rad)) *
-                                    scalar;
+                             new Vector2(Mathf.Sin(angle * Mathf.Deg2Rad), Mathf.Cos(angle * Mathf.Deg2Rad)) *
+                             scalar;
             
             invalid = WillCollideWithBoundaryAtTargetLocation(targetPosition);
         }

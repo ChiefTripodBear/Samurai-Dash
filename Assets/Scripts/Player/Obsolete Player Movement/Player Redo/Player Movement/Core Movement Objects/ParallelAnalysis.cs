@@ -19,10 +19,10 @@ public class ParallelAnalysis
 
         if (rayFirePosition.HasValue)
         {
-            FoundInvalidEnemy =
-                TargetDetector.FoundInvalidEnemy(distanceScalar, destination.MoveDirection, rayFirePosition.Value);
-            ParallelUnit = TargetDetector.GetValidUnitInFrontFromTargetPosition(destination.Unit, distanceScalar,
-                destination.MoveDirection, rayFirePosition.Value);
+            // FoundInvalidEnemy =
+            //     TargetDetector.FoundInvalidEnemy(distanceScalar, destination.MoveDirection, rayFirePosition.Value);
+            // ParallelUnit = TargetDetector.GetValidUnitInFrontFromTargetPosition(destination.Unit, distanceScalar,
+            //     destination.MoveDirection, rayFirePosition.Value);
         }
     }
 

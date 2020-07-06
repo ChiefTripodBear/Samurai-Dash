@@ -58,7 +58,7 @@ public class UnitKillHandler : MonoBehaviour
     {
         OnAnyEnemyDeath?.Invoke();    
         UnitKillPointReached?.Invoke();
-        UnitChainEvaluator.Instance.RemoveUnit(GetComponent<IUnit>());
+        UnitChainEvaluator.RemoveUnit(GetComponent<IUnit>());
         OnDeath?.Invoke();
         StartCoroutine(KillWithDelay());
     }

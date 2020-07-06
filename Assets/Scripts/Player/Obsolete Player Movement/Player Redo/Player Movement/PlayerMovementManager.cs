@@ -39,7 +39,7 @@ public class PlayerMovementManager
         if (_mover.HasDestination)
         {
             _mover.Move();
-            _playerSafetyRedirect.Tick();
+            // _playerSafetyRedirect.Tick();
         }
 
         if (_playerSafetyRedirect.SafetyRedirectAllowed)
@@ -69,7 +69,7 @@ public class PlayerMovementManager
         }
 
         _mover.CanMove = true;
-        _currentMovementPackage = _destinationSetter.GetDestinationFromFirstMove(_player.MoveAmountPerSwipe, startingDirection.Value);
+        // _currentMovementPackage = _destinationSetter.GetDestinationFromFirstMove(_player.MoveAmountPerSwipe, startingDirection.Value);
 
         _mover.SetMovementPackage(_currentMovementPackage);
     }

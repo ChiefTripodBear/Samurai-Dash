@@ -2,32 +2,22 @@
 using System.Linq;
 using UnityEngine;
 
-public class UnitChainEvaluator : MonoBehaviour
+public class UnitChainEvaluator 
 {
-    private static UnitChainEvaluator _instance;
-
-    public static UnitChainEvaluator Instance => _instance;
+    private static List<IUnit> _units = new List<IUnit>();
     
-    private List<IUnit> _units = new List<IUnit>();
-
-    private NodeGrid _nodeGrid;
-
-    private void Awake()
-    {
-        if (_instance == null)
-            _instance = this;
-
-        _nodeGrid = FindObjectOfType<NodeGrid>();
-    }
-    
-    public Queue<IUnit> GetIntersectionsRelativeTo(IUnit firstUnit)
+    public static Queue<IUnit> GetIntersectionsRelativeTo(IUnit firstUnit)
     {
         var possibleIntersections = new List<IUnit>();
         var firstStartCheckPoint = firstUnit.Transform.position;
 
         foreach (var unit in _units.ToList())
         {    
-            if(unit == firstUnit || unit == null || unit.Transform.gameObject.activeInHierarchy == false || unit.KillHandler.KillPoint.HasValue) continue;
+            if(unit == firstUnit 
+               || unit == null 
+               || unit.Transform.gameObject.activeInHierarchy == false 
+               || unit.KillHandler.KillPoint.HasValue 
+               || unit.AngleDefinition.IntersectionPoint != Vector2.zero && BoundaryHelper.ContainedInObstacleCollider(unit.AngleDefinition.IntersectionPoint)) continue;
 
             var firstRearCheckPoint = firstUnit.AngleDefinition.RearPointRelative;
             
@@ -44,9 +34,10 @@ public class UnitChainEvaluator : MonoBehaviour
                     var directionThroughKillPoint =
                         (unit.KillHandler.GetFauxKillPoint() - (Vector2) unit.Transform.position).normalized;
                     if(possibleIntersections.Any(t => Vector2.Distance(intersect.Value, t.AngleDefinition.IntersectionPoint) < 2f)) continue;
-                    if (!_nodeGrid.NodeFromWorldPosition(intersect.Value).IsWalkable 
+                    if (!NodeGrid.Instance.NodeFromWorldPosition(intersect.Value).IsWalkable 
                         || BoundaryHelper.WillCollideWithBoundaryAtTargetLocation(unit.KillHandler.GetFauxKillPoint(), directionThroughKillPoint, 1.5f)
-                        || !BoundaryHelper.OnScreen(intersect.Value)) continue;
+                        || !BoundaryHelper.OnScreen(intersect.Value)
+                        || BoundaryHelper.ContainedInObstacleCollider(intersect.Value)) continue;
 
                     if(Vector2.Distance(unit.Transform.position, intersect.Value) < 2f 
                        || Vector2.Distance(unit.Transform.position, firstStartCheckPoint) < 1f
@@ -71,13 +62,19 @@ public class UnitChainEvaluator : MonoBehaviour
         }
         return intersectOrder.Count > 0 ? intersectOrder : null;
     }
-
-    public void AddUnit(IUnit unit)
+    
+    public static void Clear()
     {
+        _units.Clear();
+    }
+
+    public static void AddUnit(IUnit unit)
+    {
+        if (_units.Contains(unit)) return;
         _units.Add(unit);
     }
 
-    public void RemoveUnit(IUnit unit)
+    public static void RemoveUnit(IUnit unit)
     {
         _units.Remove(unit);
     }

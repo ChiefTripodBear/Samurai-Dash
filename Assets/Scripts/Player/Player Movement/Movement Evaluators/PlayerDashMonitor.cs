@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class PlayerDashMonitor
 {
-    public static event Action RemovedChargesFromCollisionWithInvalidEnemy;
+    public static event Action NoDashCharges;
     public static event Action<int> OnDashChargesChanged;
 
     public int CurrentCharges => _currentCharges;
@@ -16,16 +16,21 @@ public class PlayerDashMonitor
     public PlayerDashMonitor()
     {
         UnitKillHandler.UnitKillPointReached += AddCharge;
-        MovementPackage.OnFirstMove += RemoveCharge;
-        MovementPackage.OnCollisionWithEnemyWhileMovingThroughIntersection += RemoveCharge;
+        MovementPlanner.OnFirstMove += RemoveCharge;
+        ParallelMovingCheck.OnInvalidEnemyCollision += RemoveCharge;
         _currentCharges = _maxCharges;
     }
 
-    private void RemoveCharge()
+    private void RemoveCharge(int amountToRemove)
     {
         _rechargeTimer = 0f;
-        _currentCharges = _currentCharges <= 0 ? 0 : _currentCharges -= 1;
-        RemovedChargesFromCollisionWithInvalidEnemy?.Invoke();
+        _currentCharges =  _currentCharges - amountToRemove <= 0 ? 0 : _currentCharges -= amountToRemove;
+
+        if (_currentCharges <= 0)
+        {
+            NoDashCharges?.Invoke();
+        }
+        
         OnDashChargesChanged?.Invoke(_currentCharges);
     }
 

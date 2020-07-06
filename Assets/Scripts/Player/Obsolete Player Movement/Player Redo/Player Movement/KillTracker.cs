@@ -19,20 +19,20 @@ public class KillTracker : MonoBehaviour
 
         _player = FindObjectOfType<Player>();
         UnitKillHandler.UnitKillPointReached += RecordKill;
-        Mover.OnArrival += HandleArrival;
-        Mover.OnNewMovementStart += HandleStart;
+        PlayerMover.OnArrival += HandleArrival;
+        PlayerMover.OnFirstMove += HandleStart;
     }
 
     private void OnDestroy()
     {
         UnitKillHandler.UnitKillPointReached -= RecordKill;
-        Mover.OnArrival -= HandleArrival;
-        Mover.OnNewMovementStart -= HandleStart;
+        PlayerMover.OnArrival -= HandleArrival;
+        PlayerMover.OnFirstMove -= HandleStart;
     }
 
-    private void HandleStart(DestinationType destinationType)
+    private void HandleStart()
     {
-        if (destinationType == DestinationType.Exit) _currentStreak = 0;
+        _currentStreak = 0;
     }
 
     private void HandleArrival()

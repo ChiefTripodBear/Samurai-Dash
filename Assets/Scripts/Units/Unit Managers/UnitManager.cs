@@ -21,7 +21,7 @@ public abstract class UnitManager : MonoBehaviour
 
         Units.Add(unit);
         GameUnitManager.RegisterUnit(unit);
-        UnitChainEvaluator.Instance.AddUnit(unit);
+        UnitChainEvaluator.AddUnit(unit);
         OnRegisterUnit(unit);
     }
 

@@ -34,7 +34,6 @@ public class Mover
     {
         _player = player;
         _transform = _player.transform;
-        _parallelMovingCheck = new ParallelMovingCheck(_transform, this);
         _defaultMoveSpeed = defaultMoveSpeed;
         _slowSpeed = defaultMoveSpeed / 4;
         _currentMoveSpeed = defaultMoveSpeed;
@@ -71,7 +70,7 @@ public class Mover
     {
         if (!CanMove) return;
 
-        _parallelMovingCheck.Tick(_movementPackage.Destination.MoveDirection);
+        _parallelMovingCheck.Tick();
 
         if (_movementPackage.Destination.DestinationType == DestinationType.BoundaryPath)
         {

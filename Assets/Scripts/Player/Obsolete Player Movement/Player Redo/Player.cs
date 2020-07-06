@@ -11,21 +11,21 @@ public class Player : MonoBehaviour
 
     private NodeGrid _grid;
     public Node CurrentNode { get; private set; }
-    private PlayerMovementManager _playerMovementManager;
+    private PlayerMovementController _playerMovementController;
     private bool _reloaded;
     public Collider2D PlayerCollider2D { get; private set; }
 
     private void Awake()
     {
         PlayerCollider2D = GetComponent<Collider2D>();
-        _playerMovementManager = new PlayerMovementManager(this);
+        _playerMovementController = new PlayerMovementController(this);
         _grid = FindObjectOfType<NodeGrid>();
         Time.timeScale = 1f;
     }
     
     private void Update()
     {
-        _playerMovementManager.Tick();
+        _playerMovementController.Tick();
         
         CurrentNode = _grid.NodeFromWorldPosition(transform.position);
     }
@@ -50,6 +50,6 @@ public class Player : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        _playerMovementManager?.DrawGizmos();
+        _playerMovementController?.DrawGizmos();
     }
 }
