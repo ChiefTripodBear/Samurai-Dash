@@ -24,9 +24,8 @@ public class MovementPackage
         MovementCount++;
         DistanceScalar = distanceScalar;
         Destination = destination;
-        Destination.TargetLocation = BoundaryHelper.HandleBoundaryCollision(Destination.TargetLocation, destination.MoveDirection, out RequiredCollisionHandling);
-        if (BoundaryHelper.WillBeMovingThroughBoundary(_mover.transform.position, Destination.TargetLocation,
-            out var boundary))
+        Destination.TargetLocation = BoundaryHelper.HandleBoundaryCollision(Destination.TargetLocation, destination.MoveDirection);
+        if (BoundaryHelper.WillBeMovingThroughBoundary(_mover.transform.position, Destination.TargetLocation))
             Destination = null;
 
         if (Vector2.Distance(destination.TargetLocation, mover.transform.position) > 0.1f) 
@@ -51,7 +50,7 @@ public class MovementPackage
 
         Evaluate(distanceScalar);
         LocationBeforeCollisionAdjustment = Destination.TargetLocation;
-        Destination.TargetLocation = BoundaryHelper.HandleBoundaryCollision(Destination.TargetLocation, destination.MoveDirection, out RequiredCollisionHandling);
+        Destination.TargetLocation = BoundaryHelper.HandleBoundaryCollision(Destination.TargetLocation, destination.MoveDirection);
         BoundaryPathFinder = new BoundaryPathFinder(_mover, Destination);
     }
     

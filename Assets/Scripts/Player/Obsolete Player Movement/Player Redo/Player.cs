@@ -44,6 +44,7 @@ public class Player : MonoBehaviour
         Time.timeScale = 1f;
         Pool.ClearPools();
         GameUnitManager.Clear();
+        UnitChainEvaluator.Clear();
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         SceneManager.LoadScene("Game Menu UI Scene", LoadSceneMode.Additive);
     }

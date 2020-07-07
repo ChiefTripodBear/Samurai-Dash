@@ -38,7 +38,11 @@ public class PlayerMover
 
     public void Tick()
     {
-        if (!IsMoving) return;
+        if (!IsMoving)
+        {
+            _mover.GetComponent<Collider2D>().enabled = true;
+            return;
+        }
 
         if (_currentPlan.IsFirst)
         {
@@ -47,7 +51,10 @@ public class PlayerMover
         
         if (InRequestRange() && _currentPlan.HeadingForObstacle)
         {
+            _mover.GetComponent<Collider2D>().enabled = false;
+
             MovementPlanRequested?.Invoke(_currentPlan, SetCurrentPlan, false, _currentPlan.HeadingForObstacle);
+            _currentMoveSpeed = _defaultMoveSpeed;
         }
         
         HandleIntersection();
@@ -69,6 +76,8 @@ public class PlayerMover
     {
         if (_currentPlan.HeadingForIntersection && InRedirectRange() && !_currentPlan.HeadingForObstacle)
         {
+            _mover.GetComponent<Collider2D>().enabled = false;
+
             _currentPlan.UpdateTargetLocationWhileMovingToIntersect(_currentPlan.TargetUnit.AngleDefinition.IntersectionPoint);
 
             DoTimeSlow();
@@ -78,6 +87,8 @@ public class PlayerMover
 
             if (PassedRedirectRange())
             {
+                _mover.GetComponent<Collider2D>().enabled = false;
+
                 RequestedNewPackage?.Invoke();
                 MovementPlanRequested?.Invoke(_currentPlan, SetCurrentPlan, successfulRedirect, false);
                 Time.timeScale = 1f;
@@ -90,6 +101,9 @@ public class PlayerMover
     {
         if (InRequestRange() && !_currentPlan.Finished && !_currentPlan.HeadingForIntersection && !_currentPlan.HeadingForObstacle)
         {
+            _mover.GetComponent<Collider2D>().enabled = false;
+
+            _currentMoveSpeed = _defaultMoveSpeed;
             RequestedNewPackage?.Invoke();
             MovementPlanRequested?.Invoke(_currentPlan, SetCurrentPlan, false, false);
         }

@@ -20,12 +20,12 @@ public class BoundaryPathFinder
 
     private void EvaluateBoundaries()
     {
-        if (BoundaryHelper.WillBeMovingThroughBoundary(_mover.position, _destination.TargetLocation, out var boundary))
-        {
-            if (boundary == null) return;
-            
-            _destination.DestinationType = DestinationType.BoundaryPath;
-            BoundaryPath = boundary.BoundaryPath(_destination.TargetLocation, _mover.transform.position);
-        }
+        // if (BoundaryHelper.WillBeMovingThroughBoundary(_mover.position, _destination.TargetLocation))
+        // {
+        //     if (boundary == null) return;
+        //     
+        //     _destination.DestinationType = DestinationType.BoundaryPath;
+        //     BoundaryPath = boundary.BoundaryPath(_destination.TargetLocation, _mover.transform.position);
+        // }
     }
 }

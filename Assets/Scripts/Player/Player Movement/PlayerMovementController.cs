@@ -33,7 +33,7 @@ public class PlayerMovementController
         {
             if (_currentUnit != null) _currentUnit.Transform.GetComponent<SpriteRenderer>().color = Color.white;
             _currentUnit = _playerMover.DEBUGCurrentPlan.TargetUnit;
-            _currentUnit.Transform.GetComponent<SpriteRenderer>().color = Color.green;
+            _currentUnit.Transform.GetComponent<SpriteRenderer>().color = Color.magenta;
         }
         _playerMover.Tick();
         _parallelMovingCheck.Tick();

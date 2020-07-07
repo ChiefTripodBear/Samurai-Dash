@@ -33,7 +33,7 @@ public class UnitChainEvaluator
                 {
                     var directionThroughKillPoint =
                         (unit.KillHandler.GetFauxKillPoint() - (Vector2) unit.Transform.position).normalized;
-                    if(possibleIntersections.Any(t => Vector2.Distance(intersect.Value, t.AngleDefinition.IntersectionPoint) < 2f)) continue;
+                    if(possibleIntersections.Any(t => Vector2.Distance(intersect.Value, t.AngleDefinition.IntersectionPoint) < 1f)) continue;
                     if (!NodeGrid.Instance.NodeFromWorldPosition(intersect.Value).IsWalkable 
                         || BoundaryHelper.WillCollideWithBoundaryAtTargetLocation(unit.KillHandler.GetFauxKillPoint(), directionThroughKillPoint, 1.5f)
                         || !BoundaryHelper.OnScreen(intersect.Value)

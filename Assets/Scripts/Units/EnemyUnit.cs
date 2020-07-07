@@ -25,6 +25,7 @@ public abstract class EnemyUnit : PooledMonoBehaviour, IUnitEnemy
         EnemyUnitMovementController = new EnemyUnitMovementController(this);
         KillHandler.OnDeath += RemoveFromUnitManager;
     }
+    
 
     private void OnDestroy()
     {
@@ -35,7 +36,6 @@ public abstract class EnemyUnit : PooledMonoBehaviour, IUnitEnemy
     {
         CurrentNode = NodeGrid.Instance.NodeFromWorldPosition(transform.position);
         EnemyUnitMovementController.Tick();
-        
     }
     
     public void Register()

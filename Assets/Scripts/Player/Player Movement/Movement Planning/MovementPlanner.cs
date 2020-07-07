@@ -25,20 +25,26 @@ public class MovementPlanner
         var moveDirection = unit != null
             ? ((Vector2) unit.Transform.position - unit.AngleDefinition.GetPointClosestTo(_mover.position)).normalized
             : currentMoveDirection;
-        var targetLocation = unit?.AngleDefinition.GetPointClosestTo(_mover.position) ?? NoUnitTargetLocation(_mover.position, moveDirection);
+        var targetLocation = unit?.AngleDefinition.GetPointClosestTo(_mover.position) ?? StartingTargetLocation(_mover.position, moveDirection);
         
+        targetLocation =
+            BoundaryHelper.HandleBoundaryCollision(targetLocation, moveDirection);
+
+        // Obstacle start position = mover.position
+        // Target end position = targetLocation (only adjust if there is no unit)
+
         _currentIntersections = _intersectionDetector.GetIntersectionsFromUnit(unit);
         
-        var startingPlanValues = new MovementPlanValues(targetLocation, moveDirection, unit, _currentIntersections, null);
+        var startingPlanValues = new MovementPlanValues(targetLocation, moveDirection, unit, _currentIntersections);
         var startingPlanStates = new MovementPlanStates(false, unit == null, false);
 
         var movementPlan = new MovementPlan(startingPlanValues, startingPlanStates);
-
+        
         movementPlan.SetFirst();
         
         OnFirstMove?.Invoke(1);
-        
-        return movementPlan;
+
+        return EditMovementPlanForObstacles(movementPlan, _mover.position);
     }
 
     public MovementPlan PlanMovingTowardsIntersectingUnitFromPreviousIntersection(MovementPlan previousPlan)
@@ -48,72 +54,126 @@ public class MovementPlanner
 
         _currentIntersections = _intersectionDetector.GetIntersectionsFromUnit(previousPlan.TargetUnit);
         
-        var successfulRedirectionValues = new MovementPlanValues(targetLocation, moveDirection, previousPlan.TargetUnit, _currentIntersections, _obstaclePathFinder);
+        // Obstacle start position = previousPlan.TargetLocation
+        // Target end position = targetLocation (never adjusted)
+        var successfulRedirectionValues = new MovementPlanValues(targetLocation, moveDirection, previousPlan.TargetUnit, _currentIntersections);
         var successfulRedirectStates = new MovementPlanStates(false, false, false);
 
-        return new MovementPlan(successfulRedirectionValues, successfulRedirectStates);
+        var movementPlan = new MovementPlan(successfulRedirectionValues, successfulRedirectStates);
+
+        return EditMovementPlanForObstacles(movementPlan, previousPlan.TargetLocation);
     }
     
     public MovementPlan FinishPlanOrMoveToNextIntersect(MovementPlan previousPlan)
     {
+        MovementPlan movementPlan;
         if (previousPlan.ValidIntersections())
         {
             _currentIntersections = previousPlan.CurrentIntersections;
             var targetUnit = _currentIntersections.Dequeue();
             var targetLocation = targetUnit.AngleDefinition.IntersectionPoint;
             
-            var nextIntersectionMovementValues = new MovementPlanValues(targetLocation, previousPlan.MoveDirection, targetUnit, _currentIntersections, _obstaclePathFinder);
+            // Obstacle start position = previousPlan.TargetLocation
+            // Target end position = targetLocation (never adjusted)
+
+            var nextIntersectionMovementValues = new MovementPlanValues(targetLocation, previousPlan.MoveDirection, targetUnit, _currentIntersections);
             var nextIntersectionMovementStates = new MovementPlanStates(true, false, false);
 
-            return new MovementPlan(nextIntersectionMovementValues, nextIntersectionMovementStates);
-        }
+            movementPlan = new MovementPlan(nextIntersectionMovementValues, nextIntersectionMovementStates);
 
-        var finishedTargetPosition =
-            IntersectOrUnitTargetLocation(previousPlan.TargetLocation, previousPlan.MoveDirection);
+            return EditMovementPlanForObstacles(movementPlan, previousPlan.TargetLocation);
+        }
         
-        var finishedMovementValues = new MovementPlanValues(finishedTargetPosition, previousPlan.MoveDirection, null, null, _obstaclePathFinder);
+        var finishedTargetPosition = FinishedTargetLocation(previousPlan.TargetLocation, previousPlan.MoveDirection);
+        
+        finishedTargetPosition =
+            BoundaryHelper.HandleBoundaryCollision(finishedTargetPosition, previousPlan.MoveDirection);
+
+        // Obstacle start position = previousPlan.TargetLocation
+        // Target end position = Adjusted(finishedTargetPosition);
+        
+        var finishedMovementValues = new MovementPlanValues(finishedTargetPosition, previousPlan.MoveDirection, null, null);
         var finishedMovementStates = new MovementPlanStates(false, true, false);
         
-        return new MovementPlan(finishedMovementValues, finishedMovementStates);
+        movementPlan = new MovementPlan(finishedMovementValues, finishedMovementStates);
+
+        return EditMovementPlanForObstacles(movementPlan, previousPlan.TargetLocation);
+    }
+
+    private MovementPlan EditMovementPlanForObstacles(MovementPlan movementPlan, Vector2 fromPosition)
+    {
+        var obstaclePriority = _obstaclePathFinder.HasObstaclePath();
+
+        if (!obstaclePriority)
+        {
+            obstaclePriority =
+                _obstaclePathFinder.FoundPath(fromPosition, movementPlan.TargetLocation, movementPlan.MoveDirection);
+        }
+
+        if (!obstaclePriority)
+        {
+            HadObstaclePath = false;
+            return movementPlan;
+        }
+
+        HadObstaclePath = true;
+        
+        var targetLocation = _obstaclePathFinder.NextPoint().ProjectedPoint;
+        var targetMoveDirection = (targetLocation - fromPosition).normalized;
+        var updatedPlanValues = new MovementPlanValues(targetLocation, targetMoveDirection, movementPlan.TargetUnit, _currentIntersections);
+        var updatedPlanStates = new MovementPlanStates(movementPlan.HeadingForIntersection, movementPlan.Finished, true);
+        
+        return new MovementPlan(updatedPlanValues, updatedPlanStates);
     }
 
     public MovementPlan GetPlanForNextMoveDuringObstaclePath(MovementPlan previousPlan)
     {
-        var targetLocation = !previousPlan.ObstaclePathFinder.HasObstaclePath()
-            ? previousPlan.ObstaclePathFinder.TargetLocationOnceFinishedWithObstaclePath
-            : previousPlan.ObstaclePathFinder.NextPoint().ProjectedPoint;
+        var targetLocation = !_obstaclePathFinder.HasObstaclePath()
+            ? _obstaclePathFinder.TargetLocationOnceFinishedWithObstaclePath
+            : _obstaclePathFinder.NextPoint().ProjectedPoint;
 
-        var moveDirection = previousPlan.ObstaclePathFinder.HasObstaclePath() 
-            ? (targetLocation - previousPlan.TargetLocation).normalized 
-            : (previousPlan.ObstaclePathFinder.TargetLocationOnceFinishedWithObstaclePath - previousPlan.ObstaclePathFinder.PointBeforeStartingObstaclePath).normalized;
+        var moveDirection = !_obstaclePathFinder.HasObstaclePath()
+            ? (_obstaclePathFinder.TargetLocationOnceFinishedWithObstaclePath -
+               _obstaclePathFinder.PointBeforeStartingObstaclePath).normalized
+            : (targetLocation - previousPlan.TargetLocation).normalized;
         
-        var obstaclePlanValues = new MovementPlanValues(targetLocation, moveDirection, previousPlan.TargetUnit, previousPlan.CurrentIntersections, previousPlan.ObstaclePathFinder);
-        var obstaclePlanStates = new MovementPlanStates(previousPlan.HeadingForIntersection, previousPlan.TargetUnit == null && !previousPlan.ObstaclePathFinder.HasObstaclePath(), previousPlan.ObstaclePathFinder.HasObstaclePath());
-
+        var obstaclePlanValues = new MovementPlanValues(targetLocation, moveDirection, previousPlan.TargetUnit, previousPlan.CurrentIntersections);
+        var obstaclePlanStates = new MovementPlanStates(previousPlan.HeadingForIntersection, previousPlan.TargetUnit == null, _obstaclePathFinder.HasObstaclePath());
+        
         return new MovementPlan(obstaclePlanValues, obstaclePlanStates);
     }
 
-    private Vector2 NoUnitTargetLocation(Vector2 fromLocation, Vector2 moveDirection)
+    public bool HadObstaclePath { get; set; }
+
+    private Vector2 StartingTargetLocation(Vector2 fromLocation, Vector2 moveDirection)
     {
         return fromLocation + moveDirection * _distanceScalar;
     }
     
-    private Vector2 IntersectOrUnitTargetLocation(Vector2 fromPosition, Vector2 moveDirection)
+    private Vector2 FinishedTargetLocation(Vector2 fromPosition, Vector2 moveDirection)
     {
         return fromPosition + moveDirection * (_distanceScalar + _distanceScalar * 0.5f);
     }
 }
 
+// Get Point to check from
+// Get Initial Target Location
+// check for obstacles
+// if there is an obstacle - adjust target location
+// store adjusted target location
+// store initial check from
+// plot path around obstacle
+// move through path
+// once done with path, set targetlocation to adjusted target location
+
 public class ObstaclePathFinder
 {
-    private static readonly float StepTowardsObstacleSide = 0.1f;
+    private static readonly float StepTowardsObstacleSide = 0.01f;
     private Queue<ObstaclePoint> _currentObstaclePath = new Queue<ObstaclePoint>();
     public Vector2 TargetLocationOnceFinishedWithObstaclePath { get; set; }
-    public ObstaclePoint PreviousObstaclePoint { get; private set; }
     public Vector2 PointBeforeStartingObstaclePath { get; set; }
-    public Vector2? TargetMoveDirection { get; set; }
 
-    public bool CheckForPath(Vector2 checkFromPosition, Vector2 checkToPosition, Vector2 moveDirection)
+    public bool FoundPath(Vector2 checkFromPosition, Vector2 checkToPosition, Vector2 moveDirection)
     {
         var obstacle = ObstacleHelper.GetObstacle(checkFromPosition, checkToPosition);
         
@@ -121,14 +181,17 @@ public class ObstaclePathFinder
         {
             checkToPosition = BoundaryHelper.FindPositionThroughObstacle(checkToPosition, checkFromPosition);
         }
+        
 
         checkToPosition += moveDirection * 5f;
         
-        if (obstacle == null)
-        {
-            return false;
-        }
+        Debug.Log(checkToPosition);
         
+        if (obstacle == null) return false;
+
+        TargetLocationOnceFinishedWithObstaclePath = checkToPosition;
+        PointBeforeStartingObstaclePath = checkFromPosition;
+
         var adjustedPointToCheckClosestToStart = checkFromPosition;
 
         var closestPointToStart = obstacle.FindClosestPointOnSegmentFromProjectedPoint(adjustedPointToCheckClosestToStart);
@@ -163,8 +226,7 @@ public class ObstaclePathFinder
 
     public ObstaclePoint NextPoint()
     {
-        PreviousObstaclePoint = _currentObstaclePath.Dequeue();
-        return PreviousObstaclePoint;
+        return _currentObstaclePath.Dequeue();
     }
 }
 

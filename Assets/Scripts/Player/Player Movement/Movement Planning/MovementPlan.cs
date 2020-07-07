@@ -4,7 +4,6 @@ using UnityEngine;
 public class MovementPlan
 {
     public readonly Queue<IUnit> CurrentIntersections;
-    public readonly ObstaclePathFinder ObstaclePathFinder;
     public bool HeadingForIntersection { get; }
     public bool Finished { get; }
     public Vector2 TargetLocation { get; private set; }
@@ -19,13 +18,11 @@ public class MovementPlan
         MoveDirection = movementPlanValues.MoveDirection;
         TargetUnit = movementPlanValues.TargetUnit;
         CurrentIntersections = movementPlanValues.Intersections;
-        ObstaclePathFinder = movementPlanValues.ObstaclePathFinder;
         HeadingForObstacle = movementPlanStates.HeadingForObstacle;
         HeadingForIntersection = movementPlanStates.HeadingForIntersection;
         Finished = movementPlanStates.Finished;
     }
-
-
+    
     public bool ValidIntersections()
     {
         return CurrentIntersections != null && CurrentIntersections.Count > 0;

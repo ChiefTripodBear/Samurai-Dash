@@ -142,12 +142,12 @@ public class ObstacleObject : MonoBehaviour
                 Gizmos.DrawLine(point.ProjectedPoint, point.NextWayPoint.ProjectedPoint);
             }
         }
-
+        
         if (_closestPoints.Count <= 0) return;
-
-        // foreach (var point in _closestPoints)
-        // {
-        //     Gizmos.DrawWireSphere(point, 0.1f);
-        // }
+        
+        foreach (var point in _closestPoints)
+        {
+            Gizmos.DrawWireSphere(point, 0.1f);
+        }
     }
 }
