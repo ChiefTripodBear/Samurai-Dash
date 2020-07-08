@@ -456,6 +456,8 @@ GameObject:
   - component: {fileID: 195482705}
   - component: {fileID: 195482706}
   - component: {fileID: 195482707}
+  - component: {fileID: 195482708}
+  - component: {fileID: 195482709}
   m_Layer: 0
   m_Name: Unit Manager
   m_TagString: Untagged
@@ -512,6 +514,31 @@ MonoBehaviour:
   _minAttackerCount: 4
   _maxAttackerCount: 5
   _timeUntilAttack: 5
+--- !u!114 &195482708
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 195482704}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 853d0ad542294032902dbe048f897fa8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &195482709
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 195482704}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4145d0d6fd3d4c4899dab4dc48de56bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _ringOrder: 2
 --- !u!1 &510814857
 GameObject:
   m_ObjectHideFlags: 0
@@ -1733,7 +1760,7 @@ PrefabInstance:
     - target: {fileID: 7184910882675830120, guid: fa089af4c9ed703419f6c645f88ef192,
         type: 3}
       propertyPath: m_Name
-      value: Irregulate Polygon
+      value: Irregular Polygon
       objectReference: {fileID: 0}
     - target: {fileID: 7184910882675830120, guid: fa089af4c9ed703419f6c645f88ef192,
         type: 3}
@@ -1743,12 +1770,12 @@ PrefabInstance:
     - target: {fileID: 7184910882675830123, guid: fa089af4c9ed703419f6c645f88ef192,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.9
+      value: -35.46
       objectReference: {fileID: 0}
     - target: {fileID: 7184910882675830123, guid: fa089af4c9ed703419f6c645f88ef192,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -8.6
+      value: -13.11
       objectReference: {fileID: 0}
     - target: {fileID: 7184910882675830123, guid: fa089af4c9ed703419f6c645f88ef192,
         type: 3}

@@ -70,12 +70,7 @@ public class Mover
     {
         if (!CanMove) return;
 
-        _parallelMovingCheck.Tick();
-
-        if (_movementPackage.Destination.DestinationType == DestinationType.BoundaryPath)
-        {
-            _player.StartCoroutine(MoveThroughBoundaryPath());
-        }
+        // _parallelMovingCheck.Tick();
         
         if (_movementPackage.Destination.DestinationType == DestinationType.Intersection && !_movementPackage.Finished)
             if (InRedirectRange())
@@ -131,53 +126,7 @@ public class Mover
         Time.timeScale = Mathf.Lerp(1f, 0.1f, Mathf.Sin(percent * Mathf.PI * 0.5f));
         _currentMoveSpeed = _slowSpeed;
     }
-
-    private IEnumerator MoveThroughBoundaryPath()
-    {
-        CanMove = false;
-        // Time.timeScale = .5f;
-        while (true)
-        {
-            if (_movementPackage == null)
-            {
-                _requested = true;
-                CanMove = true;
-                _boundaryPathIndex = 0;
-                Time.timeScale = 1;
-                yield break;
-            }
-            
-            if (_boundaryPathIndex >= _movementPackage.BoundaryPathFinder.BoundaryPath.Count - 1)
-            {
-                _transform.position = Vector2.MoveTowards(_transform.position, _movementPackage.Destination.TargetLocation, _currentMoveSpeed * Time.deltaTime);
-
-                if (InRequestRange())
-                {
-                    _movementPackage.Destination.DestinationType =
-                        _movementPackage.BoundaryPathFinder.PreviousDestinationType;
-                    _requested = true;
-                    NewMovementPackageRequested?.Invoke(_movementPackage, SetMovementPackage, false);
-                    CanMove = true;
-                    _boundaryPathIndex = 0;
-                    Time.timeScale = 1;
-                    yield break;
-                }
-            }
-            else
-            {
-                if (Vector2.Distance(_transform.position,
-                    _movementPackage.BoundaryPathFinder.BoundaryPath[_boundaryPathIndex]) < 0.1f)
-                {
-                    _boundaryPathIndex++;
-                }
-
-                _transform.position = Vector2.MoveTowards(_transform.position, _movementPackage.BoundaryPathFinder.BoundaryPath[_boundaryPathIndex], _currentMoveSpeed * Time.deltaTime);
-            }
-
-            yield return null;
-        }
-    }
-
+    
     private bool Arrived(Vector2 destination) => (Vector2)_transform.position == destination;
     private bool InRequestRange() => Vector2.Distance(_transform.position, _movementPackage.Destination.TargetLocation) < 0.3f;
     private bool InRedirectRange() => Vector2.Distance(_transform.position, _movementPackage.Destination.TargetLocation) < _distanceToCurrentDestination / 4;

@@ -13,12 +13,14 @@ public class Player : MonoBehaviour
     public Node CurrentNode { get; private set; }
     private PlayerMovementController _playerMovementController;
     private bool _reloaded;
+    private PlayerMovementManager _playerMovementManager;
     public Collider2D PlayerCollider2D { get; private set; }
 
     private void Awake()
     {
         PlayerCollider2D = GetComponent<Collider2D>();
         _playerMovementController = new PlayerMovementController(this);
+        _playerMovementManager = new PlayerMovementManager(this);
         _grid = FindObjectOfType<NodeGrid>();
         Time.timeScale = 1f;
     }
@@ -26,6 +28,7 @@ public class Player : MonoBehaviour
     private void Update()
     {
         _playerMovementController.Tick();
+        // _playerMovementManager.Tick();
         
         CurrentNode = _grid.NodeFromWorldPosition(transform.position);
     }
@@ -41,10 +44,15 @@ public class Player : MonoBehaviour
         if (_reloaded) return;
         
         _reloaded = true;
+        Reload();
+    }
+
+    public static void Reload()
+    {
         Time.timeScale = 1f;
         Pool.ClearPools();
         GameUnitManager.Clear();
-        UnitChainEvaluator.Clear();
+        UnitChainEvaluator.Instance.Clear();
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         SceneManager.LoadScene("Game Menu UI Scene", LoadSceneMode.Additive);
     }

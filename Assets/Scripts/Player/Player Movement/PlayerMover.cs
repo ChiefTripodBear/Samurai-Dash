@@ -17,7 +17,7 @@ public class PlayerMover
     private float _defaultMoveSpeed = 40f;
 
     public bool IsMoving => _currentPlan != null;
-    public MovementPlan DEBUGCurrentPlan => _currentPlan;
+    public MovementPlan CurrentPlan => _currentPlan;
     public Vector2? CurrentMoveDirection => _currentPlan?.MoveDirection;
 
     public PlayerMover(Transform mover)
@@ -42,6 +42,12 @@ public class PlayerMover
         {
             _mover.GetComponent<Collider2D>().enabled = true;
             return;
+        }
+
+        if (_currentPlan.TargetUnit != null &&
+            Vector2.Distance(_currentPlan.TargetUnit.Transform.position, _mover.position) < 3f)
+        {
+            _mover.GetComponent<Collider2D>().enabled = false;
         }
 
         if (_currentPlan.IsFirst)
@@ -114,7 +120,7 @@ public class PlayerMover
         if (_currentPlan.Finished && !_currentPlan.IsFirst) _currentMoveSpeed = _defaultMoveSpeed * 2f;
     }
 
-    private void Reset()
+    public void Reset()
     {
         OnArrival?.Invoke();
         _currentMoveSpeed = _defaultMoveSpeed;

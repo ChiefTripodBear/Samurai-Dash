@@ -18,7 +18,6 @@ public class PlayerMovementManager
         _mover = new Mover(_player, _player.DefaultMovementSpeed);
         _destinationSetter = new DestinationSetter(_player.transform, _mover);
         _inputProcessor = new InputProcessor();
-        _playerSafetyRedirect = new PlayerSafetyRedirect(_mover, _player);
         _playerDashMonitor = new PlayerDashMonitor();
     }
     
@@ -69,7 +68,7 @@ public class PlayerMovementManager
         }
 
         _mover.CanMove = true;
-        // _currentMovementPackage = _destinationSetter.GetDestinationFromFirstMove(_player.MoveAmountPerSwipe, startingDirection.Value);
+        _currentMovementPackage = _destinationSetter.GetDestinationFromFirstMove(_player.MoveAmountPerSwipe, startingDirection.Value);
 
         _mover.SetMovementPackage(_currentMovementPackage);
     }

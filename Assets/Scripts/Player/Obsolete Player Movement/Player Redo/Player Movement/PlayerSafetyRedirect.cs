@@ -1,59 +1,70 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerSafetyRedirect
 {
     public static event Action InDanger;
     public bool SafetyRedirectAllowed { get; set; }
-    private Mover _mover;
+    private PlayerMover _mover;
     private readonly Player _player;
     private float _safetyCheckRange = 4f;
 
     private float _safetyRedirectMoveSpeed = 10f;
+    private LayerMask _enemyLayer;
+    private Vector2 _projectedPoint;
+    private Vector2 _dangerousPosition;
+    private bool _inDanger;
 
-    public PlayerSafetyRedirect(Mover mover, Player player)
+    public PlayerSafetyRedirect(PlayerMover mover, Player player)
     {
         _mover = mover;
         _player = player;
+        _enemyLayer = LayerMask.GetMask("Enemy");
     }
 
-    // public void Tick()
-    // {
-    //     if (_mover.MovementPackage == null || !_mover.IsMoving)
-    //     {
-    //         _mover.Reset();
-    //         return;
-    //     }
-    //     
-    //     if (InSafetyRedirectRange() && _mover.MovementPackage.Destination?.Unit == null && _mover.MovementPackage.Destination?.DestinationType != DestinationType.Intersection || InSafetyRedirectRange() && _mover.MovementPackage.Finished)
-    //     {
-    //         if (InDangerAtTargetLocation())
-    //         {
-    //             InDanger?.Invoke();
-    //             SafetyRedirectAllowed = true;
-    //             Time.timeScale = .1f;
-    //             _mover.SetMoveSpeed(_safetyRedirectMoveSpeed);
-    //             _mover.IsMoving = false;
-    //         }
-    //     }
-    // }
-    //
-    // private bool InDangerAtTargetLocation()
-    // {
-    //     var targetPosition = _mover.MovementPackage.RequiredCollisionHandling
-    //         ? _mover.MovementPackage.LocationBeforeCollisionAdjustment
-    //         : _mover.MovementPackage.Destination.TargetLocation;
-    //     var distanceToTargetLocation =
-    //         Vector2.Distance(targetPosition, _player.transform.position);
-    //     return _mover.MovementPackage?.Destination != null && TargetDetector.FoundInvalidEnemy(distanceToTargetLocation + distanceToTargetLocation * 0.125f, _mover.MovementPackage.Destination.MoveDirection,
-    //         _player.transform.position);
-    // }
-
-    private bool InSafetyRedirectRange()
+    public void Tick()
     {
-        var targetPosition = _mover.MovementPackage.RequiredCollisionHandling
-            ? _mover.MovementPackage.LocationBeforeCollisionAdjustment
-            : _mover.MovementPackage.Destination.TargetLocation;
-        return Vector2.Distance(_player.transform.position, targetPosition) < _safetyCheckRange;
+        if (_inDanger)
+        {
+            Time.timeScale = 0.1f;
+            
+            if (Mouse.current.leftButton.wasReleasedThisFrame)
+            {
+                Time.timeScale = 1f;
+                _mover.Reset();
+                _inDanger = false;
+            }
+        }
+        else
+        {
+            if (InDangerAtTargetLocation())
+            {
+                _inDanger = true;
+            }
+        }
+    }
+    
+    private bool InDangerAtTargetLocation()
+    {
+        if (_mover.CurrentPlan == null || _mover.CurrentMoveDirection == null) return false;
+
+        _projectedPoint = (Vector2)_player.transform.position + _mover.CurrentMoveDirection.Value * 1.5f;
+
+        var checkCircle = Physics2D.OverlapCircle(_projectedPoint, 1f, _enemyLayer);
+
+        if (!checkCircle) return false;
+
+        var unit = checkCircle.GetComponent<IUnit>();
+
+        if (unit == null) return false;
+
+        _dangerousPosition = _projectedPoint;
+        return _mover.CurrentPlan.TargetUnit != unit;
+    }
+
+    public void DrawSafetyPosition()
+    {
+        Gizmos.DrawWireSphere(_projectedPoint, 1f);
     }
 }

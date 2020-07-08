@@ -2,17 +2,27 @@
 using System.Linq;
 using UnityEngine;
 
-public class UnitChainEvaluator 
+public class UnitChainEvaluator : MonoBehaviour
 {
-    private static List<IUnit> _units = new List<IUnit>();
-    
-    public static Queue<IUnit> GetIntersectionsRelativeTo(IUnit firstUnit)
+    private readonly List<IUnit> _units = new List<IUnit>();
+
+    private static UnitChainEvaluator _instance;
+
+    public static UnitChainEvaluator Instance => _instance;
+
+    private void Awake()
+    {
+        if (_instance == null)
+            _instance = this;
+    }
+
+    public Queue<IUnit> GetIntersectionsRelativeTo(IUnit firstUnit)
     {
         var possibleIntersections = new List<IUnit>();
         var firstStartCheckPoint = firstUnit.Transform.position;
 
-        foreach (var unit in _units.ToList())
-        {    
+        foreach (var unit in _units)
+        {
             if(unit == firstUnit 
                || unit == null 
                || unit.Transform.gameObject.activeInHierarchy == false 
@@ -35,7 +45,6 @@ public class UnitChainEvaluator
                         (unit.KillHandler.GetFauxKillPoint() - (Vector2) unit.Transform.position).normalized;
                     if(possibleIntersections.Any(t => Vector2.Distance(intersect.Value, t.AngleDefinition.IntersectionPoint) < 1f)) continue;
                     if (!NodeGrid.Instance.NodeFromWorldPosition(intersect.Value).IsWalkable 
-                        || BoundaryHelper.WillCollideWithBoundaryAtTargetLocation(unit.KillHandler.GetFauxKillPoint(), directionThroughKillPoint, 1.5f)
                         || !BoundaryHelper.OnScreen(intersect.Value)
                         || BoundaryHelper.ContainedInObstacleCollider(intersect.Value)) continue;
 
@@ -63,19 +72,21 @@ public class UnitChainEvaluator
         return intersectOrder.Count > 0 ? intersectOrder : null;
     }
     
-    public static void Clear()
+    public void Clear()
     {
         _units.Clear();
     }
 
-    public static void AddUnit(IUnit unit)
+    public void AddUnit(IUnit unit)
     {
-        if (_units.Contains(unit)) return;
         _units.Add(unit);
     }
 
-    public static void RemoveUnit(IUnit unit)
+    public void RemoveUnit(IUnit unit)
     {
-        _units.Remove(unit);
+        if (_units.Contains(unit))
+        {
+            _units.Remove(unit);
+        }
     }
 }

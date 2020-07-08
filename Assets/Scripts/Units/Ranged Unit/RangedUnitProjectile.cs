@@ -22,7 +22,7 @@ public class RangedUnitProjectile : PooledMonoBehaviour, IUnit
 
     private void Start()
     {
-        UnitChainEvaluator.AddUnit(this);
+        UnitChainEvaluator.Instance.AddUnit(this);
     }
 
     private void Update()

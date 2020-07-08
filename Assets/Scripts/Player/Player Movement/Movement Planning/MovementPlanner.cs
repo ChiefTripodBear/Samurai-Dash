@@ -49,7 +49,9 @@ public class MovementPlanner
 
     public MovementPlan PlanMovingTowardsIntersectingUnitFromPreviousIntersection(MovementPlan previousPlan)
     {
+        Debug.Log(_mover.transform);
         var targetLocation = previousPlan.TargetUnit.AngleDefinition.GetPointClosestTo(_mover.position);
+
         var moveDirection = (targetLocation - previousPlan.TargetLocation).normalized;
 
         _currentIntersections = _intersectionDetector.GetIntersectionsFromUnit(previousPlan.TargetUnit);
@@ -72,7 +74,7 @@ public class MovementPlanner
             _currentIntersections = previousPlan.CurrentIntersections;
             var targetUnit = _currentIntersections.Dequeue();
             var targetLocation = targetUnit.AngleDefinition.IntersectionPoint;
-            
+
             // Obstacle start position = previousPlan.TargetLocation
             // Target end position = targetLocation (never adjusted)
 
@@ -112,12 +114,8 @@ public class MovementPlanner
 
         if (!obstaclePriority)
         {
-            HadObstaclePath = false;
             return movementPlan;
         }
-
-        HadObstaclePath = true;
-        
         var targetLocation = _obstaclePathFinder.NextPoint().ProjectedPoint;
         var targetMoveDirection = (targetLocation - fromPosition).normalized;
         var updatedPlanValues = new MovementPlanValues(targetLocation, targetMoveDirection, movementPlan.TargetUnit, _currentIntersections);
@@ -142,9 +140,7 @@ public class MovementPlanner
         
         return new MovementPlan(obstaclePlanValues, obstaclePlanStates);
     }
-
-    public bool HadObstaclePath { get; set; }
-
+    
     private Vector2 StartingTargetLocation(Vector2 fromLocation, Vector2 moveDirection)
     {
         return fromLocation + moveDirection * _distanceScalar;
@@ -165,106 +161,3 @@ public class MovementPlanner
 // plot path around obstacle
 // move through path
 // once done with path, set targetlocation to adjusted target location
-
-public class ObstaclePathFinder
-{
-    private static readonly float StepTowardsObstacleSide = 0.01f;
-    private Queue<ObstaclePoint> _currentObstaclePath = new Queue<ObstaclePoint>();
-    public Vector2 TargetLocationOnceFinishedWithObstaclePath { get; set; }
-    public Vector2 PointBeforeStartingObstaclePath { get; set; }
-
-    public bool FoundPath(Vector2 checkFromPosition, Vector2 checkToPosition, Vector2 moveDirection)
-    {
-        var obstacle = ObstacleHelper.GetObstacle(checkFromPosition, checkToPosition);
-        
-        if (BoundaryHelper.ContainedInObstacleCollider(checkToPosition) || BoundaryHelper.TargetLocationEndsInsideObstacle(checkToPosition))
-        {
-            checkToPosition = BoundaryHelper.FindPositionThroughObstacle(checkToPosition, checkFromPosition);
-        }
-        
-
-        checkToPosition += moveDirection * 5f;
-        
-        Debug.Log(checkToPosition);
-        
-        if (obstacle == null) return false;
-
-        TargetLocationOnceFinishedWithObstaclePath = checkToPosition;
-        PointBeforeStartingObstaclePath = checkFromPosition;
-
-        var adjustedPointToCheckClosestToStart = checkFromPosition;
-
-        var closestPointToStart = obstacle.FindClosestPointOnSegmentFromProjectedPoint(adjustedPointToCheckClosestToStart);
-
-        while (closestPointToStart == null)
-        {
-            adjustedPointToCheckClosestToStart += moveDirection * StepTowardsObstacleSide;
-            
-            closestPointToStart = obstacle.FindClosestPointOnSegmentFromProjectedPoint(adjustedPointToCheckClosestToStart);
-        }
-        
-        var adjustedPointToCheckClosestToEnd = checkToPosition;
-        
-        var closestPointToEnd = obstacle.FindClosestPointOnSegmentFromProjectedPoint(adjustedPointToCheckClosestToEnd);
-        
-        while (closestPointToEnd == null)
-        {
-            adjustedPointToCheckClosestToEnd -= moveDirection * StepTowardsObstacleSide;
-            
-            closestPointToEnd = obstacle.FindClosestPointOnSegmentFromProjectedPoint(adjustedPointToCheckClosestToEnd);
-        }
-        
-        _currentObstaclePath = obstacle.BestPath(closestPointToStart, closestPointToEnd, checkToPosition);
-        
-        return _currentObstaclePath != null && _currentObstaclePath.Count > 0;
-    }
-    
-    public bool HasObstaclePath()
-    {
-        return _currentObstaclePath.Count > 0;
-    }
-
-    public ObstaclePoint NextPoint()
-    {
-        return _currentObstaclePath.Dequeue();
-    }
-}
-
-public static class ObstacleHelper
-{
-    private static List<Vector2> _adjustedPositions = new List<Vector2>();
-    private static LayerMask ObstacleMask => LayerMask.GetMask("Unwalkable");
-
-    public static ObstacleObject GetObstacle(Vector2 checkFromPosition, Vector2 checkToPosition)
-    {
-        var adjustedPosition = checkFromPosition;
-        var distance = Vector2.Distance(adjustedPosition, checkToPosition);
-        var direction = (checkToPosition - checkFromPosition).normalized;
-        
-        while (distance > 0.1f)
-        {
-            _adjustedPositions.Add(adjustedPosition);
-            distance = Vector2.Distance(adjustedPosition, checkToPosition);
-
-            var collider = Physics2D.OverlapBox(adjustedPosition, Vector2.one, 0, ObstacleMask);
-
-            adjustedPosition += direction * 0.1f;
-            
-            if (collider == null)
-                continue;
-
-            var obstacleObject = collider.GetComponent<ObstacleObject>();
-
-            if (obstacleObject != null)
-                return obstacleObject;
-        }
-        
-        return null;
-    }
-
-    public static void DrawObstacleCheckBoxes()
-    {
-        foreach(var adjustedPosition in _adjustedPositions)
-            Gizmos.DrawWireCube(adjustedPosition, Vector2.one);
-    }
-}

@@ -15,13 +15,16 @@ public abstract class UnitManager : MonoBehaviour
         Player = FindObjectOfType<Player>();
     }
 
+    private void OnEnable()
+    {
+        Units.Clear();
+    }
+
     public void RegisterUnit(IUnitEnemy unit)
     {
-        if (Units.Contains(unit)) return;
-
         Units.Add(unit);
         GameUnitManager.RegisterUnit(unit);
-        UnitChainEvaluator.AddUnit(unit);
+        UnitChainEvaluator.Instance.AddUnit(unit);
         OnRegisterUnit(unit);
     }
 
@@ -32,6 +35,7 @@ public abstract class UnitManager : MonoBehaviour
     {
         Units.Remove(unit);
         GameUnitManager.RemoveUnit(unit);
+        UnitChainEvaluator.Instance.RemoveUnit(unit);
         OnRemoveUnit(unit);
     }
 

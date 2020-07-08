@@ -19,7 +19,7 @@ public class DestinationSetter
 
         if (redirectSuccess && previousPackage.IntersectionAnalysis.IntersectingUnit != null)
         {
-            UnitChainEvaluator.RemoveUnit(previousPackage.IntersectionAnalysis.IntersectingUnit);
+            UnitChainEvaluator.Instance.RemoveUnit(previousPackage.IntersectionAnalysis.IntersectingUnit);
         }
     }
 
@@ -41,18 +41,18 @@ public class DestinationSetter
         return new MovementPackage(newRedirectDestination, null, _transform, previousPackage.DistanceScalar);
     }
     
-    // public MovementPackage GetDestinationFromFirstMove(float distanceScalar, Vector2 moveDirection)
-    // {
-    //     // var unit = TargetDetector.GetValidUnitInFrontFromTargetPosition(null, distanceScalar, moveDirection, _transform.position);
-    //
-    //     var destination = EvaluateStartingMove(unit, distanceScalar, moveDirection);
-    //
-    //     if (Vector2.Distance(_transform.position, destination.TargetLocation) < 0.1f) return null;
-    //
-    //     var startingPackage = new MovementPackage(_transform, destination, distanceScalar);
-    //
-    //     return startingPackage;
-    // }
+    public MovementPackage GetDestinationFromFirstMove(float distanceScalar, Vector2 moveDirection)
+    {
+        var unit = TargetDetector.GetValidUnitInFrontFromTargetPosition(null, distanceScalar, moveDirection, _transform.position, 0.7f);
+    
+        var destination = EvaluateStartingMove(unit, distanceScalar, moveDirection);
+    
+        if (Vector2.Distance(_transform.position, destination.TargetLocation) < 0.1f) return null;
+    
+        var startingPackage = new MovementPackage(_transform, destination, distanceScalar);
+    
+        return startingPackage;
+    }
 
     private Destination EvaluateStartingMove(IUnit unit, float distanceScalar, Vector2 moveDirection)
     {

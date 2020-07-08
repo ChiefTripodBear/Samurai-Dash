@@ -115,4 +115,10 @@ public class AngleDefinition : MonoBehaviour
             Gizmos.DrawWireSphere(_intersectionPoint, .5f);
         }
     }
+    
+    public void DoAngleRotation(float rotationAmountPerSecond)
+    {
+        _angle += Time.deltaTime * rotationAmountPerSecond;
+        _oppositeAngle = _angle - 180 < 0 ? 360 - (180 - _angle) : _angle - 180;
+    }
 }

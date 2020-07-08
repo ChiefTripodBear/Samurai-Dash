@@ -21,18 +21,22 @@ public class PlayerMovementController
         _playerMover = new PlayerMover(transform);
         _parallelMovingCheck = new ParallelMovingCheck(transform, _playerMover);
         _playerDashMonitor = new PlayerDashMonitor();
+        _playerSafetyCheck = new PlayerSafetyRedirect(_playerMover, player);
     }
 
     private IUnit _currentUnit;
+    private PlayerSafetyRedirect _playerSafetyCheck;
 
     public void Tick()
     {
         if (!_playerMover.IsMoving) _playerDashMonitor.RefundChargesWhileNotMoving();
         
-        if (_playerMover.DEBUGCurrentPlan?.TargetUnit != null)
+        // _playerSafetyCheck.Tick();
+        
+        if (_playerMover.CurrentPlan?.TargetUnit != null)
         {
             if (_currentUnit != null) _currentUnit.Transform.GetComponent<SpriteRenderer>().color = Color.white;
-            _currentUnit = _playerMover.DEBUGCurrentPlan.TargetUnit;
+            _currentUnit = _playerMover.CurrentPlan.TargetUnit;
             _currentUnit.Transform.GetComponent<SpriteRenderer>().color = Color.magenta;
         }
         _playerMover.Tick();
@@ -67,11 +71,13 @@ public class PlayerMovementController
 
     public void DrawGizmos()
     {
-        if (_playerMover.DEBUGCurrentPlan == null) return;
+        _playerSafetyCheck.DrawSafetyPosition();
+        
+        if (_playerMover.CurrentPlan == null) return;
 
         Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(_playerMover.DEBUGCurrentPlan.TargetLocation, .8f);
+        Gizmos.DrawWireSphere(_playerMover.CurrentPlan.TargetLocation, .8f);
         
-        Gizmos.DrawLine(_player.transform.position, (Vector2)_player.transform.position + _playerMover.DEBUGCurrentPlan.MoveDirection * 5f);
+        Gizmos.DrawLine(_player.transform.position, (Vector2)_player.transform.position + _playerMover.CurrentPlan.MoveDirection * 5f);
     }
 }

@@ -1,12 +1,12 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.SceneManagement;
 
 public class DummyUnit : MonoBehaviour, IUnit
 {
     public AngleDefinition AngleDefinition { get; private set; }
     public UnitKillHandler KillHandler { get; private set; }
-    public Transform Transform => transform;
+    public Transform Transform { get; private set; }
     public Node CurrentNode { get; private set; }
 
     private NodeGrid _nodeGrid;
@@ -16,18 +16,30 @@ public class DummyUnit : MonoBehaviour, IUnit
         _nodeGrid = FindObjectOfType<NodeGrid>();
         AngleDefinition = GetComponent<AngleDefinition>();
         KillHandler = GetComponent<UnitKillHandler>();
+        Transform = transform;
+    }
+
+
+    private void OnDisable()
+    {
+        UnitChainEvaluator.Instance.RemoveUnit(this);
+    }
+
+    private void OnEnable()
+    {
+        Transform = transform;
     }
 
     private void Start()
     {
-        UnitChainEvaluator.AddUnit(this);
         GameUnitManager.RegisterUnit(this);
+        UnitChainEvaluator.Instance.AddUnit(this);
     }
-
+    
     private void Update()
     {
         CurrentNode = _nodeGrid.NodeFromWorldPosition(transform.position);
 
-        if (Mouse.current.middleButton.wasReleasedThisFrame) SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        if (Mouse.current.middleButton.wasReleasedThisFrame) Player.Reload();
     }
 }

@@ -18,7 +18,6 @@ public class UnitKillHandler : MonoBehaviour
     private AngleDefinition _unitAngle;
     private Player _player;
     private Color _defaultColor;
-
     
     private void Awake()
     {
@@ -58,7 +57,6 @@ public class UnitKillHandler : MonoBehaviour
     {
         OnAnyEnemyDeath?.Invoke();    
         UnitKillPointReached?.Invoke();
-        UnitChainEvaluator.RemoveUnit(GetComponent<IUnit>());
         OnDeath?.Invoke();
         StartCoroutine(KillWithDelay());
     }
@@ -90,6 +88,8 @@ public class UnitKillHandler : MonoBehaviour
 
     private void OnDrawGizmos()
     {
+        if (this == null) return;
+        
         Gizmos.color = Color.magenta;
 
         if (_unitAngle != null)
