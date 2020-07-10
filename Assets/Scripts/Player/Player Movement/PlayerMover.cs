@@ -7,7 +7,7 @@ public class PlayerMover
     public static event Action RequestedNewPackage;
     public static event Action OnFirstMove;
 
-    public static event Action<MovementPlan, Action<MovementPlan>, bool, bool> MovementPlanRequested;
+    public event Action<MovementPlan, Action<MovementPlan>, bool, bool> MovementPlanRequested;
     private readonly Transform _mover;
     private MovementPlan _currentPlan;
     private float _distanceToCurrentDestination;

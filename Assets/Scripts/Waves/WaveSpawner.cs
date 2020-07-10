@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class WaveSpawner : MonoBehaviour
@@ -59,8 +60,10 @@ public class WaveSpawner : MonoBehaviour
                 if (i > currentSubWave.Units.Count - 1)
                     continue;
 
-                var unit = currentSubWave.Units[i].Get<EnemyUnit>(null, currentSubWave.SpawnPoint.position, Quaternion.identity);
-            
+                // var unit = currentSubWave.Units[i].Get<EnemyUnit>(null, currentSubWave.SpawnPoint.position, Quaternion.identity);
+
+                var unit = Instantiate(currentSubWave.Units[i], currentSubWave.SpawnPoint.position,
+                    quaternion.identity);
                 unit.Register();
                 unit.MoveFromSpawn(currentSubWave.PostSpawnDestination.position);
             

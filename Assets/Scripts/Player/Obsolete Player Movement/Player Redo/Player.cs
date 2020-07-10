@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
@@ -19,16 +20,18 @@ public class Player : MonoBehaviour
     private void Awake()
     {
         PlayerCollider2D = GetComponent<Collider2D>();
-        _playerMovementController = new PlayerMovementController(this);
-        _playerMovementManager = new PlayerMovementManager(this);
         _grid = FindObjectOfType<NodeGrid>();
         Time.timeScale = 1f;
     }
-    
+
+    private void Start()
+    {
+        _playerMovementController = new PlayerMovementController(this);
+    }
+
     private void Update()
     {
         _playerMovementController.Tick();
-        // _playerMovementManager.Tick();
         
         CurrentNode = _grid.NodeFromWorldPosition(transform.position);
     }

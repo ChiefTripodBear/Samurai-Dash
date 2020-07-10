@@ -10,11 +10,11 @@ public class MovementPlanner
     private readonly float _distanceScalar;
     private readonly IntersectionDetector _intersectionDetector;
     private readonly ObstaclePathFinder _obstaclePathFinder;
-    private readonly Transform _mover;
+    private Player _player;
 
-    public MovementPlanner(Transform mover, float distanceScalar)
+    public MovementPlanner(Player player, float distanceScalar)
     {
-        _mover = mover;
+        _player = player;
         _intersectionDetector = new IntersectionDetector();
         _obstaclePathFinder = new ObstaclePathFinder();
         _distanceScalar = distanceScalar;
@@ -23,9 +23,9 @@ public class MovementPlanner
     public MovementPlan GetStartingPlan(Vector2 currentMoveDirection, IUnit unit)
     {
         var moveDirection = unit != null
-            ? ((Vector2) unit.Transform.position - unit.AngleDefinition.GetPointClosestTo(_mover.position)).normalized
+            ? ((Vector2) unit.Transform.position - unit.AngleDefinition.GetPointClosestTo(_player.transform.position)).normalized
             : currentMoveDirection;
-        var targetLocation = unit?.AngleDefinition.GetPointClosestTo(_mover.position) ?? StartingTargetLocation(_mover.position, moveDirection);
+        var targetLocation = unit?.AngleDefinition.GetPointClosestTo(_player.transform.position) ?? StartingTargetLocation(_player.transform.position, moveDirection);
         
         targetLocation =
             BoundaryHelper.HandleBoundaryCollision(targetLocation, moveDirection);
@@ -44,13 +44,12 @@ public class MovementPlanner
         
         OnFirstMove?.Invoke(1);
 
-        return EditMovementPlanForObstacles(movementPlan, _mover.position);
+        return EditMovementPlanForObstacles(movementPlan, _player.transform.position);
     }
 
     public MovementPlan PlanMovingTowardsIntersectingUnitFromPreviousIntersection(MovementPlan previousPlan)
     {
-        Debug.Log(_mover.transform);
-        var targetLocation = previousPlan.TargetUnit.AngleDefinition.GetPointClosestTo(_mover.position);
+        var targetLocation = previousPlan.TargetUnit.AngleDefinition.GetPointClosestTo(_player.transform.position);
 
         var moveDirection = (targetLocation - previousPlan.TargetLocation).normalized;
 

@@ -6,18 +6,13 @@ public abstract class UnitManager : MonoBehaviour
 {
     [SerializeField] private int _ringOrder;
     
-    protected List<IUnitEnemy> Units = new List<IUnitEnemy>();
+    protected readonly List<IUnitEnemy> Units = new List<IUnitEnemy>();
 
     protected Player Player { get; private set; }
 
     private void Awake()
     {
         Player = FindObjectOfType<Player>();
-    }
-
-    private void OnEnable()
-    {
-        Units.Clear();
     }
 
     public void RegisterUnit(IUnitEnemy unit)

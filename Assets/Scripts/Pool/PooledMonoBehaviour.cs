@@ -3,17 +3,18 @@ using UnityEngine;
 
 public class PooledMonoBehaviour : MonoBehaviour
 {
-    public event Action OnDestroyEvent;
+    public event Action OnDisableEvent;
 
     [SerializeField] private int _initialPoolSize;
     public int InitialPoolSize => _initialPoolSize;
 
     protected virtual void OnDisable()
     {
-        OnDestroyEvent?.Invoke();
+        OnDisableEvent?.Invoke();
+        transform.position = Vector2.zero;
     }
 
-    public T Get<T>(bool enable = true) where T : PooledMonoBehaviour
+    private T Get<T>(bool enable = true) where T : PooledMonoBehaviour
     {
         var pool = Pool.GetPool(this);
         var pooledObject = pool.Get<T>();

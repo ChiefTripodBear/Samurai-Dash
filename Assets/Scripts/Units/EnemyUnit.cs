@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 [RequireComponent(typeof(AngleDefinition))]
 [RequireComponent(typeof(UnitKillHandler))]
@@ -25,7 +24,7 @@ public abstract class EnemyUnit : PooledMonoBehaviour, IUnitEnemy
         EnemyUnitMovementController = new EnemyUnitMovementController(this);
         KillHandler.OnDeath += RemoveFromUnitManager;
     }
-
+    
     private void OnDestroy()
     {
         KillHandler.OnDeath -= RemoveFromUnitManager;
@@ -40,7 +39,6 @@ public abstract class EnemyUnit : PooledMonoBehaviour, IUnitEnemy
     
     public void Register()
     {
-        Debug.Log("Registered");
         UnitManager.RegisterUnit(this);
         GetComponent<SpriteRenderer>().color = _defaultColor;
         GetComponent<Collider2D>().enabled = true;
@@ -53,7 +51,6 @@ public abstract class EnemyUnit : PooledMonoBehaviour, IUnitEnemy
     
     private void RemoveFromUnitManager()
     {
-        Debug.Log("Removed");
         UnitManager.RemoveUnit(this);
     }
 }

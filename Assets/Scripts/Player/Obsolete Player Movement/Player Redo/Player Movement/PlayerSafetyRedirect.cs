@@ -6,18 +6,18 @@ public class PlayerSafetyRedirect
 {
     public static event Action InDanger;
     public bool SafetyRedirectAllowed { get; set; }
-    private PlayerMover _mover;
+    private readonly PlayerMovementController _playerMovementController;
+    private readonly PlayerMover _mover;
     private readonly Player _player;
     private float _safetyCheckRange = 4f;
 
     private float _safetyRedirectMoveSpeed = 10f;
-    private LayerMask _enemyLayer;
-    private Vector2 _projectedPoint;
-    private Vector2 _dangerousPosition;
+    private readonly LayerMask _enemyLayer;
     private bool _inDanger;
 
-    public PlayerSafetyRedirect(PlayerMover mover, Player player)
+    public PlayerSafetyRedirect(PlayerMovementController playerMovementController, PlayerMover mover, Player player)
     {
+        _playerMovementController = playerMovementController;
         _mover = mover;
         _player = player;
         _enemyLayer = LayerMask.GetMask("Enemy");
@@ -33,38 +33,49 @@ public class PlayerSafetyRedirect
             {
                 Time.timeScale = 1f;
                 _mover.Reset();
+                _playerMovementController.SafetyRedirectMove();
                 _inDanger = false;
             }
         }
         else
         {
-            if (InDangerAtTargetLocation())
+            Time.timeScale = 1f;
+            if (_player.PlayerCollider2D.enabled)
             {
-                _inDanger = true;
+                if (InDangerAtTargetLocation())
+                {
+                    _inDanger = true;
+                }
+            }
+            else
+            {
+                _inDanger = false;
             }
         }
     }
     
     private bool InDangerAtTargetLocation()
     {
-        if (_mover.CurrentPlan == null || _mover.CurrentMoveDirection == null) return false;
+        if (_mover.CurrentPlan == null || _mover.CurrentMoveDirection == null)
+        {
+            return false;
+        }
 
-        _projectedPoint = (Vector2)_player.transform.position + _mover.CurrentMoveDirection.Value * 1.5f;
+        var hit = Physics2D.Raycast(_player.transform.position, _mover.CurrentPlan.MoveDirection, 5f, _enemyLayer);
 
-        var checkCircle = Physics2D.OverlapCircle(_projectedPoint, 1f, _enemyLayer);
+        if (!hit) return false;
+        
+        var unit = hit.collider.GetComponent<IUnit>();
 
-        if (!checkCircle) return false;
+        if (unit == null)
+        {
+            return false;
+        }
 
-        var unit = checkCircle.GetComponent<IUnit>();
-
-        if (unit == null) return false;
-
-        _dangerousPosition = _projectedPoint;
         return _mover.CurrentPlan.TargetUnit != unit;
     }
 
     public void DrawSafetyPosition()
     {
-        Gizmos.DrawWireSphere(_projectedPoint, 1f);
     }
 }

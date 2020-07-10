@@ -4,7 +4,7 @@ public class PlayerMovementController
 {
     private readonly Player _player;
     private readonly InputProcessor _inputProcessor;
-    private readonly MovementPlanRequester _movementPlanRequester;
+    private MovementPlanRequester _movementPlanRequester;
     private readonly PlayerMover _playerMover;
     private readonly ParallelMovingCheck _parallelMovingCheck;
     private readonly PlayerDashMonitor _playerDashMonitor;
@@ -16,12 +16,11 @@ public class PlayerMovementController
     {
         _player = player;
         _inputProcessor = new InputProcessor();
-        var transform = player.transform;
-        _movementPlanRequester = new MovementPlanRequester(transform);
-        _playerMover = new PlayerMover(transform);
-        _parallelMovingCheck = new ParallelMovingCheck(transform, _playerMover);
+        _playerMover = new PlayerMover(_player.transform);
+        _movementPlanRequester = new MovementPlanRequester(_player, _playerMover);
+        _parallelMovingCheck = new ParallelMovingCheck(_player.transform, _playerMover);
         _playerDashMonitor = new PlayerDashMonitor();
-        _playerSafetyCheck = new PlayerSafetyRedirect(_playerMover, player);
+        _playerSafetyCheck = new PlayerSafetyRedirect(this, _playerMover, player);
     }
 
     private IUnit _currentUnit;
@@ -30,8 +29,12 @@ public class PlayerMovementController
     public void Tick()
     {
         if (!_playerMover.IsMoving) _playerDashMonitor.RefundChargesWhileNotMoving();
-        
-        // _playerSafetyCheck.Tick();
+
+        if (_playerMover.CurrentPlan != null)
+        {
+            if(_playerMover.CurrentPlan.IsFirst || _playerMover.CurrentPlan.Finished)
+                _playerSafetyCheck.Tick();
+        }
         
         if (_playerMover.CurrentPlan?.TargetUnit != null)
         {
@@ -49,6 +52,15 @@ public class PlayerMovementController
         if (!startingDirection.HasValue || startingDirection == Vector2.zero) return;
 
         _playerMover.SetCurrentPlan(_movementPlanRequester.RequestStartPlan(startingDirection.Value, 5f));
+    }
+
+    public void SafetyRedirectMove()
+    {
+        var touchPoint = _inputProcessor.MousePosition();
+
+        var moveDirection = (touchPoint - (Vector2) _player.transform.position).normalized;
+
+        _playerMover.SetCurrentPlan(_movementPlanRequester.RequestStartPlan(moveDirection, 5f));
     }
     
     private Vector2? InputDestination()

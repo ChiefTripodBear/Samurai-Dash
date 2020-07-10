@@ -40,7 +40,7 @@ public class Pool : MonoBehaviour
             var pooledObject = Instantiate(_prefab);
             pooledObject.name += $"{i} + {_prefab.name}";
 
-            pooledObject.OnDestroyEvent += () => AddToAvailable(pooledObject);
+            pooledObject.OnDisableEvent += () => AddToAvailable(pooledObject);
             pooledObject.gameObject.SetActive(false);
         }
     }

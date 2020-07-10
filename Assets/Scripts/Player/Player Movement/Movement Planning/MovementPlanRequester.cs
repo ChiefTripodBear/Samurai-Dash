@@ -3,40 +3,40 @@ using UnityEngine;
 
 public class MovementPlanRequester
 {
-    private readonly Transform _transform;
     private readonly MovementPlanner _movementPlanner;
+    private Player _player;
 
-    public MovementPlanRequester(Transform transform)
+    public MovementPlanRequester(Player player, PlayerMover playerMover)
     {
-        _transform = transform;
-        _movementPlanner = new MovementPlanner(transform, 5f);
+        _player = player;
+        _movementPlanner = new MovementPlanner(_player, 5f);
 
-        PlayerMover.MovementPlanRequested += RequestNextPlan;
+        playerMover.MovementPlanRequested += RequestNextPlan;
     }
-    
-    private void RequestNextPlan(MovementPlan previousPlanner, Action<MovementPlan> callback, bool redirected, bool movingThroughObstacle)
+
+    private void RequestNextPlan(MovementPlan previousPlan, Action<MovementPlan> callback, bool redirected, bool movingThroughObstacle)
     {
         if (movingThroughObstacle)
         {
-            callback(RequestPlanFromObstaclePath(previousPlanner));
+            callback(RequestPlanFromObstaclePath(previousPlan));
         }
         else
         {
             callback(redirected
-                ? RequestPlanFromRedirectSuccess(previousPlanner)
-                : RequestPlanFromRedirectFailureOrFinish(previousPlanner));
+                ? RequestPlanFromRedirectSuccess(previousPlan)
+                : RequestPlanFromRedirectFailureOrFinish(previousPlan));
         }
     }
 
     public MovementPlan RequestStartPlan(Vector2 inputDirection, float moveAmount)
     {
-        var unit = TargetDetector.GetValidUnitInFrontFromTargetPosition(null, moveAmount, inputDirection, _transform.position, 0.7f);
+        var unit = TargetDetector.GetValidUnitInFrontFromTargetPosition(null, moveAmount, inputDirection, _player.transform.position, 0.7f);
 
         return _movementPlanner.GetStartingPlan(inputDirection, unit);
     }
 
     private MovementPlan RequestPlanFromRedirectFailureOrFinish(MovementPlan previousPlan)
-    {
+    { 
         return _movementPlanner.FinishPlanOrMoveToNextIntersect(previousPlan);
     }
 

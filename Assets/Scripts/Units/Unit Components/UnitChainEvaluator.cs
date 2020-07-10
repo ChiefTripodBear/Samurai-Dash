@@ -20,11 +20,12 @@ public class UnitChainEvaluator : MonoBehaviour
     {
         var possibleIntersections = new List<IUnit>();
         var firstStartCheckPoint = firstUnit.Transform.position;
-
+        
         foreach (var unit in _units)
         {
             if(unit == firstUnit 
                || unit == null 
+               || !BoundaryHelper.OnScreen(unit.Transform.position)
                || unit.Transform.gameObject.activeInHierarchy == false 
                || unit.KillHandler.KillPoint.HasValue 
                || unit.AngleDefinition.IntersectionPoint != Vector2.zero && BoundaryHelper.ContainedInObstacleCollider(unit.AngleDefinition.IntersectionPoint)) continue;

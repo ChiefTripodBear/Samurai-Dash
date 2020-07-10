@@ -103,3 +103,13 @@ public class UnitKillHandler : MonoBehaviour
         }
     }
 }
+
+public class UnitKillCleanupHandler : MonoBehaviour
+{
+    private Color _defaultColor;
+
+    private void Awake()
+    {
+        _defaultColor = GetComponent<SpriteRenderer>().color;
+    }
+}
